@@ -61,8 +61,8 @@ $pref::Video::appliedPref = 0;
 $pref::Video::disableVerticalSync = 1;
 $pref::Video::displayDevice = "OpenGL";
 $pref::Video::preferOpenGL = 1;
-$pref::Video::fullScreen = 1;
-$pref::Video::defaultResolution = "1920 1080";
+$pref::Video::fullScreen = 0;
+$pref::Video::defaultResolution = "1366 768";
 $pref::Video::windowedRes = "1280 720 32";
 $pref::OpenGL::gammaCorrection = 0.5;
 

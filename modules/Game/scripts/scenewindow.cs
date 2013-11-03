@@ -17,7 +17,7 @@ function createSceneWindow()
 
     Window.setCameraPosition( 0, 0 );
     Window.setCameraSize( 80, 45 );
-    Window.setCameraZoom( 0 );
+    Window.setCameraZoom( 1 );
     Window.setCameraAngle( 0 );
 	
 	createSceneLevel();
