@@ -33,6 +33,8 @@ function createSceneLevel()
 	%debug.setLinearDamping(2);
 	Level.add( %debug );
 	
+	createMap("200 200", 0);
+	
 }
 function destroySceneLevel()
 {

@@ -10,6 +10,7 @@ function Game::create()
 	exec("./scripts/elements/character.cs");
 	exec("./scripts/elements/projectile.cs");
 	exec("./scripts/constants.cs");
+	exec("./scripts/map/mapcreator.cs");
 	
 	createSceneWindow();
 	

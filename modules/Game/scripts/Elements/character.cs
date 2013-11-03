@@ -235,12 +235,12 @@ function Character::shoot(%this)
 	//re-schedule this
 	%this.shootSchedule = %this.schedule(%this.shootingFrequency, shoot);
 	
-	//turn cooldown on
+	//turn on cooldown
 	%this.attackOnCooldown = true;
 	%this.coolDownSchedule = %this.schedule(%this.shootingFrequency - 1, turnOffCooldown);
 }
 
-//reset cooldown
+///reset cooldown
 function Character::turnOffCooldown(%this)
 {
 	%this.attackOnCooldown = false;
