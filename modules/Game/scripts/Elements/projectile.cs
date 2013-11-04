@@ -12,6 +12,14 @@
 //                    :  
 // ============================================================
 
+//classes:
+//Projectile -> Sprite
+/*
+Fields:
+owner - the object that shot the projectile
+
+*/
+
 ///create a new Projectile at %position, flying at a direction of %direction degrees at %speed
 ///you may add %addVeloX and %addVeloY to the speed (speed from shooting chara e.g.)
 ///also you will have to provide the %owner of the projectile

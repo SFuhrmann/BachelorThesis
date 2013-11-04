@@ -12,4 +12,9 @@
 //                    :  
 // ============================================================
 
+//Projectiles
 $speedInfluenceOnProjectiles = 0.5;
+
+//Obstacles
+$obstacleMaxPointAmount = 5;
+$obstacleMaxSize = 5;

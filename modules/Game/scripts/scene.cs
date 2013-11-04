@@ -31,10 +31,7 @@ function createSceneLevel()
 	%debug.setCollisionCallback(true);
 	%debug.setFixedAngle(false);
 	%debug.setLinearDamping(2);
-	Level.add( %debug );
-	
-	createMap("200 200", 0);
-	
+	Level.add( %debug );	
 }
 function destroySceneLevel()
 {

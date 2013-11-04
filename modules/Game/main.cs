@@ -2,6 +2,8 @@
 
 function Game::create()
 {
+	//set a random seed
+	setRandomSeed(getRealTime()); 
 	// Load GUI profiles.
 	exec("./gui/guiProfiles.cs");
 	exec("./scripts/scene.cs");
@@ -15,6 +17,8 @@ function Game::create()
 	createSceneWindow();
 	
 	createCharacter();
+	
+	createMap("200 200", 5);
 }
 
 function Game::destroy()

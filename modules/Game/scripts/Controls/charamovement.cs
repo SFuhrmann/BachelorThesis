@@ -12,6 +12,9 @@
 //                    :  
 // ============================================================
 
+//Classes
+//CharaMovement -> ActionMap
+
 function CharaMovement::Init_controls( %this )
 {
 	//Create our new ActionMap

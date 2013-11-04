@@ -12,6 +12,18 @@
 //                    :  
 // ============================================================
 
+//Classes:
+//Character -> Sprite
+/*
+Fields:
+maxSpeed - maximum possible speed
+acceleration - acceleration in 1/100 meters/ms^2
+shootingFequency - delay till new shoot in ms
+projectileSpeed - base speed of projectiles
+
+
+*/
+
 //#######################################//
 //---------------------------------------//
 //                                       //
