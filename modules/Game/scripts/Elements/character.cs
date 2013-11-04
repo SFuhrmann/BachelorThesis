@@ -48,12 +48,12 @@ function createCharacter()
 	$character.setCollisionGroups( None );
 	$character.setCollisionCallback(true);
 	$character.setFixedAngle(true);
-	$character.setLinearDamping(0.5);
+	$character.setLinearDamping(1.5);
 	
 	//States Properties:
 	//Movement
 	$character.maxSpeed = 15;
-	$character.acceleration = 2;
+	$character.acceleration = 3;
 	
 	//Shooting
 	$character.shootingFrequency = 350;

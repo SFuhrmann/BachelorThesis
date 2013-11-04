@@ -11,14 +11,16 @@ function Game::create()
 	exec("./scripts/controls/charamovement.cs");
 	exec("./scripts/elements/character.cs");
 	exec("./scripts/elements/projectile.cs");
-	exec("./scripts/constants.cs");
+	exec("./scripts/elements/packages.cs");
+	exec("./scripts/common scripts/constants.cs");
+	exec("./scripts/common scripts/functions.cs");
 	exec("./scripts/map/mapcreator.cs");
 	
 	createSceneWindow();
 	
 	createCharacter();
 	
-	createMap("200 200", 5);
+	createMap($mapSize SPC $mapSize);
 }
 
 function Game::destroy()

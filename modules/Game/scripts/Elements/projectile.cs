@@ -28,15 +28,14 @@ function createProjectile(%position, %direction, %speed, %addVeloX, %addVeloY, %
 	%shot = new Sprite(Projectile);
 	%shot.setBodyType( dynamic );
 	%shot.Position = %position;
-	%shot.Size = "1 1";
+	%shot.Size = "0.7 0.7";
 	%shot.setLinearVelocityPolar(%direction, %speed);
 	%shot.SceneLayer = 11;
 	%shot.SceneGroup = 3;
 	%shot.Image = "Game:Projectile";
-	%shot.createCircleCollisionShape(0.5);
-	%shot.setCollisionCallback(true);
-	%shot.setFixedAngle(true);
-	%shot.setLinearDamping(0);
+	%shot.createCircleCollisionShape(0.35);
+	%shot.setCollisionGroups( "0 1 4" );
+	%shot.setCollisionCallback( true );
 	%shot.owner = %owner;
 	
 	//adjust color Value and Collision Groups
@@ -60,7 +59,9 @@ function createProjectile(%position, %direction, %speed, %addVeloX, %addVeloY, %
 	Level.add(%shot);
 }
 
+///is called upon a collision with the enemy
 function Projectile::onCollision(%this, %obj, %details)
 {
-	
+	//delete the Projectile
+	schedule(16, 0, deleteObj, %this);
 }
