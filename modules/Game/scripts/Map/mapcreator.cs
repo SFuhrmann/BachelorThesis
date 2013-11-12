@@ -132,7 +132,7 @@ function Map::createRandomObstacle(%this, %id)
 	%obstacle.setCollisionGroups( "1 2 3 4" );
 	%obstacle.setCollisionCallback(true);
 	%points = multiplyString(%point1 SPC %points, %size);
-	%obstacle.createChainCollisionShape( %points );
+	%obstacle.createPolygonCollisionShape( %points );
 	%obstacle.setFillMode(true);
 	%obstacle.setFillColor("0 0 0 1");
 	%obstacle.setFixedAngle(true);
@@ -163,5 +163,9 @@ function MapObject::onCollision(%this, %obj, %details)
 	//delete a Projectile
 	//this must happen in this onCollision-function and not the one in the projectile class because fuck you, that's why.
 	if (%obj.SceneGroup == 3)
+	{
+		%glare = showGlare(%obj.Position, %obj.Size, 200);
+		Level.add(%glare);
 		schedule(16, 0, deleteObj, %obj);
+	}
 }

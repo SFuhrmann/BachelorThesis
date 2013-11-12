@@ -22,3 +22,7 @@ $mapSize = 200;
 $obstacleAveragePointAmount = 5;
 $obstacleMaxSize = 20;
 $amountOfObstaclesOnMap = 50;
+
+//Heal Packages
+$packageHealAmountHP = 1.25;
+$packageHealAmountMP = 0.04;

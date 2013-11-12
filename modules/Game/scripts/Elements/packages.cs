@@ -47,11 +47,13 @@ function createPackage(%obstacle)
 	{
 		%pack.healType = "HP";
 		%pack.setLineColor( 0.5, 1, 0.5);
+		%pack.healAmount = $packageHealAmountHP;
 	}
 	else
 	{
 		%pack.healType = "MP";
 		%pack.setLineColor( 0.5, 0.5, 1);
+		%pack.healAmount = $packageHealAmountMP;
 	}
 	//create Graphics
  	%pack.setIsCircle( true );
@@ -65,18 +67,29 @@ function createPackage(%obstacle)
 	//set Scene related Properties
 	%pack.SceneGroup = 5;
 	%pack.SceneLayer = 15;
+	%pack.obstacle = %obstacle;
 	
 	//physics
-	%pack.createCircleCollisionShape( 0.25 );
-	%pack.setCollisionGroups( 4, 5 );
+	%pack.radius = 0.5;
+	%pack.createCircleCollisionShape( %pack.radius );
+	%pack.setCollisionGroups( 1, 2, 4, 5 );
 	%pack.setCollisionCallback(true);
+	%pack.setCollisionShapeIsSensor(0, true);
 	%pack.setFixedAngle(true);
 	
 	//add to Scene
 	Level.add(%pack);
 }
 
-function Package::setBodyTypeToStatic(%this)
+function Package::onCollision(%this, %obj, %details)
 {
-	%this.setBodyType( static );
+	if (%obj.SceneGroup == $character.SceneGroup)
+	{
+		if(%this.healType $= "HP")
+			%obj.addHP(%this.healAmount);
+		else
+			%obj.addMP(%this.healAmount);
+	}
+	schedule(30000, 0, createPackage, %this.obstacle);
+	schedule(1, 0, deleteObj, %this);
 }

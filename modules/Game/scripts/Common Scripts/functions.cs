@@ -13,7 +13,8 @@
 // ============================================================
 
 //Help Functions:
-//MultiplyString
+//MultiplyString - multiplies all elements of %string with %a
+//deleteObj - delete %obj. Can be used for self destruction via scheduling
 
 ///multiplies all elements of %string with %a
 function multiplyString(%string, %a)
@@ -25,7 +26,15 @@ function multiplyString(%string, %a)
 	return %string;
 }
 
+///delete %obj. Can be used for self destruction via scheduling
 function deleteObj(%obj)
 {
 	%obj.delete();
+}
+
+///calculate the time needed for a distance
+///returns time in ms
+function calculateArrivalTime(%dist, %velo)
+{
+	return %dist / %velo * 1000;
 }

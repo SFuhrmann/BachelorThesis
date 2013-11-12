@@ -41,3 +41,8 @@ function CharaMovement::onTouchUp(%this, %touchID, %position)
 {
 	cancel($character.shootSchedule);
 }
+
+function CharaMovement::onRightMouseDown(%this, %id, %pos)
+{
+	$character.leap(%pos);
+}

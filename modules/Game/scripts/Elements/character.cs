@@ -44,20 +44,33 @@ function createCharacter()
 	$character.SceneLayer = 10;
 	$character.SceneGroup = 2;
 	$character.Image = "Game:Character";
-	$character.createCircleCollisionShape(2);
+	$character.radius = 2;
+	$character.createCircleCollisionShape($character.radius);
 	$character.setCollisionGroups( None );
 	$character.setCollisionCallback(true);
 	$character.setFixedAngle(true);
-	$character.setLinearDamping(1.5);
+	$character.saveLinearDamping = 1.5;
+	$character.setLinearDamping($character.saveLinearDamping);
 	
 	//States Properties:
 	//Movement
 	$character.maxSpeed = 15;
+	$character.saveMaxSpeed = $character.maxSpeed;
 	$character.acceleration = 3;
 	
 	//Shooting
 	$character.shootingFrequency = 350;
 	$character.projectileSpeed = 15;
+	$character.projectileDamage = 2;
+	
+	//Values
+	$character.maxHP = 100;
+	$character.maxMP = 3;
+	$character.HP = $character.maxHP / 2;
+	$character.MP = $character.maxMP / 2;
+	
+	//Cooldowns
+	$character.cooldownTime = 10000;
 	
 	//add to Scene
 	Level.add( $character );
@@ -100,6 +113,9 @@ function Character::Update(%this)
 ///Walk Left
 function Character::walkleft(%this)
 {
+	if (%this.leaping)
+		return;
+	
 	//add acceleration to velocity
 	%this.setLinearVelocityX(%this.getLinearVelocityX() - %this.acceleration);
 	
@@ -113,6 +129,9 @@ function Character::walkleft(%this)
 ///Walk Right
 function Character::walkright(%this)
 {
+	if (%this.leaping)
+		return;
+	
 	//add acceleration to velocity
 	%this.setLinearVelocityX(%this.getLinearVelocityX() + %this.acceleration);
 	
@@ -126,6 +145,9 @@ function Character::walkright(%this)
 ///Walk Up
 function Character::walkup(%this)
 {
+	if (%this.leaping)
+		return;
+	
 	//add acceleration to velocity
 	%this.setLinearVelocityY(%this.getLinearVelocityY() + %this.acceleration);
 	
@@ -139,6 +161,9 @@ function Character::walkup(%this)
 ///Walk Down
 function Character::walkdown(%this)
 {
+	if (%this.leaping)
+		return;
+	
 	//add acceleration to velocity
 	%this.setLinearVelocityY(%this.getLinearVelocityY() - %this.acceleration);
 	
@@ -154,6 +179,7 @@ function Character::stopwalkleft(%this)
 {
 	//cancel schedule
 	cancel(%this.walkLschedule);
+	%this.saveWalkL = false;
 }
 
 ///Stop Acceleration Right
@@ -161,6 +187,7 @@ function Character::stopwalkright(%this)
 {
 	//cancel schedule
 	cancel(%this.walkRschedule);
+	%this.saveWalkR = false;
 }
 
 ///Stop Acceleration Up
@@ -168,6 +195,7 @@ function Character::stopwalkup(%this)
 {
 	//cancel schedule
 	cancel(%this.walkUschedule);
+	%this.saveWalkU = false;
 }
 
 ///Stop Acceleration Down
@@ -175,6 +203,7 @@ function Character::stopwalkdown(%this)
 {
 	//cancel schedule
 	cancel(%this.walkDschedule);
+	%this.saveWalkD = false;
 }
 
 ///clamp velocity to maxSpeed
@@ -218,6 +247,9 @@ function Character::alignToMouse(%this)
 ///shoot a projectile
 function Character::shoot(%this)
 {
+	if (%this.leaping)
+		return;
+		
 	//make sure the attack is not on cooldown
 	if (%this.attackOnCoolDown)
 	{
@@ -256,4 +288,134 @@ function Character::shoot(%this)
 function Character::turnOffCooldown(%this)
 {
 	%this.attackOnCooldown = false;
+}
+
+//#######################################//
+//---------------------------------------//
+//                                       //
+//                                       //
+//              Leaping                  //
+//                                       //
+//                                       //
+//---------------------------------------//
+//#######################################//
+
+///leap to mouse position
+function Character::leap(%this, %pos)
+{
+	if (%this.leaping ||(%this.MP < 1) || %this.leapingCooldown)
+		return;
+	%this.addMP(-1);
+	%this.leaping = true;
+	%this.leapingCooldown = true;
+	
+	//cancel all walk schedules and save if they were pending
+	if (isEventPending(%this.walkRschedule))
+	{
+		cancel(%this.walkRschedule);
+		%this.saveWalkR = true;
+	}
+	if (isEventPending(%this.walkLschedule))
+	{
+		cancel(%this.walkLschedule);
+		%this.saveWalkL = true;
+	}
+	if (isEventPending(%this.walkUschedule))
+	{
+		cancel(%this.walkUschedule);
+		%this.saveWalkU = true;
+	}
+	if (isEventPending(%this.walkDschedule))
+	{
+		cancel(%this.walkDschedule);
+		%this.saveWalkD = true;
+	}
+	//set max Speed and Linear Damping to 0
+	%this.maxSpeed = 0;
+	%this.setLinearDamping(0);
+	//get differences on X and Y axes between Character and MousePointer
+	%dX = getWord(%pos, 0) - getWord(%this.Position, 0);
+	%dY = getWord(%pos, 1) - getWord(%this.Position, 1);
+	//calculate the direction from that
+	%direction = mRadToDeg(mAtan(%dY, %dX)) + 90;
+	
+	//set velocity to 20 in this direction
+	%leapVelocity = 100;
+	%this.setLinearVelocityPolar(%direction, %leapVelocity);
+	
+	//calculate distance and time until character will arrive at the destination
+	%dist = VectorDist(%this.Position, %pos);
+	%time = calculateArrivalTime(%dist, %leapVelocity);
+	
+	%maxTime = 300;
+	if (%time > %maxTime)
+		%time = %maxTime;
+	//schedule the stop leap function with the calculated time
+	%this.leapingSchedule = %this.schedule(%time, stopLeap);
+	
+	LeapIcon.setImageFrame(0);
+	LeapIcon.cooldownSchedule = LeapIcon.schedule(%this.cooldownTime / 20, updateCooldown);
+}
+
+/// stop leaping
+function Character::stopLeap(%this)
+{
+	%this.setLinearVelocity("0 0");
+	%this.maxSpeed = %this.saveMaxSpeed;
+	%this.setLinearDamping(%this.saveLinearDamping);
+	%this.leaping = false;
+	
+	//re-call walk schedules
+	if (%this.saveWalkR)
+	{
+		%this.walkright();
+		%this.saveWalkR = false;
+	}
+	if (%this.saveWalkL)
+	{
+		%this.walkleft();
+		%this.saveWalkL = false;
+	}
+	if (%this.saveWalkU)
+	{
+		%this.walkup();
+		%this.saveWalkU = false;
+	}	
+	if (%this.saveWalkD)
+	{
+		%this.walkdown();
+		%this.saveWalkD = false;
+	}
+}
+
+
+//#######################################//
+//---------------------------------------//
+//                                       //
+//                                       //
+//              Healing                  //
+//                                       //
+//                                       //
+//---------------------------------------//
+//#######################################//
+
+///heal HP by %amount
+function Character::addHP(%this, %amount)
+{
+	%this.HP += %amount;
+	//truncate
+	if (%this.HP > %this.maxHP)
+		%this.HP = %this.maxHP;
+	
+	HPMeterFill.update();
+}
+
+///heal MP by %amount
+function Character::addMP(%this, %amount)
+{
+	%this.MP += %amount;
+	//truncate
+	if (%this.MP > %this.maxMP)
+		%this.MP = %this.maxMP;
+	MPMeter.fill[0].update(0, $character.MP);
 }

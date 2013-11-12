@@ -55,13 +55,14 @@ function createProjectile(%position, %direction, %speed, %addVeloX, %addVeloY, %
 	%newVeloY = %shot.getLinearVelocityY() + %addVeloY;
 	
 	%shot.setLinearVelocity(%newVeloX SPC %newVeloY);
-	
 	Level.add(%shot);
 }
 
 ///is called upon a collision with the enemy
 function Projectile::onCollision(%this, %obj, %details)
 {
+	%glare = showGlare(%this.Position, %this.Size, 200);
+	Level.add(%glare);
 	//delete the Projectile
 	schedule(16, 0, deleteObj, %this);
 }

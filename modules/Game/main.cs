@@ -14,12 +14,21 @@ function Game::create()
 	exec("./scripts/elements/packages.cs");
 	exec("./scripts/common scripts/constants.cs");
 	exec("./scripts/common scripts/functions.cs");
+	exec("./scripts/common scripts/effects.cs");
 	exec("./scripts/map/mapcreator.cs");
+	exec("./scripts/interface.cs");
 	
+	//create Main Scene
 	createSceneWindow();
 	
+	//create Character
 	createCharacter();
 	
+	//create Interface
+	createInterfaceWindow();
+	createInterface();
+	
+	//Create Map
 	createMap($mapSize SPC $mapSize);
 }
 
