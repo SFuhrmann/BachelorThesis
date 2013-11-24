@@ -508,6 +508,8 @@ function Character::addMP(%this, %amount)
 function Character::die(%this)
 {
 	echo(characterdead);
+	
+	schedule(1, 0, createGame);
 }
 
 ///flash Character Sprite

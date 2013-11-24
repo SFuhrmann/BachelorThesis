@@ -24,6 +24,14 @@ function Game::create()
 	exec("./scripts/Artificial Intelligence/ai_core.cs");
 	exec("./scripts/Artificial Intelligence/Structures/actionqueue.cs");
 	
+	createGame();
+}
+
+function createGame()
+{
+	destroySceneLevel();
+	destroyInterface();
+	
 	//create Main Scene
 	createSceneWindow();
 	

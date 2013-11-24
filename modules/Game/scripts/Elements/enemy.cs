@@ -76,7 +76,51 @@ function Enemy::addHP(%this, %amount)
 
 function Enemy::createEnemyLifeBar(%this)
 {
+	%bar = new ShapeVector( EnemyHPMeterOutline );
+	%bar.setLineColor( 1, 0.5, 0.5);
+	//create Graphics
+	%bar.setPolyCustom(4, "-0.5 0.05 0.5 0.05 0.5 -0.05 -0.5 -0.05");
+	%bar.Size = "12 10";
+	%bar.Position = getWord(%this.Position, 0) SPC getWord(%this.Position, 1) + 4;
+	%bar.SceneGroup = 30;
+	%bar.SceneLayer = 1;
 	
+	//physics
+	%bar.setFixedAngle(true);
+	
+	//add to Scene
+	Level.add(%bar);
+	%this.barOutline = %bar;
+	
+	%meter = new ShapeVector( EnemyHPMeterFill );
+	%meter.setLineColor( 1, 0.5, 0.5);
+	//create Graphics
+	%meter.setPolyCustom(4, "-0.5 0.05 0.5 0.05 0.5 -0.05 -0.5 -0.05");
+	%meter.Size = "11.5 5";
+	%meter.Position = getWord(%this.Position, 0) SPC getWord(%this.Position, 1) + 4;
+	%meter.SceneGroup = 30;
+	%meter.SceneLayer = 1;
+	
+	//physics
+	%meter.setFixedAngle(true);
+	%meter.setFillMode(true);
+	%meter.setFillColor( "1 0.5 0.5" );
+	
+	//add to Scene
+	Level.add(%meter);
+	
+	%this.barFill = %meter;
+	
+	%meter.update();
+}
+function EnemyHPMeterFill::update(%this)
+{
+	%this.Size = clipToAnotherSize($enemy.HP, $enemy.maxHP, 11.5) SPC 5;
+	%this.Position = $enemy.Position - 5.75 + getWord(%this.Size, 0) / 2 SPC getWord($enemy.Position, 1) + 4;
+	
+	$enemy.barOutline.Position = getWord($enemy.Position, 0) SPC getWord($enemy.Position, 1) + 4;
+	
+	$enemy.barUpdateSchedule = %this.schedule(16, update);
 }
 
 function Enemy::addMP(%this, %amount)
@@ -93,6 +137,8 @@ function Enemy::die(%this)
 	echo(enemydead);
 	
 	schedule(1, 0, deleteObj, %this);
+	%this.barOutline.delete();
+	%this.barFill.delete();
 	schedule(5000, 0, createEnemy, "0 0");
 }
 
