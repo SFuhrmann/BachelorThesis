@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="pop"
+	AudioFile="pop.wav"
+	Volume=1
+	VolumeChannel=1
+	Looping="false"
+/>

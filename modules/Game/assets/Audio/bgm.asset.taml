@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="BGM"
+	AudioFile="Video_Dungeon_Boss.wav"
+	Volume=0.75
+	VolumeChannel=2
+	Looping="true"
+/>

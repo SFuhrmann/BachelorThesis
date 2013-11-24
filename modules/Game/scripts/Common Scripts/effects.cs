@@ -48,3 +48,59 @@ function GlareEffect::update(%this, %i)
 	
 	%this.updateSchedule = %this.schedule(%this.time / 20, update, %i + 1);
 }
+
+///create a Stun Ring
+function createStunRingAnimation(%position, %owner)
+{
+	%stun = new ShapeVector( StunRing );
+	%stun.setIsCircle(true);
+	%stun.setCircleRadius($stunRingRadius);
+	%stun.setFillMode(true);
+	%stun.setFillColor("0 0 0.5");
+	%stun.setLineColor("0 0 0");
+	%stun.setBlendAlpha(0);
+	%stun.setFillAlpha(0);
+	%stun.SceneLayer = 30;
+	%stun.Position = %position;
+	%stun.owner = %owner;
+	%stun.time = 0;
+	%stun.blinkTime = 0;
+	%stun.update();
+	Level.add(%stun);
+}
+
+///update Stun Ring
+function StunRing::update(%this)
+{
+	//set Blend Alpha according to time
+	if (%this.time < $callStunTime)
+	{
+		%this.setBlendAlpha(%this.time / $callStunTime / 2);
+		%this.setFillAlpha(%this.time / $callStunTime / 2);
+	}
+	else
+	{
+		%this.blink();
+		return;
+	}
+	%this.Position = %this.owner.Position;
+	%this.time++;
+	%this.updateSchedule = %this.schedule(1, update);
+}
+
+function StunRing::blink(%this)
+{
+	if (%this.blinkTime > 19)
+	{
+		schedule(1, 0, deleteObj, %this);
+		return;
+	}
+	
+	%value = 1 - (%this.blinkTime / 40);
+	%this.setFillColor(%value SPC %value SPC 1);
+	%this.setFillAlpha(%value - 0.5);
+	
+	%this.blinkTime++;
+	
+	%this.blinkSchedule = %this.schedule(30, blink);
+}

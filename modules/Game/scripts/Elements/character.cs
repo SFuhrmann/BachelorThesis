@@ -34,43 +34,47 @@ projectileSpeed - base speed of projectiles
 //---------------------------------------//
 //#######################################//
 
-function createCharacter()
+function createCharacter(%pos)
 {
 	//Sprite Properties
 	$character = new Sprite( Character );
 	$character.setBodyType( dynamic );
-	$character.Position = "0 0";
+	$character.Position = %pos;
 	$character.Size = "6 6";
 	$character.SceneLayer = 10;
 	$character.SceneGroup = 2;
 	$character.Image = "Game:Character";
 	$character.radius = 2;
 	$character.createCircleCollisionShape($character.radius);
+	$character.setBlendColor(" 0.5 0.5 1" );
 	$character.setCollisionGroups( None );
 	$character.setCollisionCallback(true);
 	$character.setFixedAngle(true);
 	$character.saveLinearDamping = 1.5;
 	$character.setLinearDamping($character.saveLinearDamping);
 	
-	//States Properties:
-	//Movement
-	$character.maxSpeed = 15;
-	$character.saveMaxSpeed = $character.maxSpeed;
-	$character.acceleration = 3;
-	
-	//Shooting
-	$character.shootingFrequency = 350;
-	$character.projectileSpeed = 15;
-	$character.projectileDamage = 2;
-	
-	//Values
-	$character.maxHP = 100;
-	$character.maxMP = 3;
-	$character.HP = $character.maxHP / 2;
-	$character.MP = $character.maxMP / 2;
-	
-	//Cooldowns
-	$character.cooldownTime = 10000;
+	if (!$saveFile.existing)
+	{
+		//States Properties:
+		//Movement
+		$character.maxSpeed = 15;
+		$character.saveMaxSpeed = $character.maxSpeed;
+		$character.acceleration = 3;
+		
+		//Shooting
+		$character.shootingFrequency = 350;
+		$character.projectileSpeed = 15;
+		$character.projectileDamage = 2;
+		
+		//Values
+		$character.maxHP = 100;
+		$character.maxMP = 3;
+		$character.HP = $character.maxHP;
+		$character.MP = $character.maxMP;
+		
+		//Cooldowns
+		$character.cooldownTime = 10000;
+	}
 	
 	//add to Scene
 	Level.add( $character );
@@ -388,6 +392,80 @@ function Character::stopLeap(%this)
 	}
 }
 
+//#######################################//
+//---------------------------------------//
+//                                       //
+//                                       //
+//              Stunning                 //
+//                                       //
+//                                       //
+//---------------------------------------//
+//#######################################//
+
+///stun after a short amount of time
+function Character::stun(%this)
+{
+	if (%this.stunning ||(%this.MP < 1) || %this.stunningCooldown)
+		return;
+	%this.addMP(-1);
+	%this.stunning = true;
+	%this.stunningCooldown = true;
+	
+	createStunRingAnimation(%this.Position, %this);
+	
+	%this.callStunSchedule = %this.schedule($callStunTime, stunImpact);
+	
+	StunIcon.setImageFrame(0);
+	StunIcon.cooldownSchedule = StunIcon.schedule(%this.cooldownTime / 20, updateCooldown);
+}
+
+///impact of the Stun
+function Character::stunImpact(%this)
+{
+	%this.stunning = false;
+	alxPlay("Game:stun");
+	if (VectorDist(%this.Position, $enemy.Position) <= $stunRingRadius)
+	{
+		$enemy.stunned();
+	}
+}
+
+//#######################################//
+//---------------------------------------//
+//                                       //
+//                                       //
+//                 Beam                  //
+//                                       //
+//                                       //
+//---------------------------------------//
+//#######################################//
+
+
+function Character::beam(%this)
+{
+	if (%this.beamCooldown || %this.MP < 1)
+		return;
+	
+	%this.beamCooldown = true;
+	%this.addMP(-1);
+	
+	//convert local position of top-middle point of the Character to World Coordinates
+	%position = %this.getWorldPoint(0, getWord(%this.Size, 1) / 2);
+	
+	//get differences on X and Y axes between Character and MousePointer
+	%dX = getWord(Window.getMousePosition(), 0) - getWord(%this.Position, 0);
+	%dY = getWord(Window.getMousePosition(), 1) - getWord(%this.Position, 1);
+	//calculate the direction from that
+	%direction = mRadToDeg(mAtan(%dY, %dX)) + 90;
+	
+	//create a beam in the direction
+	createBeam(%position, %direction);
+	
+	//call cooldown
+	BeamIcon.setImageFrame(0);
+	BeamIcon.cooldownSchedule = BeamIcon.schedule(%this.cooldownTime / 20, updateCooldown);
+}
+
 
 //#######################################//
 //---------------------------------------//
@@ -406,6 +484,13 @@ function Character::addHP(%this, %amount)
 	//truncate
 	if (%this.HP > %this.maxHP)
 		%this.HP = %this.maxHP;
+		
+	//if character HP is zero
+	if (%this.HP < 1)
+	{
+		%this.HP = 0;
+		%this.die();
+	}
 	
 	HPMeterFill.update();
 }
@@ -418,4 +503,34 @@ function Character::addMP(%this, %amount)
 	if (%this.MP > %this.maxMP)
 		%this.MP = %this.maxMP;
 	MPMeter.fill[0].update(0, $character.MP);
+}
+
+function Character::die(%this)
+{
+	echo(characterdead);
+}
+
+///flash Character Sprite
+function Character::flash(%this)
+{
+	//set Color to white
+	%this.setBlendColor( "1 1 1" );
+	
+	//schedule flash update
+	%this.flashSchedule = %this.schedule(16, updateFlash, $flashTime);
+}
+
+///update Flash
+function Character::updateFlash(%this, %i)
+{
+	//if old Color reached
+	if (%i == 0)
+		return;
+	
+	//calculate new Color and set Color
+	%newVal = getWord(%this.getBlendColor(), 1) - (0.5 / $flashTime);
+	%this.setBlendColor(%newVal SPC %newVal SPC 1 );
+	
+	//re-schedule
+	%this.flashSchedule = %this.schedule(16, updateFlash, %i - 1);
 }

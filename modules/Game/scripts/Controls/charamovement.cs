@@ -27,6 +27,8 @@ function CharaMovement::Init_controls( %this )
 	charcontrols.bindCmd(keyboard, "d", "$character.walkright();", "$character.stopwalkright();");
 	charcontrols.bindCmd(keyboard, "w", "$character.walkup();", "$character.stopwalkup();");
 	charcontrols.bindCmd(keyboard, "s", "$character.walkdown();", "$character.stopwalkdown();");
+	charcontrols.bindCmd(keyboard, "q", "", "$character.stun();");
+	charcontrols.bindCmd(keyboard, "e", "", "$character.beam();");
 	
 	//Push the ActionMap on top of the stack
 	charcontrols.push();

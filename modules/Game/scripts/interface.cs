@@ -71,6 +71,8 @@ function createInterface()
 function createIcons()
 {
 	createLeapIcon();
+	createStunIcon();
+	createBeamIcon();
 }
 
 ///create Leap Icon
@@ -78,13 +80,41 @@ function createLeapIcon()
 {
 	%leap = new Sprite( LeapIcon );
 	%leap.Size = "5 5";
-	%leap.Position = "-35 17.5";
+	%leap.Position = "-20 17.5";
 	%leap.Image = "Game:LeapIcon";
 	%leap.setImageFrame(19);
 	%leap.SceneGroup = 1;
 	%leap.SceneLayer = 1;
 	%leap.setFixedAngle(true);
 	Interface.add(%leap);
+}
+
+///create Stun Icon
+function createStunIcon()
+{
+	%stun = new Sprite( StunIcon );
+	%stun.Size = "5 5";
+	%stun.Position = "-35 17.5";
+	%stun.Image = "Game:LeapIcon";
+	%stun.setImageFrame(19);
+	%stun.SceneGroup = 1;
+	%stun.SceneLayer = 1;
+	%stun.setFixedAngle(true);
+	Interface.add(%stun);
+}
+
+///create Stun Icon
+function createBeamIcon()
+{
+	%beam = new Sprite( BeamIcon );
+	%beam.Size = "5 5";
+	%beam.Position = "-27.5 17.5";
+	%beam.Image = "Game:LeapIcon";
+	%beam.setImageFrame(19);
+	%beam.SceneGroup = 1;
+	%beam.SceneLayer = 1;
+	%beam.setFixedAngle(true);
+	Interface.add(%beam);
 }
 
 function LeapIcon::updateCooldown(%this)
@@ -96,7 +126,35 @@ function LeapIcon::updateCooldown(%this)
 	{
 		$character.leapingCooldown = false;
 		%glare = showGlare(%this.Position, %this.Size, 200);
-		echo(%glare.time);
+		
+		Interface.add(%glare);
+	}
+}
+
+function StunIcon::updateCooldown(%this)
+{
+	%this.setImageFrame(%this.getImageFrame() + 1);
+	if (%this.getImageFrame() < 19)
+		%this.cooldownSchedule = %this.schedule($character.cooldownTime / 20, updateCooldown);
+	else
+	{
+		$character.stunningCooldown = false;
+		%glare = showGlare(%this.Position, %this.Size, 200);
+		
+		Interface.add(%glare);
+	}
+}
+
+function BeamIcon::updateCooldown(%this)
+{
+	%this.setImageFrame(%this.getImageFrame() + 1);
+	if (%this.getImageFrame() < 19)
+		%this.cooldownSchedule = %this.schedule($character.cooldownTime / 20, updateCooldown);
+	else
+	{
+		$character.beamCooldown = false;
+		%glare = showGlare(%this.Position, %this.Size, 200);
+		
 		Interface.add(%glare);
 	}
 }

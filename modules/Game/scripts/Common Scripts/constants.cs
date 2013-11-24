@@ -26,3 +26,11 @@ $amountOfObstaclesOnMap = 50;
 //Heal Packages
 $packageHealAmountHP = 1.25;
 $packageHealAmountMP = 0.04;
+
+//Stunning
+$callStunTime = 2000;
+$stunRingRadius = 10;
+$stunDuration = 5000;
+
+//Effects
+$flashTime = 10;

@@ -43,6 +43,8 @@ function createMap(%size)
 	{
 		$map.createRandomObstacle(%i);
 	}
+	
+	$bgm = alxPlay("Game:BGM");
 }
 
 ///create the map borders
@@ -146,7 +148,7 @@ function Map::createRandomObstacle(%this, %id)
 	}
 	else
 	{
-		$map.obstacles = $map.obstacle SPC %obstacle;
+		$map.obstacles = $map.obstacles SPC %obstacle;
 	}
 	
 	//create a random number of health and magic packages around the obstacle
@@ -156,6 +158,8 @@ function Map::createRandomObstacle(%this, %id)
 	{
 		createPackage(%obstacle);
 	}
+	
+	
 }
 
 function MapObject::onCollision(%this, %obj, %details)
@@ -166,6 +170,7 @@ function MapObject::onCollision(%this, %obj, %details)
 	{
 		%glare = showGlare(%obj.Position, %obj.Size, 200);
 		Level.add(%glare);
-		schedule(16, 0, deleteObj, %obj);
+		
+		schedule(1, 0, deleteObj, %obj);
 	}
 }

@@ -56,6 +56,8 @@ function createProjectile(%position, %direction, %speed, %addVeloX, %addVeloY, %
 	
 	%shot.setLinearVelocity(%newVeloX SPC %newVeloY);
 	Level.add(%shot);
+	
+	alxPlay("Game:shot");
 }
 
 ///is called upon a collision with the enemy
@@ -63,6 +65,15 @@ function Projectile::onCollision(%this, %obj, %details)
 {
 	%glare = showGlare(%this.Position, %this.Size, 200);
 	Level.add(%glare);
+	
+	
+	if (%obj.SceneGroup == 1 || %obj.SceneGroup == 2)
+	{
+		%obj.addHP(-%this.owner.projectileDamage);
+		%obj.flash();
+	}
+		
+	
 	//delete the Projectile
 	schedule(16, 0, deleteObj, %this);
 }

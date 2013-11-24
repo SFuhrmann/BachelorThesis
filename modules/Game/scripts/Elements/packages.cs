@@ -59,7 +59,7 @@ function createPackage(%obstacle)
  	%pack.setIsCircle( true );
 	%pack.setCircleRadius( 0.5 );
 	%pack.setFillMode(true);
-	%pack.setFillColor("0 0 0");
+	%pack.setFillColor("0 0 0 0");
 	
 	
 	%pack.Position = %posX SPC %posY;
@@ -83,12 +83,14 @@ function createPackage(%obstacle)
 
 function Package::onCollision(%this, %obj, %details)
 {
-	if (%obj.SceneGroup == $character.SceneGroup)
+	if (%obj.SceneGroup == $character.SceneGroup || %obj.SceneGroup == $enemy.SceneGroup)
 	{
 		if(%this.healType $= "HP")
 			%obj.addHP(%this.healAmount);
 		else
 			%obj.addMP(%this.healAmount);
+		if (VectorDist($character.Position, %obj.Position) < 25)
+			alxPlay("Game:pop");
 	}
 	schedule(30000, 0, createPackage, %this.obstacle);
 	schedule(1, 0, deleteObj, %this);

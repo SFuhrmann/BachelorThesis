@@ -29,6 +29,9 @@ function multiplyString(%string, %a)
 ///delete %obj. Can be used for self destruction via scheduling
 function deleteObj(%obj)
 {
+	if (!isObject(%obj))
+		return;
+		
 	%obj.delete();
 }
 
@@ -37,4 +40,22 @@ function deleteObj(%obj)
 function calculateArrivalTime(%dist, %velo)
 {
 	return %dist / %velo * 1000;
+}
+
+///get Minimum
+function mMin(%a, %b)
+{
+	if (%a < %b)
+		return %a;
+	else
+		return %b;
+}
+
+///get Maximum
+function mMax(%a, %b)
+{
+	if (%a > %b)
+		return %a;
+	else
+		return %b;
 }

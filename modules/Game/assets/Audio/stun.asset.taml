@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="stun"
+	AudioFile="stun.wav"
+	Volume=1
+	VolumeChannel=1
+	Looping="false"
+/>

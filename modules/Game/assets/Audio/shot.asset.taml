@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="shot"
+	AudioFile="shot.wav"
+	Volume=0.75
+	VolumeChannel=1
+	Looping="false"
+/>
