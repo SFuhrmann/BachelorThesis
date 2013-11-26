@@ -1,7 +1,7 @@
 <AudioAsset
 	AssetName="shot"
 	AudioFile="shot.wav"
-	Volume=0.75
+	Volume=0.15
 	VolumeChannel=1
 	Looping="false"
 />

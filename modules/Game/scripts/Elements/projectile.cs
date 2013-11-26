@@ -71,6 +71,9 @@ function Projectile::onCollision(%this, %obj, %details)
 	{
 		%obj.addHP(-%this.owner.projectileDamage);
 		%obj.flash();
+		alxPlay("Game:hit");
+		if (%obj.SceneGroup == 1)
+			$currentScore += 10;
 	}
 		
 	

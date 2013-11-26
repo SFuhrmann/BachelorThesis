@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="beamshoot"
+	AudioFile="beam_shoot.wav"
+	Volume=1
+	VolumeChannel=1
+	Looping="false"
+/>

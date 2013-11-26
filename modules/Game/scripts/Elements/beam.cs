@@ -36,6 +36,8 @@ function createBeam(%pos, %dir)
 	Level.add(%beam);
 	
 	%beam.updateSchedule = %beam.schedule(31, update);
+	
+	alxPlay("Game:beamshoot");
 }
 
 function Beam::update(%this)
@@ -56,6 +58,8 @@ function Beam::onCollision(%this, %obj, %details)
 	if (%obj.SceneGroup == 1)
 		%obj.addHP(-%this.damage);
 	
+	$currentScore += 50;
+	alxPlay("Game:beam");
 	Level.add(showGlare(%this.Position, %this.Size, 200));
 	schedule(1, 0, deleteObj, %this);
 }

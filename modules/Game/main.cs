@@ -45,6 +45,9 @@ function createGame()
 	//create Enemy
 	createEnemy("-10 0");
 	
+	//Score Count
+	$currentScore = 0;
+	
 	//Create Map
 	createMap($mapSize SPC $mapSize);
 }

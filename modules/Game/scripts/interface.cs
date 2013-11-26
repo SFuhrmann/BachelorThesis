@@ -95,7 +95,7 @@ function createStunIcon()
 	%stun = new Sprite( StunIcon );
 	%stun.Size = "5 5";
 	%stun.Position = "-35 17.5";
-	%stun.Image = "Game:LeapIcon";
+	%stun.Image = "Game:StunIcon";
 	%stun.setImageFrame(19);
 	%stun.SceneGroup = 1;
 	%stun.SceneLayer = 1;
@@ -109,7 +109,7 @@ function createBeamIcon()
 	%beam = new Sprite( BeamIcon );
 	%beam.Size = "5 5";
 	%beam.Position = "-27.5 17.5";
-	%beam.Image = "Game:LeapIcon";
+	%beam.Image = "Game:BeamIcon";
 	%beam.setImageFrame(19);
 	%beam.SceneGroup = 1;
 	%beam.SceneLayer = 1;

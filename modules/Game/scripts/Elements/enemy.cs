@@ -134,8 +134,7 @@ function Enemy::addMP(%this, %amount)
 
 function Enemy::die(%this)
 {
-	echo(enemydead);
-	
+	$currentScore += 5000;
 	schedule(1, 0, deleteObj, %this);
 	%this.barOutline.delete();
 	%this.barFill.delete();
@@ -163,6 +162,10 @@ function Enemy::updateAngle(%this)
 ///flash Enemy Sprite
 function Enemy::flash(%this)
 {
+	if (%this.flashing)
+		return;
+		
+	%this.flashing = true;
 	//set Color to white
 	%this.setBlendColor( "1 1 1" );
 	
@@ -175,7 +178,10 @@ function Enemy::updateFlash(%this, %i)
 {
 	//if old Color reached
 	if (%i == 0)
+	{
+		%this.flashing = false;
 		return;
+	}
 	
 	//calculate new Color and set Color
 	%newVal = getWord(%this.getBlendColor(), 1) - (0.5 / $flashTime);

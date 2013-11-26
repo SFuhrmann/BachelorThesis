@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="hit"
+	AudioFile="hit.wav"
+	Volume=0.5
+	VolumeChannel=1
+	Looping="false"
+/>

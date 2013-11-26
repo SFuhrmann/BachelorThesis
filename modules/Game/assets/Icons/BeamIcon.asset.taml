@@ -1,0 +1,7 @@
+<ImageAsset
+    AssetName="BeamIcon"
+    ImageFile="BeamIcon.png"
+    CellCountX="5"
+    CellCountY="4"
+    CellWidth="100"
+    CellHeight="100" />
