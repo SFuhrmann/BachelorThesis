@@ -23,12 +23,12 @@ function CharaMovement::Init_controls( %this )
 	//Press "a" to execute "PlayerShip::turnleft();"
 	// Release "a" to execute "PlayerShip::stopturn();"
 	
-	charcontrols.bindCmd(keyboard, "a", "$character.walkleft();", "$character.stopwalkleft();");
-	charcontrols.bindCmd(keyboard, "d", "$character.walkright();", "$character.stopwalkright();");
-	charcontrols.bindCmd(keyboard, "w", "$character.walkup();", "$character.stopwalkup();");
-	charcontrols.bindCmd(keyboard, "s", "$character.walkdown();", "$character.stopwalkdown();");
-	charcontrols.bindCmd(keyboard, "q", "", "$character.stun();");
-	charcontrols.bindCmd(keyboard, "e", "", "$character.beam();");
+	charcontrols.bindCmd(keyboard, "a", "if (!$gameOver) $character.walkleft();", "if (!$gameOver) $character.stopwalkleft();");
+	charcontrols.bindCmd(keyboard, "d", "if (!$gameOver) $character.walkright();", "if (!$gameOver) $character.stopwalkright();");
+	charcontrols.bindCmd(keyboard, "w", "if (!$gameOver) $character.walkup();", "if (!$gameOver) $character.stopwalkup();");
+	charcontrols.bindCmd(keyboard, "s", "if (!$gameOver) $character.walkdown();", "if (!$gameOver) $character.stopwalkdown();");
+	charcontrols.bindCmd(keyboard, "q", "", "if (!$gameOver) $character.stun();");
+	charcontrols.bindCmd(keyboard, "e", "", "if (!$gameOver) $character.beam();");
 	
 	//Push the ActionMap on top of the stack
 	charcontrols.push();
@@ -36,15 +36,26 @@ function CharaMovement::Init_controls( %this )
 
 function CharaMovement::onTouchDown(%this, %touchID, %position)
 {
+	if ($gameOver)
+	{
+		schedule(1, 0, createGame);
+		return;
+	}
 	$character.shoot();
 }
 
 function CharaMovement::onTouchUp(%this, %touchID, %position)
 {
+	if ($gameOver)
+		return;
+		
 	cancel($character.shootSchedule);
 }
 
 function CharaMovement::onRightMouseDown(%this, %id, %pos)
 {
+	if ($gameOver)
+		return;
+	
 	$character.leap(%pos);
 }

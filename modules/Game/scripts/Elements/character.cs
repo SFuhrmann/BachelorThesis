@@ -53,28 +53,25 @@ function createCharacter(%pos)
 	$character.saveLinearDamping = 1.5;
 	$character.setLinearDamping($character.saveLinearDamping);
 	
-	if (!$saveFile.existing)
-	{
-		//States Properties:
-		//Movement
-		$character.maxSpeed = 15;
-		$character.saveMaxSpeed = $character.maxSpeed;
-		$character.acceleration = 3;
-		
-		//Shooting
-		$character.shootingFrequency = 350;
-		$character.projectileSpeed = 15;
-		$character.projectileDamage = 2;
-		
-		//Values
-		$character.maxHP = 100;
-		$character.maxMP = 3;
-		$character.HP = $character.maxHP;
-		$character.MP = $character.maxMP;
-		
-		//Cooldowns
-		$character.cooldownTime = 10000;
-	}
+	//States Properties:
+	//Movement
+	$character.maxSpeed = 15;
+	$character.saveMaxSpeed = $character.maxSpeed;
+	$character.acceleration = 3;
+	
+	//Shooting
+	$character.shootingFrequency = 350;
+	$character.projectileSpeed = 15;
+	$character.projectileDamage = 2;
+	
+	//Values
+	$character.maxHP = 100;
+	$character.maxMP = 3;
+	$character.HP = $character.maxHP;
+	$character.MP = $character.maxMP;
+	
+	//Cooldowns
+	$character.cooldownTime = 10000;
 	
 	//add to Scene
 	Level.add( $character );
@@ -509,7 +506,16 @@ function Character::die(%this)
 {
 	echo(characterdead);
 	
-	schedule(1, 0, createGame);
+	schedule(1, 0, deleteObj, %this);
+	
+	%gameover = new Sprite( GameOverScreen );
+	%gameover.Position = "0 0";
+	%gameover.Size = "80 45";
+	%gameover.SceneGroup = 20;
+	%gameover.SceneLayer = 0;
+	%gameover.Image = "Game:GameOver";
+	$gameOver = true;
+	Interface.add(%gameover);
 }
 
 ///flash Character Sprite

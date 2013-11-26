@@ -46,10 +46,15 @@ function createGame()
 	createEnemy("-10 0");
 	
 	//Score Count
-	$currentScore = 0;
+	if (!$saveFile.exists)
+		$currentScore = 0;
+	else
+		$currentScore = $saveFile.currentScore;
 	
 	//Create Map
 	createMap($mapSize SPC $mapSize);
+	
+	$gameOver = false;
 }
 
 function Game::destroy()

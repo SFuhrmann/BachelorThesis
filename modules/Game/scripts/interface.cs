@@ -87,6 +87,15 @@ function createLeapIcon()
 	%leap.SceneLayer = 1;
 	%leap.setFixedAngle(true);
 	Interface.add(%leap);
+	
+	%mouse = new Sprite( MouseIcon );
+	%mouse.Size = "2 2";
+	%mouse.Position = "-20 21";
+	%mouse.Image = "Game:MouseIcon";
+	%mouse.SceneGroup = 2;
+	%mouse.SceneLayer = 2;
+	%mouse.setFixedAngle(true);
+	Interface.add(%mouse);
 }
 
 ///create Stun Icon
@@ -101,6 +110,15 @@ function createStunIcon()
 	%stun.SceneLayer = 1;
 	%stun.setFixedAngle(true);
 	Interface.add(%stun);
+	
+	%mouse = new Sprite( QIcon );
+	%mouse.Size = "2 2";
+	%mouse.Position = "-35 21";
+	%mouse.Image = "Game:QIcon";
+	%mouse.SceneGroup = 2;
+	%mouse.SceneLayer = 2;
+	%mouse.setFixedAngle(true);
+	Interface.add(%mouse);
 }
 
 ///create Stun Icon
@@ -115,6 +133,15 @@ function createBeamIcon()
 	%beam.SceneLayer = 1;
 	%beam.setFixedAngle(true);
 	Interface.add(%beam);
+	
+	%mouse = new Sprite( EIcon );
+	%mouse.Size = "2 2";
+	%mouse.Position = "-27.5 21";
+	%mouse.Image = "Game:EIcon";
+	%mouse.SceneGroup = 2;
+	%mouse.SceneLayer = 2;
+	%mouse.setFixedAngle(true);
+	Interface.add(%mouse);
 }
 
 function LeapIcon::updateCooldown(%this)

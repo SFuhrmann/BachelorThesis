@@ -138,7 +138,7 @@ function Enemy::die(%this)
 	schedule(1, 0, deleteObj, %this);
 	%this.barOutline.delete();
 	%this.barFill.delete();
-	schedule(5000, 0, createEnemy, "0 0");
+	schedule(10000, 0, createEnemy, "0 0");
 }
 
 function Enemy::updateAngle(%this)
