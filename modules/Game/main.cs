@@ -32,6 +32,16 @@ function createGame()
 	destroySceneLevel();
 	destroyInterface();
 	
+	$saveGame = TamlRead("save.taml");
+	
+	if (!$saveGame.existing)
+	{
+		createSaveGame();
+		TamlWrite( $saveGame, "save.taml");
+	}
+	
+	$currentScore = $saveGame.currentScore;
+	
 	//create Main Scene
 	createSceneWindow();
 	
@@ -45,16 +55,21 @@ function createGame()
 	//create Enemy
 	createEnemy("-10 0");
 	
-	//Score Count
-	if (!$saveFile.exists)
-		$currentScore = 0;
-	else
-		$currentScore = $saveFile.currentScore;
-	
 	//Create Map
 	createMap($mapSize SPC $mapSize);
 	
 	$gameOver = false;
+	
+	//debug
+	//schedule(4000, $character, changeMaxHP, 50);
+	
+	$level = 0;
+}
+
+function saveGame()
+{
+	$saveGame.currentScore = $currentScore;
+	TamlWrite( $saveGame, "save.taml");
 }
 
 function Game::destroy()

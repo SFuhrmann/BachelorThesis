@@ -1,0 +1,7 @@
+<ImageAsset
+    AssetName="Font"
+    ImageFile="Font.png"
+    CellCountX="23"
+    CellCountY="5"
+    CellWidth="42"
+    CellHeight="54" />

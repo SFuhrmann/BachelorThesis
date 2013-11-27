@@ -72,6 +72,40 @@ function createCharacter(%pos)
 	
 	//Cooldowns
 	$character.cooldownTime = 10000;
+	$character.leapCooldownTime = 10000;
+	
+	//Stun
+	$character.stunLength = 5000;
+	$character.stunRadius = 10;
+	
+	//Leap
+	$character.leapCosts = 1;
+	
+	//Beam
+	$character.beamGrowth = 0.25;
+	$character.beamSpeed = 15;
+	
+	//Upgrades
+	//create list with available upgrades
+	$character.availableItems = "";
+	if (!$saveGame.HP == 0)
+		$character.availableItems = addWord($character.availableItems, "HP");
+	if (!$saveGame.MP == 0)
+		$character.availableItems = addWord($character.availableItems, "MP");
+	if (!$saveGame.shotSpeed == 0)
+		$character.availableItems = addWord($character.availableItems, "shotSpeed");
+	if (!$saveGame.stunLength == 0)
+		$character.availableItems = addWord($character.availableItems, "stunLength");
+	if (!$saveGame.stunRadius == 0)
+		$character.availableItems = addWord($character.availableItems, "stunRadius");
+	if (!$saveGame.leapCosts == 0)
+		$character.availableItems = addWord($character.availableItems, "leapCosts");
+	if (!$saveGame.leapCooldown == 0)
+		$character.availableItems = addWord($character.availableItems, "leapCooldown");
+	if (!$saveGame.beamGrowth == 0)
+		$character.availableItems = addWord($character.availableItems, "beamGrowth");
+	if (!$saveGame.beamSpeed == 0)
+		$character.availableItems = addWord($character.availableItems, "beamSpeed");
 	
 	//add to Scene
 	Level.add( $character );
@@ -111,6 +145,78 @@ function Character::Update(%this)
 //---------------------------------------//
 //#######################################//
 
+function Character::pressW(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.walkup();
+	if ($nextStage)
+		%this.addItem(WIcon.id);
+}
+function Character::pressA(%this)
+{
+	if (!$gameOver && !$nextStage) 
+	$character.walkleft();
+}
+function Character::pressS(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.walkdown();
+}
+function Character::pressD(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.walkright();
+}
+function Character::pressQ(%this)
+{
+	if ($nextStage)
+		$character.addItem(QIcon.id); 
+}
+
+function Character::pressE(%this)
+{
+	if ($nextStage) 
+		$character.addItem(EIcon.id); 
+}
+
+//----------------------------------
+function Character::upA(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.stopwalkleft();
+}
+function Character::upS(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.stopwalkdown();
+}
+function Character::upD(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.stopwalkright();
+}
+function Character::upQ(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.stun();
+	
+	$nextStage = false;
+}
+function Character::upW(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.stopwalkup();
+	
+	$nextStage = false;
+}
+function Character::upE(%this)
+{
+	if (!$gameOver && !$nextStage) 
+		$character.beam();
+	
+	$nextStage = false;
+}
+//--------------------------------------
 ///Walk Left
 function Character::walkleft(%this)
 {
@@ -218,6 +324,19 @@ function Character::clampspeed(%this)
 	}
 }
 
+function Character::stopMoving(%this)
+{
+	cancel(%this.walkDSchedule);
+	cancel(%this.walkLSchedule);
+	cancel(%this.walkRSchedule);
+	cancel(%this.walkUSchedule);
+	cancel(%this.shootSchedule);
+	%this.saveWalkU = false;
+	%this.saveWalkD = false;
+	%this.saveWalkR = false;
+	%this.saveWalkL = false;
+}
+
 //#######################################//
 //---------------------------------------//
 //                                       //
@@ -306,7 +425,7 @@ function Character::leap(%this, %pos)
 {
 	if (%this.leaping ||(%this.MP < 1) || %this.leapingCooldown)
 		return;
-	%this.addMP(-1);
+	%this.addMP(-%this.leapCosts);
 	%this.leaping = true;
 	%this.leapingCooldown = true;
 	
@@ -355,7 +474,7 @@ function Character::leap(%this, %pos)
 	%this.leapingSchedule = %this.schedule(%time, stopLeap);
 	
 	LeapIcon.setImageFrame(0);
-	LeapIcon.cooldownSchedule = LeapIcon.schedule(%this.cooldownTime / 20, updateCooldown);
+	LeapIcon.cooldownSchedule = LeapIcon.schedule(%this.leapCooldownTime / 20, updateCooldown);
 }
 
 /// stop leaping
@@ -421,7 +540,7 @@ function Character::stunImpact(%this)
 {
 	%this.stunning = false;
 	alxPlay("Game:stun");
-	if (VectorDist(%this.Position, $enemy.Position) <= $stunRingRadius)
+	if (VectorDist(%this.Position, $enemy.Position) <= $character.stunRadius)
 	{
 		$enemy.stunned();
 	}
@@ -503,8 +622,8 @@ function Character::addMP(%this, %amount)
 }
 
 function Character::die(%this)
-{
-	echo(characterdead);
+{	
+	saveGame();
 	
 	schedule(1, 0, deleteObj, %this);
 	
@@ -548,4 +667,79 @@ function Character::updateFlash(%this, %i)
 	
 	//re-schedule
 	%this.flashSchedule = %this.schedule(16, updateFlash, %i - 1);
+}
+
+function Character::changeMaxHP(%this, %amount)
+{
+	%this.maxHP += %amount;
+	destroyHPBar();
+	createHPBarOutline();
+	createHPBarFill();
+}
+
+function Character::changeMaxMP(%this, %amount)
+{
+	%this.maxMP += %amount;
+	destroyMPBar();
+	createMPBarOutlines();
+	createMPBarFill();
+}
+
+function Character::addItem(%this, %i)
+{
+	%item = getWord(%this.availableItems, %i);
+	
+	echo(%item);
+	
+	switch$(%item)
+	{
+		case "HP":
+			%this.changeMaxHP(20);
+			%this.HPUpgrades++;
+			if (%this.HPUpgrades >= $saveGame.HP)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+		case "MP":
+			%this.changeMaxMP(1);
+			%this.MPUpgrades++;
+			if (%this.MPUpgrades >= $saveGame.MP)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+		case "shotSpeed":
+			%this.shotSpeed += 2;
+			%this.shotSpeedUpgrades++;
+			if (%this.shotSpeedUpgrades >= $saveGame.shotSpeed)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+		case "stunLength":
+			%this.stunLength += 1000;
+			%this.stunLengthUpgrades++;
+			if (%this.stunLengthUpgrades >= $saveGame.stunLength)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+		case "stunRadius":
+			%this.stunRadius += 2;
+			%this.stunRadiusUpgrades++;
+			if (%this.stunRadiusUpgrades >= $saveGame.stunRadius)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+		case "leapCosts":
+			%this.leapCosts -= 0.1;
+			%this.leapCostsUpgrades++;
+			if (%this.leapCostsUpgrades >= $saveGame.leapCosts)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+		case "leapCooldown":
+			%this.leapCooldownTime -= 500;
+			%this.leapCooldownUpgrades++;
+			if (%this.leapCooldownUpgrades >= $saveGame.leapCooldown)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+		case "beamGrowth":
+			%this.beamGrowth += 0.05;
+			%this.beamGrowthUpgrades++;
+			if (%this.beamGrowthUpgrades >= $saveGame.beamGrowth)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+		case "beamSpeed":
+			%this.beamSpeed += 2;
+			%this.beamGrowth += 0.05;
+			%this.beamSpeedUpgrades++;
+			if (%this.beamSpeedUpgrades >= $saveGame.beamSpeed)
+				%this.availableItems = removeWord(%this.availableItems, %i);
+	}
+	echo(%this.availableItems);
+	destroyNextStage();
 }

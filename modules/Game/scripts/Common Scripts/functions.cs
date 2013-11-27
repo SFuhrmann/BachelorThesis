@@ -26,6 +26,15 @@ function multiplyString(%string, %a)
 	return %string;
 }
 
+///add a word to a string
+function addWord(%string, %word)
+{
+	if (%string $= "")
+		return %word;
+	else
+		return %string SPC %word;
+}
+
 ///delete %obj. Can be used for self destruction via scheduling
 function deleteObj(%obj)
 {
@@ -58,4 +67,13 @@ function mMax(%a, %b)
 		return %a;
 	else
 		return %b;
+}
+
+function addScore(%amount)
+{
+	if (!$gameOver)
+	{
+		$currentScore += %amount;
+		Score.update();
+	}
 }

@@ -28,7 +28,7 @@ function createBeam(%pos, %dir)
 	%beam.setFillColor( "0.5 0.5 1" );
 	%beam.setLineColor( "0.5 0.5 1" );
 	%beam.createCircleCollisionShape( 0.25 );
-	%beam.setLinearVelocityPolar(%dir, 15);
+	%beam.setLinearVelocityPolar(%dir, $character.beamSpeed);
 	%beam.setCollisionCallback( true );
 	
 	%beam.damage = 2;
@@ -43,10 +43,10 @@ function createBeam(%pos, %dir)
 function Beam::update(%this)
 {
 	
-	%size = getWord(%this.Size, 0) + 0.03;
+	%size = getWord(%this.Size, 0) + $character.beamGrowth / 6;
 	
 	%this.Size = %size SPC %size;
-	%this.damage += 0.25;
+	%this.damage += $character.beamGrowth;
 	%this.deleteCollisionShape(0);
 	%this.createCircleCollisionShape( %size / 2 );
 	
@@ -56,9 +56,11 @@ function Beam::update(%this)
 function Beam::onCollision(%this, %obj, %details)
 {
 	if (%obj.SceneGroup == 1)
+	{
 		%obj.addHP(-%this.damage);
+		addScore(%this.damage * 10);
+	}
 	
-	$currentScore += 50;
 	alxPlay("Game:beam");
 	Level.add(showGlare(%this.Position, %this.Size, 200));
 	schedule(1, 0, deleteObj, %this);

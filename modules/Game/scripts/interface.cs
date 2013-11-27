@@ -65,6 +65,27 @@ function createInterface()
 	createMPBarFill();
 	
 	createIcons();
+	
+	createScore();
+}
+
+function createScore()
+{
+	%score = new ImageFont( Score );
+	%score.Image = "Game:Font";
+	%score.Text = $currentScore;
+	%score.TextAlignment = "Right";
+	%score.setFontSize("2.5 3");
+	%score.setPosition("37.5 -20");
+	%score.SceneGroup = 21;
+	%score.SceneLayer = 1;
+	
+	Interface.add(%score);
+}
+
+function Score::update(%this)
+{
+	%this.Text = $currentScore;
 }
 
 ///create Interface Icons
@@ -111,7 +132,7 @@ function createStunIcon()
 	%stun.setFixedAngle(true);
 	Interface.add(%stun);
 	
-	%mouse = new Sprite( QIcon );
+	%mouse = new Sprite( QAbilityIcon );
 	%mouse.Size = "2 2";
 	%mouse.Position = "-35 21";
 	%mouse.Image = "Game:QIcon";
@@ -134,7 +155,7 @@ function createBeamIcon()
 	%beam.setFixedAngle(true);
 	Interface.add(%beam);
 	
-	%mouse = new Sprite( EIcon );
+	%mouse = new Sprite( EAbilityIcon );
 	%mouse.Size = "2 2";
 	%mouse.Position = "-27.5 21";
 	%mouse.Image = "Game:EIcon";
@@ -194,8 +215,8 @@ function createHPBarOutline()
 	%hp.outline.setLineColor( 0.5, 1, 0.5);
 	//create Graphics
 	%hp.outline.setPolyCustom(4, "-0.05 0.5 0.05 0.5 0.05 -0.5 -0.05 -0.5");
-	%hp.outline.Size = "15 24";
-	%hp.outline.Position = 32.5 SPC 7.5;
+	%hp.outline.Size = 15 SPC 16 * $character.maxHP / 100;
+	%hp.outline.Position = 32.5 SPC 20 - getWord(%hp.outline.Size, 1) / 2;
 	%hp.outline.SceneGroup = 1;
 	%hp.outline.SceneLayer = 1;
 	
@@ -216,8 +237,8 @@ function createMPBarOutlines()
 		%mp.outline.setLineColor( 0.5, 0.5, 1);
 		//create Graphics
 		%mp.outline.setPolyCustom(4, "-0.05 0.5 0.05 0.5 0.05 -0.5 -0.05 -0.5");
-		%mp.outline.Size = "15 7.5";
-		%mp.outline.Position = 36.5 SPC (15.75 - 8.25 * %i);
+		%mp.outline.Size = "15 5";
+		%mp.outline.Position = 36.5 SPC (17.5 - 5.5 * %i);
 		%mp.outline.SceneGroup = 1;
 		%mp.outline.SceneLayer = 1;
 		
@@ -236,8 +257,8 @@ function createHPBarFill()
 	HPMeter.fill.setLineColor( 0.5, 1, 0.5);
 	//create Graphics
 	HPMeter.fill.setPolyCustom(4, "-0.05 0.5 0.05 0.5 0.05 -0.5 -0.05 -0.5");
-	HPMeter.fill.Size = "10 23.5";
-	HPMeter.fill.Position = 32.5 SPC 7.5;
+	HPMeter.fill.Size = 10 SPC 16 * $character.maxHP / 100 - 0.5; //15.5 * 100 / $character.maxHP
+	HPMeter.fill.Position = 32.5 SPC 8;
 	HPMeter.fill.SceneGroup = 1;
 	HPMeter.fill.SceneLayer = 1;
 	
@@ -261,8 +282,8 @@ function createMPBarFill()
 		MPMeter.fill[%i].setLineColor( 0.5, 0.5, 1);
 		//create Graphics
 		MPMeter.fill[%i].setPolyCustom(4, "-0.05 0.5 0.05 0.5 0.05 -0.5 -0.05 -0.5");
-		MPMeter.fill[%i].Size = "10 7";
-		MPMeter.fill[%i].Position = 36.5 SPC (15.75 - 8.25 * %i);
+		MPMeter.fill[%i].Size = "10 4.5";
+		MPMeter.fill[%i].Position = 36.5 SPC (19.25 - 5.5 * %i);
 		MPMeter.fill[%i].SceneGroup = 1;
 		MPMeter.fill[%i].SceneLayer = 1;
 		
@@ -281,8 +302,8 @@ function createMPBarFill()
 ///update HP Meter Fill Size
 function HPMeterFill::update(%this)
 {
-	%this.Size = 10 SPC clipToAnotherSize($character.HP, $character.maxHP, 23.5);
-	%this.Position = 32.5 SPC 19.25 - getWord(%this.Size, 1) / 2;
+	%this.Size = 10 SPC clipToAnotherSize($character.HP, $character.maxHP, 16 * $character.maxHP / 100 - 0.5);
+	%this.Position = 32.5 SPC 19.75 - getWord(%this.Size, 1) / 2;
 }
 
 ///update MP Meter Fill Size
@@ -300,9 +321,9 @@ function MPMeterFill::update(%this, %number, %mp)
 		%mp--;
 	}
 	//clip to the Size of the current Bar
-	%this.Size = 10 SPC clipToAnotherSize(%value, 1, 7);
+	%this.Size = 10 SPC clipToAnotherSize(%value, 1, 4.5);
 	//set the corresponding Position
-	%this.Position = 36.5 SPC (19.25 - 8.25 * %number) - getWord(%this.Size, 1) / 2;
+	%this.Position = 36.5 SPC (19.75 - 5.5 * %number) - getWord(%this.Size, 1) / 2;
 	
 	//set Alpha to 0, if Bar should not be drawn
 	if (getWord(%this.Size, 1) == 0)
@@ -311,7 +332,7 @@ function MPMeterFill::update(%this, %number, %mp)
 		%this.setLineAlpha(1);
 	
 	//update the next Bar
-	if (%number < 2)
+	if (%number < $character.maxMP - 1)
 		MPMeter.fill[%number + 1].update(%number + 1, %mp);
 }
 
@@ -319,4 +340,138 @@ function MPMeterFill::update(%this, %number, %mp)
 function clipToAnotherSize(%value, %maxValue, %newMax)
 {
 	return %value / %maxValue * %newMax;
+}
+
+function destroyHPBar()
+{
+	if (!isObject(HPMeterFill))
+		return;
+	HPMeter.delete();
+}
+
+function destroyMPBars()
+{
+	if (!isObject(MPMeterFill))
+		return;
+	MPMeter.delete();
+}
+
+
+function createNextStage()
+{	
+	%next = new Sprite( NextStageScreen );
+	%next.Position = "0 0";
+	%next.Size = "80 45";
+	%next.SceneGroup = 20;
+	%next.SceneLayer = 0;
+	%next.Image = "Game:NextStage";
+	Interface.add(%next);
+	
+	createNextStageIcons();
+}
+
+function createNextStageIcons()
+{
+	%list = "";
+	for (%i = 0; %i < $character.availableItems.count; %i++)
+	{
+		%list = addWord(%list, %i);
+	}
+	echo(%list);
+	if (%list.count > 0)
+	{
+		%x = getRandom(0, %list.count - 1);
+		echo(%x);
+		%qInt = getWord(%list, %x);
+		%list = removeWord(%list, %x);
+		%qSymbolType = getSymbolType(%qInt);
+		
+		%qIcon = new Sprite( QIcon );
+		%qIcon.type = %qSymbolType;
+		%qIcon.id = %qInt;
+		%qIcon.Position = "-20 -5";
+		%qIcon.Size = "7.5 7.5";
+		%qIcon.SceneGroup = 11;
+		%qIcon.SceneLayer = 0;
+		%qIcon.Image = "Game:" @ %qSymbolType @ "Icon";
+		Interface.add(%qIcon);
+		
+		%q = new Sprite( QButton );
+		%q.Position = "-20 -10";
+		%q.Size = "3 3";
+		%q.SceneGroup = 11;
+		%q.SceneLayer = 0;
+		%q.Image = "Game:QIcon";
+		Interface.add(%q);
+	}
+	echo(%list);
+	if (%list.count > 0)
+	{
+		%x = getRandom(0, %list.count - 1);
+		%wInt = getWord(%list, %x);
+		%list = removeWord(%list, %x);
+		echo(%x);
+		%wSymbolType = getSymbolType(%wInt);
+		
+		%wIcon = new Sprite( WIcon );
+		%wIcon.type = %wSymbolType;
+		%wIcon.id = %wInt;
+		%wIcon.Position = "0 -5";
+		%wIcon.Size = "7.5 7.5";
+		%wIcon.SceneGroup = 12;
+		%wIcon.SceneLayer = 0;
+		%wIcon.Image = "Game:" @ %wSymbolType @ "Icon";
+		Interface.add(%wIcon);
+		
+		%w = new Sprite( WButton );
+		%w.Position = "0 -10";
+		%w.Size = "3 3";
+		%w.SceneGroup = 11;
+		%w.SceneLayer = 0;
+		%w.Image = "Game:WIcon";
+		Interface.add(%w);
+	}
+	echo(%list);
+	if (%list.count > 0)
+	{
+		%x = getRandom(0, %list.count - 1);
+		%eInt = getWord(%list, %x);
+		
+		%eSymbolType = getSymbolType(%eInt);
+		echo(%x);
+		%eIcon = new Sprite( EIcon );
+		%eIcon.type = %eSymbolType;
+		%eIcon.id = %eInt;
+		%eIcon.Position = "20 -5";
+		%eIcon.Size = "7.5 7.5";
+		%eIcon.SceneGroup = 13;
+		%eIcon.SceneLayer = 0;
+		%eIcon.Image = "Game:" @ %eSymbolType @ "Icon";
+		Interface.add(%eIcon);
+		
+		%e = new Sprite( EButton );
+		%e.Position = "20 -10";
+		%e.Size = "3 3";
+		%e.SceneGroup = 11;
+		%e.SceneLayer = 0;
+		%e.Image = "Game:EIcon";
+		Interface.add(%e);
+	}
+	echo(%list);
+}
+
+function destroyNextStage()
+{
+	NextStageScreen.delete();
+	EIcon.delete();
+	EButton.delete();
+	WIcon.delete();
+	WButton.delete();
+	QIcon.delete();
+	QButton.delete();
+}
+
+function getSymbolType(%i)
+{
+	return getWord($character.availableItems, %i);
 }

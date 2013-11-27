@@ -23,12 +23,12 @@ function CharaMovement::Init_controls( %this )
 	//Press "a" to execute "PlayerShip::turnleft();"
 	// Release "a" to execute "PlayerShip::stopturn();"
 	
-	charcontrols.bindCmd(keyboard, "a", "if (!$gameOver) $character.walkleft();", "if (!$gameOver) $character.stopwalkleft();");
-	charcontrols.bindCmd(keyboard, "d", "if (!$gameOver) $character.walkright();", "if (!$gameOver) $character.stopwalkright();");
-	charcontrols.bindCmd(keyboard, "w", "if (!$gameOver) $character.walkup();", "if (!$gameOver) $character.stopwalkup();");
-	charcontrols.bindCmd(keyboard, "s", "if (!$gameOver) $character.walkdown();", "if (!$gameOver) $character.stopwalkdown();");
-	charcontrols.bindCmd(keyboard, "q", "", "if (!$gameOver) $character.stun();");
-	charcontrols.bindCmd(keyboard, "e", "", "if (!$gameOver) $character.beam();");
+	charcontrols.bindCmd(keyboard, "a", "$character.pressA();", "$character.upA();");
+	charcontrols.bindCmd(keyboard, "d", "$character.pressD();", "$character.upD();");
+	charcontrols.bindCmd(keyboard, "w", "$character.pressW();", "$character.upW();");
+	charcontrols.bindCmd(keyboard, "s", "$character.pressS();", "$character.upS();");
+	charcontrols.bindCmd(keyboard, "q", "$character.pressQ();", "$character.upQ();");
+	charcontrols.bindCmd(keyboard, "e", "$character.pressE();", "$character.upE();");
 	
 	//Push the ActionMap on top of the stack
 	charcontrols.push();
@@ -41,12 +41,17 @@ function CharaMovement::onTouchDown(%this, %touchID, %position)
 		schedule(1, 0, createGame);
 		return;
 	}
+	if ($nextStage)
+	{
+		NextStage.destroy();
+		return;
+	}
 	$character.shoot();
 }
 
 function CharaMovement::onTouchUp(%this, %touchID, %position)
 {
-	if ($gameOver)
+	if ($gameOver || $nextStage)
 		return;
 		
 	cancel($character.shootSchedule);
@@ -54,7 +59,7 @@ function CharaMovement::onTouchUp(%this, %touchID, %position)
 
 function CharaMovement::onRightMouseDown(%this, %id, %pos)
 {
-	if ($gameOver)
+	if ($gameOver || $nextStage)
 		return;
 	
 	$character.leap(%pos);

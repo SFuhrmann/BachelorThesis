@@ -134,11 +134,16 @@ function Enemy::addMP(%this, %amount)
 
 function Enemy::die(%this)
 {
-	$currentScore += 5000;
+	addScore(1000 * $level);
+	$level++;
 	schedule(1, 0, deleteObj, %this);
 	%this.barOutline.delete();
 	%this.barFill.delete();
-	schedule(10000, 0, createEnemy, "0 0");
+	schedule(15000, 0, createEnemy, "0 0");
+	$nextStage = true;
+	$character.stopMoving();
+	$character.setLinearVelocity("0 0");
+	createNextStage();
 }
 
 function Enemy::updateAngle(%this)
@@ -194,7 +199,7 @@ function Enemy::updateFlash(%this, %i)
 function Enemy::stunned(%this, %i)
 {
 	%standStill = new ScriptObject( StandStillAction);
-	%standStill.initialize( $stunDuration / 250 );
+	%standStill.initialize( $character.stunLength / 250 );
 	//save current Behavior 
 	%this.AIBehavior.actionQueue.push(%this.AIBehavior.currentAction);
 	//call stand still Behavior
@@ -203,7 +208,7 @@ function Enemy::stunned(%this, %i)
 	%this.AIBehavior.executeNextBehavior();
 	
 	%this.stunned = true;
-	%this.stunnedSchedule = %this.schedule($stunDuration, endStun);
+	%this.stunnedSchedule = %this.schedule($character.stunLength, endStun);
 }
 
 function Enemy::endStun(%this)

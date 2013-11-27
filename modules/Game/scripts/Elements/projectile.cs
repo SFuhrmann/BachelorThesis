@@ -73,7 +73,7 @@ function Projectile::onCollision(%this, %obj, %details)
 		%obj.flash();
 		alxPlay("Game:hit");
 		if (%obj.SceneGroup == 1)
-			$currentScore += 10;
+			addScore(10);
 	}
 		
 	

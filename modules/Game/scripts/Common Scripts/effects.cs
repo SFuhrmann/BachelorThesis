@@ -54,7 +54,7 @@ function createStunRingAnimation(%position, %owner)
 {
 	%stun = new ShapeVector( StunRing );
 	%stun.setIsCircle(true);
-	%stun.setCircleRadius($stunRingRadius);
+	%stun.setCircleRadius($character.stunRadius);
 	%stun.setFillMode(true);
 	%stun.setFillColor("0 0 0.5");
 	%stun.setLineColor("0 0 0");
