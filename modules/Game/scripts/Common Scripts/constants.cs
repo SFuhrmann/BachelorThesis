@@ -33,6 +33,9 @@ $callStunTime = 2000;
 //Effects
 $flashTime = 10;
 
+//PowerUps
+$averagePowerUpPause = 30000;
+
 
 function createSaveGame()
 {
