@@ -230,23 +230,23 @@ function createHPBarOutline()
 ///create MP Bar Outlines
 function createMPBarOutlines()
 {
+	%mp = new ScriptObject( MPMeter );
 	for (%i = 0; %i < $character.maxMP; %i++)
 	{
-		%mp = new ScriptObject( MPMeter );
-		%mp.outline = new ShapeVector( MPMeterOutline );
-		%mp.outline.setLineColor( 0.5, 0.5, 1);
+		%mp.outline[%i] = new ShapeVector( MPMeterOutline );
+		%mp.outline[%i].setLineColor( 0.5, 0.5, 1);
 		//create Graphics
-		%mp.outline.setPolyCustom(4, "-0.05 0.5 0.05 0.5 0.05 -0.5 -0.05 -0.5");
-		%mp.outline.Size = "15 5";
-		%mp.outline.Position = 36.5 SPC (17.5 - 5.5 * %i);
-		%mp.outline.SceneGroup = 1;
-		%mp.outline.SceneLayer = 1;
+		%mp.outline[%i].setPolyCustom(4, "-0.05 0.5 0.05 0.5 0.05 -0.5 -0.05 -0.5");
+		%mp.outline[%i].Size = "15 5";
+		%mp.outline[%i].Position = 36.5 SPC (17.5 - 5.5 * %i);
+		%mp.outline[%i].SceneGroup = 1;
+		%mp.outline[%i].SceneLayer = 1;
 		
 		//physics
-		%mp.outline.setFixedAngle(true);
+		%mp.outline[%i].setFixedAngle(true);
 		
 		//add to Scene
-		Interface.add(%mp.outline);
+		Interface.add(%mp.outline[%i]);
 	}
 }
 
@@ -344,21 +344,29 @@ function clipToAnotherSize(%value, %maxValue, %newMax)
 
 function destroyHPBar()
 {
-	if (!isObject(HPMeterFill))
+	if (!isObject(HPMeter.Fill))
 		return;
+	HPMeter.fill.delete();
+	HPMeter.outline.delete();
 	HPMeter.delete();
 }
 
 function destroyMPBars()
 {
-	if (!isObject(MPMeterFill))
+	if (!isObject(MPMeter.Fill))
 		return;
+	for(%i = 0; %i < $character.maxMP; %i++)
+	{
+		MPMeter.fill[%i].delete();
+		MPMeter.outline[%i].delete();
+	}
 	MPMeter.delete();
 }
 
 
 function createNextStage()
 {	
+	saveGame();
 	%next = new Sprite( NextStageScreen );
 	%next.Position = "0 0";
 	%next.Size = "80 45";
@@ -377,11 +385,9 @@ function createNextStageIcons()
 	{
 		%list = addWord(%list, %i);
 	}
-	echo(%list);
 	if (%list.count > 0)
 	{
 		%x = getRandom(0, %list.count - 1);
-		echo(%x);
 		%qInt = getWord(%list, %x);
 		%list = removeWord(%list, %x);
 		%qSymbolType = getSymbolType(%qInt);
@@ -404,13 +410,11 @@ function createNextStageIcons()
 		%q.Image = "Game:QIcon";
 		Interface.add(%q);
 	}
-	echo(%list);
 	if (%list.count > 0)
 	{
 		%x = getRandom(0, %list.count - 1);
 		%wInt = getWord(%list, %x);
 		%list = removeWord(%list, %x);
-		echo(%x);
 		%wSymbolType = getSymbolType(%wInt);
 		
 		%wIcon = new Sprite( WIcon );
@@ -431,14 +435,12 @@ function createNextStageIcons()
 		%w.Image = "Game:WIcon";
 		Interface.add(%w);
 	}
-	echo(%list);
 	if (%list.count > 0)
 	{
 		%x = getRandom(0, %list.count - 1);
 		%eInt = getWord(%list, %x);
 		
 		%eSymbolType = getSymbolType(%eInt);
-		echo(%x);
 		%eIcon = new Sprite( EIcon );
 		%eIcon.type = %eSymbolType;
 		%eIcon.id = %eInt;
@@ -457,7 +459,6 @@ function createNextStageIcons()
 		%e.Image = "Game:EIcon";
 		Interface.add(%e);
 	}
-	echo(%list);
 }
 
 function destroyNextStage()

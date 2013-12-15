@@ -38,12 +38,11 @@ function CharaMovement::onTouchDown(%this, %touchID, %position)
 {
 	if ($gameOver)
 	{
-		schedule(1, 0, createGame);
+		schedule(1, 0, createMenu);
 		return;
 	}
 	if ($nextStage)
 	{
-		NextStage.destroy();
 		return;
 	}
 	$character.shoot();

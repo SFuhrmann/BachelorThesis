@@ -134,13 +134,13 @@ function Enemy::addMP(%this, %amount)
 
 function Enemy::die(%this)
 {
+	$nextStage = true;
 	addScore(1000 * $level);
 	$level++;
 	schedule(1, 0, deleteObj, %this);
 	%this.barOutline.delete();
 	%this.barFill.delete();
 	schedule(15000, 0, createEnemy, "0 0");
-	$nextStage = true;
 	$character.stopMoving();
 	$character.setLinearVelocity("0 0");
 	createNextStage();

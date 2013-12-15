@@ -16,7 +16,7 @@ function createSceneLevel()
 		CharaMovement.Init_controls();
 	}
 	
-	
+	Window.setUseObjectInputEvents(false);
 	//DEBUG
 	
 }
@@ -33,3 +33,34 @@ function destroySceneLevel()
 }
 
 //-------------------------------------------------------------------------------
+
+function createSceneMenu()
+{
+	// Destroy the scene if it already exists.
+    if ( isObject(MainMenu) )
+        destroySceneMenu();
+    
+    // Create the scene.
+    new Scene(MainMenu);
+	Window.setScene( MainMenu );
+	
+	if (!isObject(MenuMovement))
+	{
+		new ScriptObject(MenuMovement);
+		Window.addInputListener(MenuMovement);
+		
+		MenuMovement.Init_controls();
+	}
+	
+	Window.setUseObjectInputEvents(true);
+}
+
+function destroySceneMenu()
+{
+    // Finish if no scene available.
+    if ( !isObject(MainMenu) )
+        return;
+
+    // Delete the scene.
+    MainMenu.delete();
+}

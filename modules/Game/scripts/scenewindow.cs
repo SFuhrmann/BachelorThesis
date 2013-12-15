@@ -19,8 +19,6 @@ function createSceneWindow()
     Window.setCameraSize( 80, 45 );
     Window.setCameraZoom( 1 );
     Window.setCameraAngle( 0 );
-	
-	createSceneLevel();
 }
 
 function destroySceneWindow()

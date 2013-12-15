@@ -89,9 +89,9 @@ function createCharacter(%pos)
 	//create list with available upgrades
 	$character.availableItems = "";
 	if (!$saveGame.HP == 0)
-		$character.availableItems = addWord($character.availableItems, "HP");
+		$character.availableItems = addWord($character.availableItems, "LP");
 	if (!$saveGame.MP == 0)
-		$character.availableItems = addWord($character.availableItems, "MP");
+		$character.availableItems = addWord($character.availableItems, "AP");
 	if (!$saveGame.shotSpeed == 0)
 		$character.availableItems = addWord($character.availableItems, "shotSpeed");
 	if (!$saveGame.stunLength == 0)
@@ -197,24 +197,24 @@ function Character::upD(%this)
 }
 function Character::upQ(%this)
 {
-	if (!$gameOver && !$nextStage) 
+	if (!$gameOver && !$nextStage && !$blockQWE) 
 		$character.stun();
-	
-	$nextStage = false;
+	if($blockQWE)
+		$blockQWE = false;
 }
 function Character::upW(%this)
 {
-	if (!$gameOver && !$nextStage) 
+	if (!$gameOver && !$nextStage && !$blockQWE) 
 		$character.stopwalkup();
-	
-	$nextStage = false;
+	if($blockQWE)
+		$blockQWE = false;
 }
 function Character::upE(%this)
 {
-	if (!$gameOver && !$nextStage) 
+	if (!$gameOver && !$nextStage && !$blockQWE) 
 		$character.beam();
-	
-	$nextStage = false;
+	if($blockQWE)
+		$blockQWE = false;
 }
 //--------------------------------------
 ///Walk Left
@@ -680,7 +680,7 @@ function Character::changeMaxHP(%this, %amount)
 function Character::changeMaxMP(%this, %amount)
 {
 	%this.maxMP += %amount;
-	destroyMPBar();
+	destroyMPBars();
 	createMPBarOutlines();
 	createMPBarFill();
 }
@@ -689,16 +689,14 @@ function Character::addItem(%this, %i)
 {
 	%item = getWord(%this.availableItems, %i);
 	
-	echo(%item);
-	
 	switch$(%item)
 	{
-		case "HP":
+		case "LP":
 			%this.changeMaxHP(20);
 			%this.HPUpgrades++;
 			if (%this.HPUpgrades >= $saveGame.HP)
 				%this.availableItems = removeWord(%this.availableItems, %i);
-		case "MP":
+		case "AP":
 			%this.changeMaxMP(1);
 			%this.MPUpgrades++;
 			if (%this.MPUpgrades >= $saveGame.MP)
@@ -719,12 +717,12 @@ function Character::addItem(%this, %i)
 			if (%this.stunRadiusUpgrades >= $saveGame.stunRadius)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 		case "leapCosts":
-			%this.leapCosts -= 0.1;
+			%this.leapCosts *= 0.9;
 			%this.leapCostsUpgrades++;
 			if (%this.leapCostsUpgrades >= $saveGame.leapCosts)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 		case "leapCooldown":
-			%this.leapCooldownTime -= 500;
+			%this.leapCooldownTime *= 0.9;
 			%this.leapCooldownUpgrades++;
 			if (%this.leapCooldownUpgrades >= $saveGame.leapCooldown)
 				%this.availableItems = removeWord(%this.availableItems, %i);
@@ -740,6 +738,8 @@ function Character::addItem(%this, %i)
 			if (%this.beamSpeedUpgrades >= $saveGame.beamSpeed)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 	}
-	echo(%this.availableItems);
 	destroyNextStage();
+	$nextStage = false;
+	
+	$blockQWE = true;
 }

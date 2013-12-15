@@ -1,13 +1,12 @@
 <ScriptObject
-    Name="saveGame"
     beamGrowth="2"
     beamSpeed="0"
-    currentScore="2037.5"
+    currentScore="831588"
     existing="1"
-    HP="0"
+    HP="6"
     leapCooldown="0"
     leapCosts="2"
-    MP="0"
+    MP="6"
     shotSpeed="0"
     stunLength="2"
     stunRadius="0" />

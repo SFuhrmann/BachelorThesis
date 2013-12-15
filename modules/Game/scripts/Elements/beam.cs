@@ -58,7 +58,7 @@ function Beam::onCollision(%this, %obj, %details)
 	if (%obj.SceneGroup == 1)
 	{
 		%obj.addHP(-%this.damage);
-		addScore(%this.damage * 10);
+		addScore(mFloor(%this.damage) * 10);
 	}
 	
 	alxPlay("Game:beam");
