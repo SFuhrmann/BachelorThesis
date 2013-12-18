@@ -43,8 +43,6 @@ function createMap(%size)
 	{
 		$map.createRandomObstacle(%i);
 	}
-	
-	$bgm = alxPlay("Game:BGM");
 }
 
 ///create the map borders

@@ -1,7 +1,7 @@
 <AudioAsset
 	AssetName="BGM"
-	AudioFile="Video_Dungeon_Boss.wav"
+	AudioFile="BlownAwayInGame.wav"
+	Streaming="true"
 	Volume=0.75
-	VolumeChannel=2
-	Looping="true"
+	VolumeChannel=3
 />

@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="MenuBGM"
+	AudioFile="BlownAwayMenu.wav"
+	Streaming="true"
+	Volume=0.75
+	VolumeChannel=2
+/>

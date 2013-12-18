@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="MenuBack"
+	AudioFile="MenuBack.wav"
+	Volume=0.5
+	VolumeChannel=1
+	Looping="false"
+/>

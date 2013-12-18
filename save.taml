@@ -1,12 +1,12 @@
 <ScriptObject
     beamGrowth="2"
-    beamSpeed="0"
-    currentScore="831588"
+    beamSpeed="1"
+    currentScore="28190"
     existing="1"
-    HP="6"
-    leapCooldown="0"
+    HP="2"
+    leapCooldown="1"
     leapCosts="2"
-    MP="6"
-    shotSpeed="0"
+    MP="1"
+    shotSpeed="2"
     stunLength="2"
-    stunRadius="0" />
+    stunRadius="1" />

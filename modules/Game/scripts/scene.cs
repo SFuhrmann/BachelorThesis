@@ -15,10 +15,6 @@ function createSceneLevel()
 		
 		CharaMovement.Init_controls();
 	}
-	
-	Window.setUseObjectInputEvents(false);
-	//DEBUG
-	
 }
 
 

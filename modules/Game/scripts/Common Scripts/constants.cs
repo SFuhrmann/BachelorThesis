@@ -24,8 +24,8 @@ $obstacleMaxSize = 20;
 $amountOfObstaclesOnMap = 50;
 
 //Heal Packages
-$packageHealAmountHP = 1.25;
-$packageHealAmountMP = 0.04;
+$packageHealAmountHP = 2.5;
+$packageHealAmountMP = 0.08;
 
 //Stunning
 $callStunTime = 2000;

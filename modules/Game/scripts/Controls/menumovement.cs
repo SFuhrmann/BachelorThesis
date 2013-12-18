@@ -33,16 +33,20 @@ function MenuMovement::onTouchDown(%this, %touchID, %position)
 		%obj = getWord(%objs, %i);
 		
 		if (%obj.SceneGroup == 30)
+		{
+			alxPlay("Game:MenuSelect");
 			schedule(1, 0, createGame);
-		
+		}
 		if (%obj.SceneGroup == 29)
 		{
 			destroyMainMenuItems();
+			alxPlay("Game:MenuSelect");
 			schedule(1, 0, createUpgradeMenu);
 		}
 		if (%obj.SceneGroup == 28)
 		{
 			destroyUpgradeMenuItems();
+			alxPlay("Game:MenuBack");
 			schedule(1, 0, createMenu);
 		}
 		if (%obj.SceneGroup < 9 && !(%obj.SceneGroup $= ""))

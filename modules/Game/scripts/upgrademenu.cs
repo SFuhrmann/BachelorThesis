@@ -85,6 +85,17 @@ function createDescriptionWindow()
 	%inc.SceneLayer = 2;
 	MainMenu.add(%inc);
 	
+	%max = new ImageFont( DiscriptFontChild );
+	%max.Image = "Game:Font";
+	%max.Position = "14 -7";
+	%max.FontSize = "1 1.5";
+	%max.TextAlignment = "Left";
+	%max.Text = "";
+	%max.SceneGroup = 31;
+	%max.SceneLayer = 2;
+	MainMenu.add(%max);
+	
+	%start.maxFont = %max;
 	%start.desFont = %des;
 	%start.staFont = %sta;
 	%start.incFont = %inc;
@@ -95,6 +106,7 @@ function UpgradeDescriptionFont::update(%this, %i)
 	%this.desFont.Text = getField(getUpgradeDescription(%i), 0);
 	%this.staFont.Text = getField(getUpgradeDescription(%i), 1);
 	%this.incFont.Text = getField(getUpgradeDescription(%i), 2);
+	%this.maxFont.Text = getField(getUpgradeDescription(%i), 3);
 }
 
 function createTitle()
@@ -115,7 +127,18 @@ function createTitle()
 	%start.Text = "Back";
 	%start.SceneGroup = 28;
 	%start.SceneLayer = 2;
+	%start.setUseInputEvents(true);
 	MainMenu.add(%start);
+}
+
+function UpgradeBackFont::onTouchEnter(%this)
+{
+	%this.setBlendColor("1 0.5 0.5");
+	alxPlay("Game:MenuMove");
+}
+function UpgradeBackFont::onTouchLeave(%this)
+{
+	%this.setBlendColor("1 1 1");
 }
 
 function destroyUpgradeMenuItems()
@@ -231,23 +254,23 @@ function getUpgradeDescription(%i)
 	switch(%i)
 	{
 		case 0:
-			return "Increases Max LP" TAB "Start: 100 LP" TAB "Per Level: +20 LP";
+			return "Increases Max LP" TAB "Start: 100 LP" TAB "Per Level: +20 LP" TAB "Current Max.:" SPC mRound(100 + 20 * getUpgradeLevel(%i)) SPC "LP";
 		case 1:
-			return "Increases Max AP" TAB "Start: 3 AP" TAB "Per Level: +1 AP";
+			return "Increases Max AP" TAB "Start: 3 AP" TAB "Per Level: +1 AP" TAB "Current Max.:" SPC mRound(3 + 1 * getUpgradeLevel(%i)) SPC "AP";
 		case 2:
-			return "Increases Projectile Speed" TAB "Start: 15 m/s" TAB "Per Level: +2 m/s";
+			return "Increases Projectile Speed" TAB "Start: 15 m/s" TAB "Per Level: +2 m/s" TAB "Current Max.:" SPC mRound(15 + 2 * getUpgradeLevel(%i)) SPC "m/s";
 		case 3:
-			return "Increases Stun Duration" TAB "Start: 5 s" TAB "Per Level: +1 s";
+			return "Increases Stun Duration" TAB "Start: 5 s" TAB "Per Level: +1 s" TAB "Current Max.:" SPC mRound(5 + 1 * getUpgradeLevel(%i)) SPC "s";
 		case 4:
-			return "Decreases Leap AP Costs" TAB "Start: 1 AP" TAB "Per Level: -10% of current";
+			return "Decreases Leap AP Costs" TAB "Start: 1 AP" TAB "Per Level: -10% of current" TAB "Current Min.:" SPC getRounded(mPow(0.9, getUpgradeLevel(%i)), -2) SPC "AP";
 		case 5:
-			return "Increases Beam Growth Rate" TAB "Start: 0.3 dmg/s" TAB "Per Level: +0.05 dmg/s";
+			return "Increases Beam Growth Rate" TAB "Start: 0.3 dmg/s" TAB "Per Level: +0.05 dmg/s" TAB "Current Max.:" SPC getRounded(0.3 + 0.05 * getUpgradeLevel(%i), -2) SPC "s";
 		case 6:
-			return "Increases Stun Radius" TAB "Start: 10 m" TAB "Per Level: +2 m";
+			return "Increases Stun Radius" TAB "Start: 10 m" TAB "Per Level: +2 m" TAB "Current Max.:" SPC mRound(10 + 2 * getUpgradeLevel(%i)) SPC "m";
 		case 7:
-			return "Deacreases Leap Cooldown" TAB "Start: 10 s" TAB "Per Level: -10% of current";
+			return "Deacreases Leap Cooldown" TAB "Start: 10 s" TAB "Per Level: -10% of current" TAB "Current Min.:" SPC 10 * getRounded(mPow(0.9, getUpgradeLevel(%i)), -1) SPC "s";
 		case 8:
-			return "Increases Beam Speed" TAB "Start: 15 m/s" TAB "Per Level: +2 m/s";
+			return "Increases Beam Speed" TAB "Start: 15 m/s" TAB "Per Level: +2 m/s" TAB "Current Max.:" SPC mRound(15 + 2 * getUpgradeLevel(%i)) SPC "m/s";
 	}
 }
 
@@ -335,6 +358,11 @@ function increaseUpgradeLevel(%i, %obj)
 		%obj.level++;
 		%obj.update();
 		UpgradeCreditsFont.update();
+		alxPlay("Game:MenuSelect");
+	}
+	else
+	{
+		alxPlay("Game:MenuBack");
 	}
 }
 
@@ -347,6 +375,7 @@ function UpgradeSprite::onTouchEnter(%this)
 	
 	%this.setBlendColor("0.5 0.5 1");
 	UpgradeDescriptionFont.update(%this.number);
+	alxPlay("Game:MenuMove");
 }
 
 ///Mouse Leave Method for Upgrade Sprites

@@ -38,7 +38,7 @@ function createEnemy(%pos)
 	//Shooting
 	%enemy.shootingFrequency = 350;
 	%enemy.projectileSpeed = 15;
-	%enemy.projectileDamage = 2;
+	%enemy.projectileDamage = 3;
 	
 	//Values
 	%enemy.maxHP = 100;
@@ -134,6 +134,9 @@ function Enemy::addMP(%this, %amount)
 
 function Enemy::die(%this)
 {
+	if ($nextStage)
+		return;
+		
 	$nextStage = true;
 	addScore(1000 * $level);
 	$level++;

@@ -54,7 +54,7 @@ function createProjectile(%position, %direction, %speed, %addVeloX, %addVeloY, %
 	%newVeloX = %shot.getLinearVelocityX() + %addVeloX;
 	%newVeloY = %shot.getLinearVelocityY() + %addVeloY;
 	
-	%shot.setLinearVelocity(%newVeloX SPC %newVeloY);
+	//%shot.setLinearVelocity(%newVeloX SPC %newVeloY);
 	Level.add(%shot);
 	
 	alxPlay("Game:shot");

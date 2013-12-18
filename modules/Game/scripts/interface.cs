@@ -42,6 +42,14 @@ function createInterfaceWindow()
     // Create the scene.
     new Scene(Interface);
 	InterfaceWindow.setScene( Interface );
+	InterfaceWindow.checkSize();
+}
+
+function InterfaceWindow::checkSize(%this)
+{
+	if (%this.Extent != Canvas.getExtent())
+		%this.Extent = Canvas.getExtent();
+	%this.schedule(16, checkSize);
 }
 
 ///destroy the Interface
@@ -475,4 +483,116 @@ function destroyNextStage()
 function getSymbolType(%i)
 {
 	return getWord($character.availableItems, %i);
+}
+
+function openInGameMenu()
+{
+	if ($gameMenu)
+		return;
+	
+	$gameMenu = true;
+	alxPlay("Game:MenuSelect");
+	Level.setScenePause(true);
+	
+	%menu = new Sprite( GameMenuScreen );
+	%menu.Position = $character.Position;
+	%menu.Size = "80 45";
+	%menu.SceneGroup = 20;
+	%menu.SceneLayer = 4;
+	%menu.Image = "Game:GameMenu";
+	Level.add(%menu);
+	
+	%back = new ImageFont( GameMenuBackFont );
+	%back.Image = "Game:Font";
+	%back.FontSize = "2 3";
+	%back.Position = getWord($character.Position, 0) SPC getWord($character.Position, 1) + 5;
+	%back.Text = "Back to Game";
+	%back.SceneGroup = 26;
+	%back.SceneLayer = 2;
+	%back.setBlendColor("1 1 1");
+	%back.setUseInputEvents(true);
+	Level.add(%back);
+	
+	%quit = new ImageFont( GameMenuQuitFont );
+	%quit.Image = "Game:Font";
+	%quit.FontSize = "2 3";
+	%quit.Position = getWord($character.Position, 0) SPC getWord($character.Position, 1) - 2.5;
+	%quit.Text = "Quit to Title";
+	%quit.SceneGroup = 27;
+	%quit.SceneLayer = 2;
+	%quit.setBlendColor("1 1 1");
+	%quit.setUseInputEvents(true);
+	Level.add(%quit);
+	
+	%end = new ImageFont( GameMenuEndFont );
+	%end.Image = "Game:Font";
+	%end.FontSize = "2 3";
+	%end.Position = getWord($character.Position, 0) SPC getWord($character.Position, 1) - 10;
+	%end.Text = "Quit Game";
+	%end.SceneGroup = 28;
+	%end.SceneLayer = 2;
+	%end.setBlendColor("1 1 1");
+	%end.setUseInputEvents(true);
+	Level.add(%end);
+}
+
+//Input Functions for Menu Elements:
+function GameMenuBackFont::onTouchDown(%this)
+{
+	schedule(1, 0, closeInGameMenu);
+	alxPlay("Game:MenuSelect");
+}
+function GameMenuBackFont::onTouchEnter(%this)
+{
+	alxPlay("Game:MenuMove");
+	%this.setBlendColor("0.5 0.5 1");
+}
+function GameMenuBackFont::onTouchLeave(%this)
+{
+	%this.setBlendColor("1 1 1");
+}
+
+function GameMenuQuitFont::onTouchDown(%this)
+{
+	saveGame();
+	$gameMenu = false;
+	schedule(1, 0, createMenu);
+	alxPlay("Game:MenuSelect");
+}
+function GameMenuQuitFont::onTouchEnter(%this)
+{
+	alxPlay("Game:MenuMove");
+	%this.setBlendColor("1 1 0.5");
+}
+function GameMenuQuitFont::onTouchLeave(%this)
+{
+	%this.setBlendColor("1 1 1");
+}
+
+function GameMenuEndFont::onTouchDown(%this)
+{
+	saveGame();
+	alxPlay("Game:MenuSelect");
+	
+	schedule(500, 0, quit);
+}
+function GameMenuEndFont::onTouchEnter(%this)
+{
+	alxPlay("Game:MenuMove");
+	%this.setBlendColor("1 0.5 0.5");
+}
+function GameMenuEndFont::onTouchLeave(%this)
+{
+	%this.setBlendColor("1 1 1");
+}
+
+function closeInGameMenu()
+{
+	$gameMenu = false;
+	Level.setScenePause(false);
+	
+	GameMenuBackFont.delete();
+	GameMenuQuitFont.delete();
+	GameMenuEndFont.delete();
+	GameMenuScreen.delete();
 }

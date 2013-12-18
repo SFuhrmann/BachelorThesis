@@ -62,7 +62,7 @@ function createCharacter(%pos)
 	//Shooting
 	$character.shootingFrequency = 350;
 	$character.projectileSpeed = 15;
-	$character.projectileDamage = 2;
+	$character.projectileDamage = 3;
 	
 	//Values
 	$character.maxHP = 100;
@@ -129,7 +129,8 @@ function createCharacter(%pos)
 function Character::Update(%this)
 {
 	//align Character to Mouse
-	%this.alignToMouse();
+	if (!$gameMenu)
+		%this.alignToMouse();
 	
 	//update once every frame
 	%this.updateSchedule = %this.schedule(16, Update);
@@ -147,24 +148,24 @@ function Character::Update(%this)
 
 function Character::pressW(%this)
 {
-	if (!$gameOver && !$nextStage) 
+	if (!$gameOver && !$nextStage && !$gameMenu) 
 		$character.walkup();
 	if ($nextStage)
 		%this.addItem(WIcon.id);
 }
 function Character::pressA(%this)
 {
-	if (!$gameOver && !$nextStage) 
+	if (!$gameOver && !$nextStage && !$gameMenu) 
 	$character.walkleft();
 }
 function Character::pressS(%this)
 {
-	if (!$gameOver && !$nextStage) 
+	if (!$gameOver && !$nextStage && !$gameMenu) 
 		$character.walkdown();
 }
 function Character::pressD(%this)
 {
-	if (!$gameOver && !$nextStage) 
+	if (!$gameOver && !$nextStage && !$gameMenu) 
 		$character.walkright();
 }
 function Character::pressQ(%this)
@@ -197,21 +198,21 @@ function Character::upD(%this)
 }
 function Character::upQ(%this)
 {
-	if (!$gameOver && !$nextStage && !$blockQWE) 
+	if (!$gameOver && !$nextStage && !$blockQWE && !$gameMenu) 
 		$character.stun();
 	if($blockQWE)
 		$blockQWE = false;
 }
 function Character::upW(%this)
 {
-	if (!$gameOver && !$nextStage && !$blockQWE) 
+	if (!$gameOver && !$nextStage && !$blockQWE && !$gameMenu) 
 		$character.stopwalkup();
 	if($blockQWE)
 		$blockQWE = false;
 }
 function Character::upE(%this)
 {
-	if (!$gameOver && !$nextStage && !$blockQWE) 
+	if (!$gameOver && !$nextStage && !$blockQWE && !$gameMenu) 
 		$character.beam();
 	if($blockQWE)
 		$blockQWE = false;
@@ -423,7 +424,7 @@ function Character::turnOffCooldown(%this)
 ///leap to mouse position
 function Character::leap(%this, %pos)
 {
-	if (%this.leaping ||(%this.MP < 1) || %this.leapingCooldown)
+	if (%this.leaping ||(%this.MP < %this.leapCosts) || %this.leapingCooldown)
 		return;
 	%this.addMP(-%this.leapCosts);
 	%this.leaping = true;

@@ -4,7 +4,7 @@ function Game::create()
 {
 	//set a random seed
 	setRandomSeed(getRealTime()); 
-	// Load GUI profiles.
+	// Load all script files
 	exec("./gui/guiProfiles.cs");
 	exec("./scripts/scene.cs");
 	exec("./scripts/scenewindow.cs");
@@ -27,13 +27,43 @@ function Game::create()
 	exec("./scripts/Artificial Intelligence/ai_core.cs");
 	exec("./scripts/Artificial Intelligence/Structures/actionqueue.cs");
 	
+	//play bgm with and without percussion and adjust Volume Channels accordingly
+	//Channel 2: Menu BGM
+	//Channel 3: InGame BGM
+	$gamebgm = alxPlay("Game:BGM");
+	$menubgm = alxPlay("Game:MenuBGM");
+	//workaround for looping problem: replay the BGMs after their length
+	schedule(213300, 0, playBGMS);
+	
 	createMenu();
 }
 
+function playBGMS()
+{
+	alxStop($gamebgm);
+	alxStop($menubgm);
+	//save Channel Volumes
+	%ch2 = alxGetChannelVolume(2);
+	%ch3 = alxGetChannelVolume(3);
+	//set Volumes to 1
+	alxSetChannelVolume(2, 1);
+	alxSetChannelVolume(3, 1);
+	//play bgms
+	$gamebgm = alxPlay("Game:BGM");
+	$menubgm = alxPlay("Game:MenuBGM");
+	//reset Channel Volumes
+	alxSetChannelVolume(2, %ch2);
+	alxSetChannelVolume(3, %ch3);
+	//schedule again
+	schedule(213300, 0, playBGMS);
+}
+
+///create the Main Menu
 function createMenu()
 {
-	
-	alxStop($bgm);
+	//Adjust Volume Channels -> Menu BGM
+	alxSetChannelVolume(2, 1);
+	alxSetChannelVolume(3, 0);
 	if(isObject(CharaMovement))
 	{
 		Window.removeInputListener(CharaMovement);
@@ -58,6 +88,7 @@ function createMenu()
 	createMenuItems();
 }
 
+///destroy all items in the Main Menu (Title, Start, Upgrade)
 function destroyMainMenuItems()
 {
 	TitleFont.delete();
@@ -65,8 +96,12 @@ function destroyMainMenuItems()
 	UpgradeFont.delete();
 }
 
+///create the Game Screen
 function createGame()
 {
+	//Adjust Volume Channels -> InGame BGM
+	alxSetChannelVolume(2, 0);
+	alxSetChannelVolume(3, 1);
 	if(isObject(MenuMovement))
 	{
 		Window.removeInputListener(MenuMovement);
@@ -114,6 +149,7 @@ function createGame()
 	$level = 0;
 }
 
+///save the Current Score and all Upgrade Levels
 function saveGame()
 {
 	$saveGame.currentScore = $currentScore;
@@ -122,23 +158,20 @@ function saveGame()
 
 function Game::destroy()
 {
-
-	//charcontrols.pop();
-	
+	alxStopAll();
 	destroySceneWindow();
-	
-	//CharaMovement.delete();
 
 }
 
 
+///create all Main Menu Items
 function createMenuItems()
 {
 	%title = new ImageFont( TitleFont );
 	%title.Image = "Game:Font";
 	%title.FontSize = "6 9";
 	%title.Position = "0 15";
-	%title.Text = "Title";
+	%title.Text = "Genius Baus";
 	%title.SceneGroup = 31;
 	%title.SceneLayer = 2;
 	MainMenu.add(%title);
@@ -150,6 +183,7 @@ function createMenuItems()
 	%start.Text = "Start Game";
 	%start.SceneGroup = 30;
 	%start.SceneLayer = 2;
+	%start.setUseInputEvents(true);
 	MainMenu.add(%start);
 	
 	%upgrade = new ImageFont( UpgradeFont );
@@ -159,5 +193,26 @@ function createMenuItems()
 	%upgrade.Text = "Upgrade";
 	%upgrade.SceneGroup = 29;
 	%upgrade.SceneLayer = 2;
+	%upgrade.setUseInputEvents(true);
 	MainMenu.add(%upgrade);
+}
+
+function StartFont::onTouchEnter(%this)
+{
+	%this.setBlendColor("0.5 0.5 1");
+	alxPlay("Game:MenuMove");
+}
+function StartFont::onTouchLeave(%this)
+{
+	%this.setBlendColor("1 1 1");
+}
+
+function UpgradeFont::onTouchEnter(%this)
+{
+	%this.setBlendColor("0.5 1 0.5");
+	alxPlay("Game:MenuMove");
+}
+function UpgradeFont::onTouchLeave(%this)
+{
+	%this.setBlendColor("1 1 1");
 }

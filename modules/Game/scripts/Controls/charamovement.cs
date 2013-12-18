@@ -29,6 +29,7 @@ function CharaMovement::Init_controls( %this )
 	charcontrols.bindCmd(keyboard, "s", "$character.pressS();", "$character.upS();");
 	charcontrols.bindCmd(keyboard, "q", "$character.pressQ();", "$character.upQ();");
 	charcontrols.bindCmd(keyboard, "e", "$character.pressE();", "$character.upE();");
+	charcontrols.bindCmd(keyboard, "escape", "openInGameMenu();", "");
 	
 	//Push the ActionMap on top of the stack
 	charcontrols.push();

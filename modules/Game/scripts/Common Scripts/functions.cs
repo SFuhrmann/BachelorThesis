@@ -69,11 +69,28 @@ function mMax(%a, %b)
 		return %b;
 }
 
+///add an amount to the score and Update the Font
 function addScore(%amount)
 {
 	if (!$gameOver)
 	{
 		$currentScore += %amount;
 		Score.update();
+	}
+}
+
+///Returns %val rounded to the %i'th number
+///Use negative values for floating point roundings
+function getRounded(%val, %i)
+{
+	if (%i < 0)
+	{
+		%factor = mPow(10, - %i);
+		return mRound(%val * %factor) / %factor;
+	}
+	else
+	{
+		%factor = mPow(10, %i);
+		return mRound(%val / %factor) * %facotr;
 	}
 }
