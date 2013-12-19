@@ -107,6 +107,17 @@ function createCharacter(%pos)
 	if (!$saveGame.beamSpeed == 0)
 		$character.availableItems = addWord($character.availableItems, "beamSpeed");
 	
+	//initialize all UpgradeLevels:
+	$character.HPUpgrades = 0;
+	$character.MPUpgrades = 0;
+	$character.shotSpeedUpgrades = 0;
+	$character.stunLengthUpgrades = 0;
+	$character.stunRadiusUpgrades = 0;
+	$character.leapCostsUpgrades = 0;
+	$character.leapCooldownUpgrades = 0;
+	$character.beamSpeedUpgrades = 0;
+	$character.beamGrowthUpgrades = 0;
+	
 	//add to Scene
 	Level.add( $character );
 	Window.mount( $character );
@@ -743,4 +754,29 @@ function Character::addItem(%this, %i)
 	$nextStage = false;
 	
 	$blockQWE = true;
+}
+
+function Character::getCurrentUpgradeLevel(%this, %i)
+{
+	switch(%i)
+	{
+		case 0:
+			return %this.HPUpgrades;
+		case 1:
+			return %this.MPUpgrades;
+		case 2:
+			return %this.ShotSpeedUpgrades;
+		case 3:
+			return %this.stunLengthUpgrades;
+		case 4:
+			return %this.leapCostsUpgrades;
+		case 5:
+			return %this.beamGrowthUpgrades;
+		case 6:
+			return %this.stunRadiusUpgrades;
+		case 7:
+			return %this.leapCooldownUpgrades;
+		case 8:
+			return %this.beamSpeedUpgrades;
+	}
 }

@@ -56,6 +56,7 @@ function createEnemy(%pos)
 	$enemy = %enemy;
 	
 	%enemy.createEnemyLifeBar();
+	%enemy.shoot();
 }
 
 function Enemy::addHP(%this, %amount)
@@ -217,4 +218,43 @@ function Enemy::stunned(%this, %i)
 function Enemy::endStun(%this)
 {
 	%this.stunned = false;
+}
+
+function Enemy::shoot(%this)
+{
+	if (!%this.stunned)
+	{	
+		//convert local position of top-middle point of the Character to World Coordinates
+		%position = %this.getWorldPoint(0, getWord(%this.Size, 1) / 2);
+		
+		//get differences on X and Y axes between Character and MousePointer
+		%dX = getWord($character.Position, 0) - getWord(%this.Position, 0);
+		%dY = getWord($character.Position, 1) - getWord(%this.Position, 1);
+		//calculate the direction from that
+		%direction = mRadToDeg(mAtan(%dY, %dX)) + 90;
+		
+		//copy projectile speed to the speed of this projectile
+		%speed = %this.projectileSpeed;
+		
+		//get Linear Velocity along the axes and multiply it with a constant
+		%veloX = %this.getLinearVelocityX() * $speedInfluenceOnProjectiles;
+		%veloY = %this.getLinearVelocityY() * $speedInfluenceOnProjectiles;
+		
+		//create the Projectile
+		createProjectile(%position, %direction, %speed, %veloX, %veloY, %this);
+		
+		//turn on cooldown
+		%this.attackOnCooldown = true;
+		%this.coolDownSchedule = %this.schedule(%this.shootingFrequency - 1, turnOffCooldown);
+	}
+	//re-schedule this
+	%this.shootSchedule = %this.schedule(%this.shootingFrequency, shoot);
+	
+	
+}
+
+///reset cooldown
+function Enemy::turnOffCooldown(%this)
+{
+	%this.attackOnCooldown = false;
 }

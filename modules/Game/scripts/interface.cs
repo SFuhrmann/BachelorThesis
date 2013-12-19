@@ -371,7 +371,7 @@ function destroyMPBars()
 	MPMeter.delete();
 }
 
-
+///creates the Screen for the Next Stage
 function createNextStage()
 {	
 	saveGame();
@@ -379,11 +379,63 @@ function createNextStage()
 	%next.Position = "0 0";
 	%next.Size = "80 45";
 	%next.SceneGroup = 20;
-	%next.SceneLayer = 0;
+	%next.SceneLayer = 1;
 	%next.Image = "Game:NextStage";
 	Interface.add(%next);
 	
 	createNextStageIcons();
+	
+	createNextStageCurrentLevelIcons();
+	createNextStageCurrentLevel();
+}
+
+///shows a text showing the next Level
+function createNextStageCurrentLevel()
+{
+	%level = new ImageFont( NextStageLevelFont );
+	%level.Image = "Game:Font";
+	%level.Position = "0 -14";
+	%level.FontSize = "2 3";
+	%level.TextAlignment = "Center";
+	%level.Text = "Level" SPC $level + 1;
+	%level.SceneGroup = 27;
+	%level.SceneLayer = 0;
+	Interface.add(%level);
+}
+
+///shows all Upgrade Icons with their current and max Level
+function createNextStageCurrentLevelIcons()
+{
+	for (%i = 0; %i < 9; %i++)
+	{
+		createNextStageLevelIcon(%i);
+		createNextStageLevelFont(%i);
+	}
+}
+
+///creates a single Icon for the next Stage Window
+function createNextStageLevelIcon(%i)
+{
+	%icon = new Sprite( NextStageCurrentLevelSymbol );
+	%icon.Position = 30 SPC 20.5 - %i * 5;
+	%icon.Size = "4 4";
+	%icon.SceneGroup = 1;
+	%icon.SceneLayer = 0;
+	%icon.Image = "Game:" @ getUpgradeName(%i) @ "Icon";
+	Interface.add(%icon);
+}
+
+function createNextStageLevelFont(%i)
+{
+	%level = new ImageFont( NextStageLevelFont );
+	%level.Image = "Game:Font";
+	%level.Position = 38 SPC 22.5 - %i * 5;
+	%level.FontSize = "1.5 2.25";
+	%level.TextAlignment = "Right";
+	%level.Text = $character.getCurrentUpgradeLevel(%i) @ "/" @ getUpgradeLevel(%i);
+	%level.SceneGroup = 27;
+	%level.SceneLayer = 0;
+	Interface.add(%level);
 }
 
 function createNextStageIcons()
@@ -478,6 +530,14 @@ function destroyNextStage()
 	WButton.delete();
 	QIcon.delete();
 	QButton.delete();
+	NextStageLevelFont.delete();
+	
+	//delete all Side Icons
+	for (%i = 0; %i < 9; %i++)
+	{
+		NextStageLevelFont.delete();
+		NextStageCurrentLevelSymbol.delete();
+	}
 }
 
 function getSymbolType(%i)

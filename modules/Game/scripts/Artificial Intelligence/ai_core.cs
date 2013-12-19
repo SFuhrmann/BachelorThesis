@@ -33,8 +33,8 @@ function GOAPBehavior::onBehaviorAdd(%this)
 	%this.actionQueue = new ScriptObject( ActionStack );
 	%this.actionQueue.initialize();
 	
-	%firstAction = new ScriptObject(ShootCharacterAction);
-	%firstAction.initialize();
+	%firstAction = new ScriptObject(StandStillAction);
+	%firstAction.initialize(-1);
 	%this.actionQueue.push(%firstAction);
 	
 	%this.executeNextBehavior();

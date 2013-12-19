@@ -19,14 +19,12 @@ function createPowerUp()
 	%up.type = getRandom(0, 6);
 	%up.Size = "5 5";
 	%up.createCircleCollisionShape(1.5);
-	%posx = getRandom(-$map.SizeX + getWord(%this.Size, 0) / 2, $map.SizeX - getWord(%this.Size, 0) / 2);
-	%posy = getRandom(-$map.SizeY + getWord(%this.Size, 1) / 2, $map.SizeY - getWord(%this.Size, 1) / 2);
+	%pos = getRandom(0, 4);
 	
 	%up.Image = "Game:PowerUp" @ getPowerUpType(%up.type);
 	
-	%up.Position = "0 0";//%posx SPC %posy;
-	
-	%up.SceneLayer = 5;
+	%up.Position = getPowerUpPosition(%pos);
+	%up.SceneLayer = 25;
 	%up.SceneGroup = 25;
 	
 	%up.setBodyType(dynamic);
@@ -35,9 +33,25 @@ function createPowerUp()
 	%up.setCollisionShapeIsSensor(0, true);
 	
 	Level.add(%up);
-	schedule(15000, 0, deleteObj, %up);
 	
-	$powerUpSchedule = schedule(getRandom($averagePowerUpPause / 2, $averagePowerUpPause * 1.5), 0, createPowerUp);
+	
+}
+
+function getPowerUpPosition(%pos)
+{
+	switch(%pos)
+	{
+		case 0:
+			return "0 0";
+		case 1:
+			return "-90 -90";
+		case 2:
+			return "-90 90";
+		case 3:
+			return "90 90";
+		case 4:
+			return "90 -90";
+	}
 }
 
 function PowerUpSprite::onCollision(%this, %obj, %details)
@@ -45,6 +59,7 @@ function PowerUpSprite::onCollision(%this, %obj, %details)
 	if (%obj.SceneGroup == $character.SceneGroup || %obj.SceneGroup == $enemy.SceneGroup)
 	{
 		schedule(1, 0, deleteObj, %this);
+		$powerUpSchedule = schedule(getRandom($averagePowerUpPause / 2, $averagePowerUpPause * 1.5), 0, createPowerUp);
 		
 		activateUpgrade(%this.type, %obj);
 	}
@@ -101,7 +116,7 @@ function activateUpgrade(%i, %obj)
 			schedule(10000, 0, deactivateSpeedIncrease, %obj);
 		case 6:
 			if (%obj.SceneGroup == $character.SceneGroup)
-				$currentScore += Math.mMax(500 * $level, 250);
+				$currentScore += mMax(500 * $level, 250);
 	}
 }
 

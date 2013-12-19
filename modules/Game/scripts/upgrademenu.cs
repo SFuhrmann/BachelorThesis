@@ -184,7 +184,7 @@ function createUpgradeItems()
 
 function UpgradeSprite::update(%this)
 {
-	if (%this.number > 2 || %this.level < 6)
+	if (%this.number > 1 || %this.level < 6)
 	{
 		%this.costsFont.Text = "$" @ calculateCosts(%this.level);
 		%this.currentLevelFont.Text = "Lv.:" SPC getUpgradeLevel(%this.number);

@@ -34,21 +34,21 @@ $callStunTime = 2000;
 $flashTime = 10;
 
 //PowerUps
-$averagePowerUpPause = 30000;
+$averagePowerUpPause = 15000;
 
 
 function createSaveGame()
 {
 	$saveGame = new ScriptObject( SaveGame );
 	$saveGame.existing = true;
-	$saveGame.HP = 0;
-	$saveGame.MP = 0;
-	$saveGame.shotSpeed = 0;
-	$saveGame.stunLength = 2;
+	$saveGame.HP = 2;
+	$saveGame.MP = 2;
+	$saveGame.shotSpeed = 2;
+	$saveGame.stunLength = 0;
 	$saveGame.stunRadius = 0;
-	$saveGame.leapCosts = 2;
+	$saveGame.leapCosts = 0;
 	$saveGame.leapCooldown = 0;
-	$saveGame.beamGrowth = 2;
+	$saveGame.beamGrowth = 0;
 	$saveGame.beamSpeed = 0;
 	$saveGame.currentScore = 0;
 }
