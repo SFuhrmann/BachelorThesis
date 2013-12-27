@@ -38,7 +38,7 @@ function createEnemy(%pos)
 	//Shooting
 	%enemy.shootingFrequency = 350;
 	%enemy.projectileSpeed = 15;
-	%enemy.projectileDamage = 3;
+	%enemy.projectileDamage = 2;
 	
 	//Values
 	%enemy.maxHP = 100;
@@ -144,7 +144,7 @@ function Enemy::die(%this)
 	schedule(1, 0, deleteObj, %this);
 	%this.barOutline.delete();
 	%this.barFill.delete();
-	schedule(15000, 0, createEnemy, "0 0");
+	$createEnemySchedule = schedule(15000, 0, createEnemy, "0 0");
 	$character.stopMoving();
 	$character.setLinearVelocity("0 0");
 	createNextStage();
@@ -176,28 +176,18 @@ function Enemy::flash(%this)
 		
 	%this.flashing = true;
 	//set Color to white
+	%this.saveColor = %this.getBlendColor();
 	%this.setBlendColor( "1 1 1" );
 	
 	//schedule flash update
-	%this.flashSchedule = %this.schedule(16, updateFlash, $flashTime);
+	%this.flashSchedule = %this.schedule(16 * $flashTime, updateFlash);
 }
 
 ///update Flash
-function Enemy::updateFlash(%this, %i)
-{
-	//if old Color reached
-	if (%i == 0)
-	{
-		%this.flashing = false;
-		return;
-	}
-	
-	//calculate new Color and set Color
-	%newVal = getWord(%this.getBlendColor(), 1) - (0.5 / $flashTime);
-	%this.setBlendColor( 1 SPC %newVal SPC %newVal );
-	
-	//re-schedule
-	%this.flashSchedule = %this.schedule(16, updateFlash, %i - 1);
+function Enemy::updateFlash(%this)
+{	
+	%this.setBlendColor(%this.saveColor);
+	%this.flashing = false;
 }
 
 function Enemy::stunned(%this, %i)
@@ -257,4 +247,14 @@ function Enemy::shoot(%this)
 function Enemy::turnOffCooldown(%this)
 {
 	%this.attackOnCooldown = false;
+}
+
+function Enemy::resetBlendColor(%this)
+{
+	if (%this.flashing)
+	{
+		schedule(16 * $flashTime, %this, resetBlendColor);
+		return;
+	}
+	%this.setBlendColor("1 0.5 0.5");
 }

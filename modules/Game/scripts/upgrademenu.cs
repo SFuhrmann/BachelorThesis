@@ -179,6 +179,8 @@ function createUpgradeItems()
 		
 		createUpgradeCosts(%item);
 		createUpgradeLevel(%item);
+		
+		%item.update();
 	}
 }
 
@@ -264,13 +266,13 @@ function getUpgradeDescription(%i)
 		case 4:
 			return "Decreases Leap AP Costs" TAB "Start: 1 AP" TAB "Per Level: -10% of current" TAB "Current Min.:" SPC getRounded(mPow(0.9, getUpgradeLevel(%i)), -2) SPC "AP";
 		case 5:
-			return "Increases Beam Growth Rate" TAB "Start: 0.3 dmg/s" TAB "Per Level: +0.05 dmg/s" TAB "Current Max.:" SPC getRounded(0.3 + 0.05 * getUpgradeLevel(%i), -2) SPC "s";
+			return "Increases Beam Growth Rate" TAB "Start: 0.3 dmg/s" TAB "Per Level: +0.05 dmg/s" TAB "Current Max.:" SPC getRounded(0.3 + 0.05 * getUpgradeLevel(%i), -2) SPC "dmg/s";
 		case 6:
-			return "Increases Stun Radius" TAB "Start: 10 m" TAB "Per Level: +2 m" TAB "Current Max.:" SPC mRound(10 + 2 * getUpgradeLevel(%i)) SPC "m";
+			return "Increases Movement Speed" TAB "Start: 15 m/s" TAB "Per Level: +2 m/s" TAB "Current Max.:" SPC mRound(15 + 2 * getUpgradeLevel(%i)) SPC "m/s";
 		case 7:
-			return "Deacreases Leap Cooldown" TAB "Start: 10 s" TAB "Per Level: -10% of current" TAB "Current Min.:" SPC 10 * getRounded(mPow(0.9, getUpgradeLevel(%i)), -1) SPC "s";
+			return "Increases Projectile Dmg" TAB "Start: 2 dmg" TAB "Per Level: +0.5 dmg" TAB "Current Max.:" SPC getRounded(2 + 0.5 * getUpgradeLevel(%i), -1) SPC "dmg";
 		case 8:
-			return "Increases Beam Speed" TAB "Start: 15 m/s" TAB "Per Level: +2 m/s" TAB "Current Max.:" SPC mRound(15 + 2 * getUpgradeLevel(%i)) SPC "m/s";
+			return "Increases Point Multiplier" TAB "Start: x1.0" TAB "Per Level: +0.1" TAB "Current Max.: x" @ getRounded(1 + 0.1 * getUpgradeLevel(%i), -1);
 	}
 }
 
@@ -291,11 +293,11 @@ function getUpgradeName(%i)
 		case 5:
 			return "BeamGrowth";
 		case 6:
-			return "StunRadius";
+			return "Speed";
 		case 7:
-			return "LeapCooldown";
+			return "Damage";
 		case 8:
-			return "BeamSpeed";
+			return "Credits";
 	}
 }
 
@@ -316,11 +318,11 @@ function getUpgradeLevel(%i)
 		case 5:
 			return $saveGame.BeamGrowth;
 		case 6:
-			return $saveGame.StunRadius;
+			return $saveGame.speed;
 		case 7:
-			return $saveGame.LeapCooldown;
+			return $saveGame.damage;
 		case 8:
-			return $saveGame.BeamSpeed;
+			return $saveGame.credits;
 	}
 }
 
@@ -347,11 +349,11 @@ function increaseUpgradeLevel(%i, %obj)
 			case 5:
 				$saveGame.BeamGrowth++;
 			case 6:
-				$saveGame.StunRadius++;
+				$saveGame.speed++;
 			case 7:
-				$saveGame.LeapCooldown++;
+				$saveGame.damage++;
 			case 8:
-				$saveGame.BeamSpeed++;
+				$saveGame.credits++;
 		}
 		$currentScore -= %costs;
 		saveGame();
@@ -371,9 +373,9 @@ function increaseUpgradeLevel(%i, %obj)
 function UpgradeSprite::onTouchEnter(%this)
 {
 	if (%this.inactiveUpgrade)
-		return;
-	
-	%this.setBlendColor("0.5 0.5 1");
+		%this.setBlendColor("0.25 0.25 0.5");
+	else
+		%this.setBlendColor("0.5 0.5 1");
 	UpgradeDescriptionFont.update(%this.number);
 	alxPlay("Game:MenuMove");
 }
@@ -382,7 +384,7 @@ function UpgradeSprite::onTouchEnter(%this)
 function UpgradeSprite::onTouchLeave(%this)
 {
 	if (%this.inactiveUpgrade)
-		return;
-	
-	%this.setBlendColor("1 1 1");
+		%this.setBlendColor("0.5 0.5 0.5");
+	else
+		%this.setBlendColor("1 1 1");
 }

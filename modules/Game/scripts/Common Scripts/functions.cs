@@ -74,7 +74,7 @@ function addScore(%amount)
 {
 	if (!$gameOver)
 	{
-		$currentScore += %amount;
+		$currentScore += %amount * $character.creditsMultiplier;
 		Score.update();
 	}
 }
@@ -93,4 +93,22 @@ function getRounded(%val, %i)
 		%factor = mPow(10, %i);
 		return mRound(%val / %factor) * %facotr;
 	}
+}
+
+///tests if %pos is in sight of %obj
+function isInSight(%pos, %obj)
+{
+	if (getWord(%pos, 0) - getWord(%obj.Position, 0) <= 40 && getWord(%pos, 1) - getWord(%obj.Position, 1) <= 22.5)
+		return true;
+	else
+		return false;
+}
+
+///tests if %pos is in sight of the Character
+function isOnScreen(%pos)
+{
+	if (mAbs(getWord(%pos, 0) - getWord($character.Position, 0)) <= 40 && mAbs(getWord(%pos, 1) - getWord($character.Position, 1)) <= 22.5)
+		return true;
+	else
+		return false;
 }

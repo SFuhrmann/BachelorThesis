@@ -550,6 +550,8 @@ function openInGameMenu()
 	if ($gameMenu)
 		return;
 	
+	stopAllInGameSchedules();
+	
 	$gameMenu = true;
 	alxPlay("Game:MenuSelect");
 	Level.setScenePause(true);
@@ -617,6 +619,7 @@ function GameMenuQuitFont::onTouchDown(%this)
 	saveGame();
 	$gameMenu = false;
 	schedule(1, 0, createMenu);
+	cancel($createEnemySchedule);
 	alxPlay("Game:MenuSelect");
 }
 function GameMenuQuitFont::onTouchEnter(%this)
@@ -655,4 +658,24 @@ function closeInGameMenu()
 	GameMenuQuitFont.delete();
 	GameMenuEndFont.delete();
 	GameMenuScreen.delete();
+	
+	recallAllInGameSchedules();
+}
+
+function stopAllInGameSchedules()
+{
+	if (isEvenPending($createEnemySchedule))
+	{
+		$createEnemyScheduleDuration = getEventTimeLeft($createEnemySchedule);
+		cancel($createEnemySchedule);
+		$createEnemyScheduleSave = true;
+	}
+}
+
+function stopAllInGameSchedules()
+{
+	if ($createEnemyScheduleSave)
+	{
+		schedule($createEnemyScheduleDuration, 0, createEnemy, "0 0");
+	}
 }

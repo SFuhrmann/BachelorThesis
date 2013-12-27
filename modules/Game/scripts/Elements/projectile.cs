@@ -43,12 +43,16 @@ function createProjectile(%position, %direction, %speed, %addVeloX, %addVeloY, %
 	{
 		%shot.setBlendColor(0.5, 0.5, 1);
 		%shot.setCollisionGroups(1);
+		%enemy = $enemy;
 	}
 	else
 	{
 		%shot.setBlendColor(1, 0.5, 0.5);
 		%shot.setCollisionGroups(2);
+		%enemy = $character;
 	}
+	if (%owner.doubleDamage)
+		%shot.setBlendColor("1 0 0");
 	
 	//add the current speed of the character
 	%newVeloX = %shot.getLinearVelocityX() + %addVeloX;
@@ -57,7 +61,8 @@ function createProjectile(%position, %direction, %speed, %addVeloX, %addVeloY, %
 	//%shot.setLinearVelocity(%newVeloX SPC %newVeloY);
 	Level.add(%shot);
 	
-	alxPlay("Game:shot");
+	if (isOnScreen(%position))
+		alxPlay("Game:shot");
 }
 
 ///is called upon a collision with the enemy

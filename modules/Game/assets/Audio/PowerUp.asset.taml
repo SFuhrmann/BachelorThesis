@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="PowerUp"
+	AudioFile="PowerUp.wav"
+	Volume=0.5
+	VolumeChannel=1
+	Looping="false"
+/>

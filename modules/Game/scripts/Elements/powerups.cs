@@ -30,7 +30,7 @@ function createPowerUp()
 	%up.setBodyType(dynamic);
 	
 	%up.setCollisionCallback(true);
-	%up.setCollisionShapeIsSensor(0, true);
+	%up.setCollisionGroups("1 2");
 	
 	Level.add(%up);
 	
@@ -62,6 +62,7 @@ function PowerUpSprite::onCollision(%this, %obj, %details)
 		$powerUpSchedule = schedule(getRandom($averagePowerUpPause / 2, $averagePowerUpPause * 1.5), 0, createPowerUp);
 		
 		activateUpgrade(%this.type, %obj);
+		alxPlay("Game:PowerUp");
 	}
 }
 
@@ -96,11 +97,16 @@ function activateUpgrade(%i, %obj)
 			%obj.addMP(50);
 		case 2:
 			%obj.projectileDamage *= 2;
+			%obj.doubleDamage = true;
+			%obj.setBlendColor("1 0 0");
 			schedule(10000, 0, deactivateDoubleDamage, %obj);
 		case 3:
 			%obj.MPCostFactor /= 2;
+			%obj.setBlendColor("0 0 1");
 			schedule(10000, 0, deactivateHalfMP, %obj);
 		case 4:
+			%obj.setBlendColor("1 1 0");
+			schedule(10000, 0, deactivateDoubleArmor, %obj);
 			if (%obj.SceneGroup == $character.SceneGroup)
 			{
 				$enemy.projectileDamage /= 2;
@@ -112,22 +118,27 @@ function activateUpgrade(%i, %obj)
 				schedule(10000, 0, deactivateDoubleArmor, $character);
 			}
 		case 5:
-			%obj.maxSpeed *= 1.5;
-			schedule(10000, 0, deactivateSpeedIncrease, %obj);
+			%obj.maxSpeed *= 2;
+			%obj.setBlendColor("1 1 1");
+			%obj.acceleration = %obj.maxSpeed / 5;
+			schedule(15000, 0, deactivateSpeedIncrease, %obj);
 		case 6:
 			if (%obj.SceneGroup == $character.SceneGroup)
-				$currentScore += mMax(500 * $level, 250);
+				addScore(mMax(500 * $level, 250));
 	}
 }
 
 function deactivateDoubleDamage(%obj)
 {
 	%obj.projectileDamage /= 2;
+	%obj.doubleDamage = false;
+	%obj.resetBlendColor();
 }
 
 function deactivateHalfMP(%obj)
 {
 	%obj.MPCostFactor *= 2;
+	%obj.resetBlendColor();
 }
 
 function deactivateDoubleArmor(%obj)
@@ -137,5 +148,7 @@ function deactivateDoubleArmor(%obj)
 
 function deactivateSpeedIncrease(%obj)
 {
-	%obj.maxSpeed /= 1.5;
+	%obj.maxSpeed /= 2;
+	%obj.acceleration = %obj.maxSpeed / 5;
+	%obj.resetBlendColor();
 }

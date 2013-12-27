@@ -62,13 +62,15 @@ function createCharacter(%pos)
 	//Shooting
 	$character.shootingFrequency = 350;
 	$character.projectileSpeed = 15;
-	$character.projectileDamage = 3;
+	$character.projectileDamage = 2;
 	
 	//Values
 	$character.maxHP = 100;
 	$character.maxMP = 3;
 	$character.HP = $character.maxHP;
 	$character.MP = $character.maxMP;
+	$character.MPCostFactor = 1;
+	$character.creditsMultiplier = 1.0;
 	
 	//Cooldowns
 	$character.cooldownTime = 10000;
@@ -96,27 +98,27 @@ function createCharacter(%pos)
 		$character.availableItems = addWord($character.availableItems, "shotSpeed");
 	if (!$saveGame.stunLength == 0)
 		$character.availableItems = addWord($character.availableItems, "stunLength");
-	if (!$saveGame.stunRadius == 0)
-		$character.availableItems = addWord($character.availableItems, "stunRadius");
+	if (!$saveGame.speed == 0)
+		$character.availableItems = addWord($character.availableItems, "speed");
 	if (!$saveGame.leapCosts == 0)
 		$character.availableItems = addWord($character.availableItems, "leapCosts");
-	if (!$saveGame.leapCooldown == 0)
-		$character.availableItems = addWord($character.availableItems, "leapCooldown");
+	if (!$saveGame.damage == 0)
+		$character.availableItems = addWord($character.availableItems, "damage");
 	if (!$saveGame.beamGrowth == 0)
 		$character.availableItems = addWord($character.availableItems, "beamGrowth");
-	if (!$saveGame.beamSpeed == 0)
-		$character.availableItems = addWord($character.availableItems, "beamSpeed");
+	if (!$saveGame.credits == 0)
+		$character.availableItems = addWord($character.availableItems, "credits");
 	
 	//initialize all UpgradeLevels:
 	$character.HPUpgrades = 0;
 	$character.MPUpgrades = 0;
 	$character.shotSpeedUpgrades = 0;
 	$character.stunLengthUpgrades = 0;
-	$character.stunRadiusUpgrades = 0;
 	$character.leapCostsUpgrades = 0;
-	$character.leapCooldownUpgrades = 0;
-	$character.beamSpeedUpgrades = 0;
 	$character.beamGrowthUpgrades = 0;
+	$character.speedUpgrades = 0;
+	$character.damageUpgrades = 0;
+	$character.creditsUpgrades = 0;
 	
 	//add to Scene
 	Level.add( $character );
@@ -437,7 +439,7 @@ function Character::leap(%this, %pos)
 {
 	if (%this.leaping ||(%this.MP < %this.leapCosts) || %this.leapingCooldown)
 		return;
-	%this.addMP(-%this.leapCosts);
+	%this.addMP(-%this.leapCosts * %this.MPCostFactor);
 	%this.leaping = true;
 	%this.leapingCooldown = true;
 	
@@ -535,7 +537,7 @@ function Character::stun(%this)
 {
 	if (%this.stunning ||(%this.MP < 1) || %this.stunningCooldown)
 		return;
-	%this.addMP(-1);
+	%this.addMP(-1 * %this.MPCostFactor);
 	%this.stunning = true;
 	%this.stunningCooldown = true;
 	
@@ -575,7 +577,7 @@ function Character::beam(%this)
 		return;
 	
 	%this.beamCooldown = true;
-	%this.addMP(-1);
+	%this.addMP(-1 * %this.MPCostFactor);
 	
 	//convert local position of top-middle point of the Character to World Coordinates
 	%position = %this.getWorldPoint(0, getWord(%this.Size, 1) / 2);
@@ -657,28 +659,18 @@ function Character::flash(%this)
 		
 	%this.flashing = true;
 	//set Color to white
+	%this.saveColor = %this.getBlendColor();
 	%this.setBlendColor( "1 1 1" );
 	
 	//schedule flash update
-	%this.flashSchedule = %this.schedule(16, updateFlash, $flashTime);
+	%this.flashSchedule = %this.schedule(16 * $flashTime, updateFlash);
 }
 
 ///update Flash
-function Character::updateFlash(%this, %i)
+function Character::updateFlash(%this)
 {
-	//if old Color reached
-	if (%i == 0)
-	{
-		%this.flashing = false;
-		return;
-	}
-	
-	//calculate new Color and set Color
-	%newVal = getWord(%this.getBlendColor(), 1) - (0.5 / $flashTime);
-	%this.setBlendColor(%newVal SPC %newVal SPC 1 );
-	
-	//re-schedule
-	%this.flashSchedule = %this.schedule(16, updateFlash, %i - 1);
+	%this.setBlendColor(%this.saveColor);
+	%this.flashing = false;
 }
 
 function Character::changeMaxHP(%this, %amount)
@@ -723,31 +715,31 @@ function Character::addItem(%this, %i)
 			%this.stunLengthUpgrades++;
 			if (%this.stunLengthUpgrades >= $saveGame.stunLength)
 				%this.availableItems = removeWord(%this.availableItems, %i);
-		case "stunRadius":
-			%this.stunRadius += 2;
-			%this.stunRadiusUpgrades++;
-			if (%this.stunRadiusUpgrades >= $saveGame.stunRadius)
+		case "speed":
+			%this.maxSpeed += 2;
+			%this.speedUpgrades++;
+			%this.acceleration = %this.maxSpeed / 5;
+			if (%this.speedUpgrades >= $saveGame.speed)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 		case "leapCosts":
 			%this.leapCosts *= 0.9;
 			%this.leapCostsUpgrades++;
 			if (%this.leapCostsUpgrades >= $saveGame.leapCosts)
 				%this.availableItems = removeWord(%this.availableItems, %i);
-		case "leapCooldown":
-			%this.leapCooldownTime *= 0.9;
-			%this.leapCooldownUpgrades++;
-			if (%this.leapCooldownUpgrades >= $saveGame.leapCooldown)
+		case "damage":
+			%this.projectileDamage += 0.5;
+			%this.damageUpgrades++;
+			if (%this.damageUpgrades >= $saveGame.damage)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 		case "beamGrowth":
 			%this.beamGrowth += 0.05;
 			%this.beamGrowthUpgrades++;
 			if (%this.beamGrowthUpgrades >= $saveGame.beamGrowth)
 				%this.availableItems = removeWord(%this.availableItems, %i);
-		case "beamSpeed":
-			%this.beamSpeed += 2;
-			%this.beamGrowth += 0.05;
-			%this.beamSpeedUpgrades++;
-			if (%this.beamSpeedUpgrades >= $saveGame.beamSpeed)
+		case "credits":
+			%this.creditsMultiplier += 0.1;
+			%this.creditsUpgrades++;
+			if (%this.creditsUpgrades >= $saveGame.credits)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 	}
 	destroyNextStage();
@@ -773,10 +765,21 @@ function Character::getCurrentUpgradeLevel(%this, %i)
 		case 5:
 			return %this.beamGrowthUpgrades;
 		case 6:
-			return %this.stunRadiusUpgrades;
+			return %this.damageUpgrades;
 		case 7:
-			return %this.leapCooldownUpgrades;
+			return %this.speedUpgrades;
 		case 8:
-			return %this.beamSpeedUpgrades;
+			return %this.creditsUpgrades;
 	}
+}
+
+function Character::resetBlendColor(%this)
+{
+	if (%this.flashing)
+	{
+		echo("Character flashed on Resetting Blend Color");
+		schedule(16 * $flashTime, %this, resetBlendColor);
+		return;
+	}
+	%this.setBlendColor("0.5 0.5 1");
 }
