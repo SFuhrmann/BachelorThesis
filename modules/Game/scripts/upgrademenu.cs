@@ -260,7 +260,7 @@ function getUpgradeDescription(%i)
 		case 1:
 			return "Increases Max AP" TAB "Start: 3 AP" TAB "Per Level: +1 AP" TAB "Current Max.:" SPC mRound(3 + 1 * getUpgradeLevel(%i)) SPC "AP";
 		case 2:
-			return "Increases Projectile Speed" TAB "Start: 15 m/s" TAB "Per Level: +2 m/s" TAB "Current Max.:" SPC mRound(15 + 2 * getUpgradeLevel(%i)) SPC "m/s";
+			return "Increases Projectile Speed" TAB "Start: 25 m/s" TAB "Per Level: +5 m/s" TAB "Current Max.:" SPC mRound(25 + 5 * getUpgradeLevel(%i)) SPC "m/s";
 		case 3:
 			return "Increases Stun Duration" TAB "Start: 5 s" TAB "Per Level: +1 s" TAB "Current Max.:" SPC mRound(5 + 1 * getUpgradeLevel(%i)) SPC "s";
 		case 4:
@@ -361,6 +361,7 @@ function increaseUpgradeLevel(%i, %obj)
 		%obj.update();
 		UpgradeCreditsFont.update();
 		alxPlay("Game:MenuSelect");
+		UpgradeDescriptionFont.update(%i);
 	}
 	else
 	{

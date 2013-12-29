@@ -61,7 +61,7 @@ function createCharacter(%pos)
 	
 	//Shooting
 	$character.shootingFrequency = 350;
-	$character.projectileSpeed = 15;
+	$character.projectileSpeed = 25;
 	$character.projectileDamage = 2;
 	
 	//Values
@@ -706,7 +706,7 @@ function Character::addItem(%this, %i)
 			if (%this.MPUpgrades >= $saveGame.MP)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 		case "shotSpeed":
-			%this.shotSpeed += 2;
+			%this.shotSpeed += 5;
 			%this.shotSpeedUpgrades++;
 			if (%this.shotSpeedUpgrades >= $saveGame.shotSpeed)
 				%this.availableItems = removeWord(%this.availableItems, %i);
@@ -778,7 +778,7 @@ function Character::resetBlendColor(%this)
 	if (%this.flashing)
 	{
 		echo("Character flashed on Resetting Blend Color");
-		schedule(16 * $flashTime, %this, resetBlendColor);
+		%this.schedule(16 * $flashTime, resetBlendColor);
 		return;
 	}
 	%this.setBlendColor("0.5 0.5 1");

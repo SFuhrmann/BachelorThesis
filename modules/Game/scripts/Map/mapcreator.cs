@@ -127,15 +127,18 @@ function Map::createRandomObstacle(%this, %id)
 	%posY = getRandom((-$map.SizeY + %obstacle.SizeY) / 2, ($map.SizeY - %obstacle.SizeY) / 2);
 	%obstacle.Position = %posX SPC %posY;
 	%obstacle.PolyList = %points;
-	%obstacle.SceneLayer = 8;
-	%obstacle.SceneGroup = 4;
-	%obstacle.setCollisionGroups( "1 2 3 4" );
-	%obstacle.setCollisionCallback(true);
+	%obstacle.SceneLayer = 12;
+	%obstacle.SceneGroup = 6;
+	%obstacle.setCollisionGroups( 4 );
+	//%obstacle.setCollisionCallback(true);
 	%points = multiplyString(%point1 SPC %points, %size);
-	%obstacle.createPolygonCollisionShape( %points );
+	%obstacle.createChainCollisionShape( %points );
+	%obstacle.setCollisionShapeRestitution(0, 1);
+	%obstacle.setLinearVelocity(getRandom(-2, 2) SPC getRandom(-2, 2));
+	%obstacle.setAngularVelocity(getRandom(-10, 10));
+	%obstacle.setBodyType( dynamic );
 	%obstacle.setFillMode(true);
 	%obstacle.setFillColor("0 0 0 1");
-	%obstacle.setFixedAngle(true);
 	
 	//add to Scene
 	Level.add(%obstacle);
@@ -150,7 +153,7 @@ function Map::createRandomObstacle(%this, %id)
 	}
 	
 	//create a random number of health and magic packages around the obstacle
-	%packages = %size * %size / 12;
+	%packages = %size * %size / 24;
 	
 	for (%i = 0; %i < %packages; %i++)
 	{

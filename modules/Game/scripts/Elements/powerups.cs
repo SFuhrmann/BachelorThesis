@@ -24,6 +24,7 @@ function createPowerUp()
 	%up.Image = "Game:PowerUp" @ getPowerUpType(%up.type);
 	
 	%up.Position = getPowerUpPosition(%pos);
+	
 	%up.SceneLayer = 25;
 	%up.SceneGroup = 25;
 	

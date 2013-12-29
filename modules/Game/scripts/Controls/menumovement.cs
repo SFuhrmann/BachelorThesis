@@ -27,7 +27,7 @@ function MenuMovement::Init_controls( %this )
 function MenuMovement::onTouchDown(%this, %touchID, %position)
 {
 	%objs = MainMenu.pickPoint(%position);
-	for (%i = 0; %i < %objs; %i++)
+	for (%i = 0; %i < %objs.count; %i++)
 	{
 		
 		%obj = getWord(%objs, %i);

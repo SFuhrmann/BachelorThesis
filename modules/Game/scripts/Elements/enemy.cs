@@ -37,7 +37,7 @@ function createEnemy(%pos)
 	
 	//Shooting
 	%enemy.shootingFrequency = 350;
-	%enemy.projectileSpeed = 15;
+	%enemy.projectileSpeed = 25;
 	%enemy.projectileDamage = 2;
 	
 	//Values
@@ -148,6 +148,7 @@ function Enemy::die(%this)
 	$character.stopMoving();
 	$character.setLinearVelocity("0 0");
 	createNextStage();
+	increaseBGSpeed();
 }
 
 function Enemy::updateAngle(%this)
@@ -257,4 +258,97 @@ function Enemy::resetBlendColor(%this)
 		return;
 	}
 	%this.setBlendColor("1 0.5 0.5");
+}
+
+//------------------------------------------//
+//                                          //
+//                                          //
+//                                          //
+//           AI Help Functions              //
+//                                          //
+//                                          //
+//                                          //
+//------------------------------------------//
+
+///move the enemy towards %pos
+function Enemy::moveTowards(%this, %pos)
+{
+	//get X and Y difference between goal and agent
+	%dX = getWord(%pos, 0) - getWord(%this.Position, 0);
+	%dY = getWord(%pos, 1) - getWord(%this.Position, 1);
+	
+	//get angle
+	%targetAngle = mRadToDeg(mAtan(%dY, %dX)) + 90;
+	
+	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
+	%this.clampspeed();
+	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, 4, %targetAngle);
+}
+
+///move the enemy towards %pos
+function Enemy::moveAwayFrom(%this, %pos)
+{
+		//get X and Y difference between goal and agent
+	%dX = getWord(%pos, 0) - getWord(%this.Position, 0);
+	%dY = getWord(%pos, 1) - getWord(%this.Position, 1);
+	
+	//get angle
+	%targetAngle = mRadToDeg(mAtan(%dY, %dX)) - 90;
+	
+	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
+	%this.clampspeed();
+	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, 4, %targetAngle);
+}
+
+///move the enemy towards %pos
+function Enemy::moveAroundCW(%this, %pos)
+{
+	//get X and Y difference between goal and agent
+	%dX = getWord(%pos, 0) - getWord(%this.Position, 0);
+	%dY = getWord(%pos, 1) - getWord(%this.Position, 1);
+	
+	//get angle
+	%targetAngle = mRadToDeg(mAtan(%dY, %dX)) - 180;
+	
+	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
+	%this.clampspeed();
+	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, 4, %targetAngle);
+}
+
+///move the enemy towards %pos
+function Enemy::moveAroundCCW(%this, %pos)
+{
+	//get X and Y difference between goal and agent
+	%dX = getWord(%pos, 0) - getWord(%this.Position, 0);
+	%dY = getWord(%pos, 1) - getWord(%this.Position, 1);
+	
+	//get angle
+	%targetAngle = mRadToDeg(mAtan(%dY, %dX));
+	
+	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
+	%this.clampspeed();
+	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, 4, %targetAngle);
+}
+
+///accelerate the enemy towards %targetAngle using a speed clamp
+function Enemy::accelerateTowards(%this, %i, %targetAngle)
+{
+	if (%i < 0)
+	{
+		return;
+	}
+	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
+	%this.clampspeed();
+	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, %i - 1, %targetAngle);
+}
+
+///clamp velocity to maxSpeed
+function Enemy::clampspeed(%this)
+{
+	//calculate length of velocity vector
+	if(getWord(%this.getLinearVelocityPolar(), 1) > %this.maxSpeed)
+	{
+		//set to maxspeed if it exceeds it
+		%this.setLinearVelocityPolar(getWord(%this.getLinearVelocityPolar(), 0), %this.maxSpeed);	
+	}
 }

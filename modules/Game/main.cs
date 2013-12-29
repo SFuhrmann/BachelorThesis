@@ -24,8 +24,16 @@ function Game::create()
 	exec("./scripts/upgrademenu.cs");
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/stand_still.cs");
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/shoot_character.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/move_toward_enemy.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/flee_from_enemy.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/move_around_enemy_cw.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/find_nearest_package.cs");
 	exec("./scripts/Artificial Intelligence/ai_core.cs");
 	exec("./scripts/Artificial Intelligence/Structures/actionqueue.cs");
+	exec("./scripts/Artificial Intelligence/Structures/findpath.cs");
+	exec("./scripts/Artificial Intelligence/Structures/getlineofsight.cs");
+	exec("./scripts/Artificial Intelligence/Structures/heap.cs");
+	exec("./scripts/Artificial Intelligence/Structures/search_for_packages.cs");
 	
 	//play bgm with and without percussion and adjust Volume Channels accordingly
 	//Channel 2: Menu BGM
@@ -86,6 +94,8 @@ function createMenu()
 	createSceneMenu();
 	
 	createMenuItems();
+	
+	createMenuBackGround();
 }
 
 ///destroy all items in the Main Menu (Title, Start, Upgrade)
@@ -141,10 +151,12 @@ function createGame()
 	//Create Map
 	createMap($mapSize SPC $mapSize);
 	
+	//Create Scrolling BG
+	createGameBackGround();
+	
 	$gameOver = false;
 	
 	//debug
-	//schedule(4000, $character, changeMaxHP, 50);
 	
 	$level = 0;
 }
@@ -215,4 +227,63 @@ function UpgradeFont::onTouchEnter(%this)
 function UpgradeFont::onTouchLeave(%this)
 {
 	%this.setBlendColor("1 1 1");
+}
+
+function createGameBackGround()
+{
+	for (%i = 1; %i < 3; %i++)
+	{
+		$gamebg[%i] = new Scroller( GameBG );
+		$gamebg[%i].SceneLayer = 0;
+		$gamebg[%i].Size = 720 SPC 600;
+		$gamebg[%i].Position = 10;
+		$gamebg[%i].fixedAngle = true;
+		$gamebg[%i].bodyType = static;
+		$gamebg[%i].Image = "Game:gamebg" @ %i;
+		$gamebg[%i].ScrollX = getRandom(-2 / %i, 2 / %i);
+		$gamebg[%i].ScrollY = getRandom(-2 / %i, 2 / %i);
+		$gamebg[%i].setScrollPosition(getRandom(0, 100) / 100, getRandom(0, 100) / 100);
+		if (%i == 2)
+			$gamebg[%i].setBlendAlpha( 0.2 );
+		else
+			$gamebg[%i].setBlendAlpha( 0.5 );
+		$gamebg[%i].repeatX = 5;
+		$gamebg[%i].repeatY = 5;
+		
+		Level.add($gamebg[%i]);
+	}
+}
+
+function createMenuBackGround()
+{
+	for (%i = 1; %i < 3; %i++)
+	{
+		%bg = new Scroller( GameBG );
+		%bg.SceneLayer = 31;
+		%bg.Size = 720 SPC 600;
+		%bg.Position = 10;
+		%bg.fixedAngle = true;
+		%bg.bodyType = static;
+		%bg.Image = "Game:gamebg" @ %i;
+		%bg.ScrollX = getRandom(-2 / %i, 2 / %i);
+		%bg.ScrollY = getRandom(-2 / %i, 2 / %i);
+		%bg.setScrollPosition(getRandom(0, 100) / 100, getRandom(0, 100) / 100);
+		if (%i == 2)
+			%bg.setBlendAlpha( 0.2 );
+		else
+			%bg.setBlendAlpha( 0.5 );
+		%bg.repeatX = 5;
+		%bg.repeatY = 5;
+		
+		MainMenu.add(%bg);
+	}
+}
+
+function increaseBGSpeed()
+{
+	for (%i = 1; %i < 3; %i++)
+	{
+		$gamebg[%i].setScrollX($gamebg[%i].getScrollX() * 1.5);
+		$gamebg[%i].setScrollY($gamebg[%i].getScrollY() * 1.5);
+	}
 }

@@ -66,7 +66,7 @@ function createPackage(%obstacle)
 	
 	//set Scene related Properties
 	%pack.SceneGroup = 5;
-	%pack.SceneLayer = 15;
+	%pack.SceneLayer = 11;
 	%pack.obstacle = %obstacle;
 	
 	//physics
@@ -76,9 +76,11 @@ function createPackage(%obstacle)
 	%pack.setCollisionCallback(true);
 	%pack.setCollisionShapeIsSensor(0, true);
 	%pack.setFixedAngle(true);
-	
+	%pack.setBodyType( dynamic );
 	//add to Scene
 	Level.add(%pack);
+	
+	Level.createFrictionJoint(%obstacle, %pack, "0 0", "0 0", 10, 0, false);
 }
 
 function Package::onCollision(%this, %obj, %details)
@@ -91,7 +93,7 @@ function Package::onCollision(%this, %obj, %details)
 			%obj.addMP(%this.healAmount);
 		if (VectorDist($character.Position, %obj.Position) < 25)
 			alxPlay("Game:pop");
+		schedule(1, 0, deleteObj, %this);
+		schedule(10000, 0, createPackage, %this.obstacle);
 	}
-	schedule(30000, 0, createPackage, %this.obstacle);
-	schedule(1, 0, deleteObj, %this);
 }

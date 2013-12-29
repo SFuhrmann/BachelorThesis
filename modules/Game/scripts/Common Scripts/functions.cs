@@ -112,3 +112,9 @@ function isOnScreen(%pos)
 	else
 		return false;
 }
+
+///rounds every element of a vector to the next Integer Value
+function roundVector(%vec)
+{
+	return mRound(getWord(%vec, 0)) SPC mRound(getWord(%vec, 1));
+}
