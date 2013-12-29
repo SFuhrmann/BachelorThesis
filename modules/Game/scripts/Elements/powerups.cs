@@ -35,6 +35,8 @@ function createPowerUp()
 	
 	Level.add(%up);
 	
+	$powerUp = %up;
+	
 	
 }
 

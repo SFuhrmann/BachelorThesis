@@ -33,7 +33,7 @@ function GOAPBehavior::onBehaviorAdd(%this)
 	%this.actionQueue = new ScriptObject( ActionStack );
 	%this.actionQueue.initialize();
 	
-	%firstAction = new ScriptObject(FindNearestPackageAction);
+	%firstAction = new ScriptObject(GetPowerupAction);
 	%firstAction.initialize(-1);
 	%this.actionQueue.push(%firstAction);
 	

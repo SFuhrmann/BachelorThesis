@@ -351,6 +351,17 @@ function Character::stopMoving(%this)
 	%this.saveWalkL = false;
 }
 
+///stops Character from taking Move Orders for %time ms
+function Character::noMoving(%this, %time)
+{
+	%this.leaping = true;
+	%this.schedule(%time, turnOffNoMoving);
+}
+function Character::turnOffNoMoving(%this)
+{
+	%this.leaping = false;
+}
+
 //#######################################//
 //---------------------------------------//
 //                                       //

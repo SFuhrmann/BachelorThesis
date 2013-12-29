@@ -36,6 +36,9 @@ $flashTime = 10;
 //PowerUps
 $averagePowerUpPause = 15000;
 
+//Mine
+$mineDamage = 50;
+
 
 function createSaveGame()
 {

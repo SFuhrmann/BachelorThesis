@@ -132,7 +132,7 @@ function Map::createRandomObstacle(%this, %id)
 	%obstacle.setCollisionGroups( 4 );
 	//%obstacle.setCollisionCallback(true);
 	%points = multiplyString(%point1 SPC %points, %size);
-	%obstacle.createChainCollisionShape( %points );
+	%obstacle.createPolygonCollisionShape( %points );
 	%obstacle.setCollisionShapeRestitution(0, 1);
 	%obstacle.setLinearVelocity(getRandom(-2, 2) SPC getRandom(-2, 2));
 	%obstacle.setAngularVelocity(getRandom(-10, 10));

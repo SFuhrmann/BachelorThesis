@@ -45,6 +45,13 @@ function createEnemy(%pos)
 	%enemy.maxMP = 3;
 	%enemy.HP = %enemy.maxHP;
 	%enemy.MP = %enemy.maxMP;
+	%enemy.MPCostFactor = 1;
+	
+	//Invisibility
+	%enemy.invisibilityLength = 3000;
+	
+	//Mine
+	%enemy.mineRadius = 5;
 	
 	//Cooldowns
 	%enemy.cooldownTime = 10000;
@@ -148,7 +155,10 @@ function Enemy::die(%this)
 	$character.stopMoving();
 	$character.setLinearVelocity("0 0");
 	createNextStage();
-	increaseBGSpeed();
+	if ($level < 15)
+	{
+		increaseBGSpeed();
+	}
 }
 
 function Enemy::updateAngle(%this)
@@ -240,8 +250,6 @@ function Enemy::shoot(%this)
 	}
 	//re-schedule this
 	%this.shootSchedule = %this.schedule(%this.shootingFrequency, shoot);
-	
-	
 }
 
 ///reset cooldown
@@ -254,7 +262,7 @@ function Enemy::resetBlendColor(%this)
 {
 	if (%this.flashing)
 	{
-		schedule(16 * $flashTime, %this, resetBlendColor);
+		%this.schedule(16 * $flashTime, resetBlendColor);
 		return;
 	}
 	%this.setBlendColor("1 0.5 0.5");
@@ -351,4 +359,34 @@ function Enemy::clampspeed(%this)
 		//set to maxspeed if it exceeds it
 		%this.setLinearVelocityPolar(getWord(%this.getLinearVelocityPolar(), 0), %this.maxSpeed);	
 	}
+}
+
+function Enemy::createMine(%this)
+{
+	if (%this.MP < 1 * %this.MPCostFactor)
+		return;
+	
+	createMine(%this);
+	
+	%this.addMP(-1 * %this.MPCostFactor);
+}
+
+function Enemy::becomeInvisible(%this)
+{
+	if (%this.MP < 1 * %this.MPCostFactor)
+		return;
+		
+	%this.setSrcBlendFactor(ZERO);
+	EnemyHPMeterOutline.setSrcBlendFactor(ZERO);
+	EnemyHPMeterFill.setSrcBlendFactor(ZERO);
+	%this.resetInvisibilitySchedule = %this.schedule(%this.InvisibilityLength, resetInvisibility);
+	
+	%this.addMP(-1 * %this.MPCostFactor);
+}
+
+function Enemy::resetInvisibility(%this)
+{
+	%this.setSrcBlendFactor(SRC_ALPHA);
+	EnemyHPMeterOutline.setSrcBlendFactor(SRC_ALPHA);
+	EnemyHPMeterFill.setSrcBlendFactor(SRC_ALPHA);
 }

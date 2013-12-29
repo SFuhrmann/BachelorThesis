@@ -16,6 +16,7 @@ function Game::create()
 	exec("./scripts/elements/beam.cs");
 	exec("./scripts/elements/enemy.cs");
 	exec("./scripts/elements/packages.cs");
+	exec("./scripts/elements/mine.cs");
 	exec("./scripts/common scripts/constants.cs");
 	exec("./scripts/common scripts/functions.cs");
 	exec("./scripts/common scripts/effects.cs");
@@ -28,6 +29,8 @@ function Game::create()
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/flee_from_enemy.cs");
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/move_around_enemy_cw.cs");
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/find_nearest_package.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/get_powerup.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/become_invisible.cs");
 	exec("./scripts/Artificial Intelligence/ai_core.cs");
 	exec("./scripts/Artificial Intelligence/Structures/actionqueue.cs");
 	exec("./scripts/Artificial Intelligence/Structures/findpath.cs");
@@ -157,6 +160,8 @@ function createGame()
 	$gameOver = false;
 	
 	//debug
+	//$enemy.schedule(2000, createMine);
+	$enemy.schedule(2000, becomeInvisible);
 	
 	$level = 0;
 }
