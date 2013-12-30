@@ -43,6 +43,24 @@ $mineDamage = 50;
 $attractionPointSize = 60;
 $gravitPointInfluence = 0.85;
 
+//EnemyValues
+function setEnemyValues()
+{
+	$enemyMaxSpeed = 15;
+	$enemyProjectileSpeed = 25;
+	$enemyProjectileDamage = 2;
+	$enemyMaxHP = 100;
+	$enemyMaxMP = 3;
+	$enemyInvisibilityLength = 3000;
+	$enemyMineRadius = 5;
+	$enemyMineDamage = 50;
+	$gravitPointDuration = 3000;
+	
+	for (%i = 0; %i < 8; %i++)
+	{
+		$enemyUpgradeLevel[%i] = 0;
+	}
+}
 
 function createSaveGame()
 {

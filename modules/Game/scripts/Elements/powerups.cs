@@ -102,29 +102,35 @@ function activateUpgrade(%i, %obj)
 			%obj.projectileDamage *= 2;
 			%obj.doubleDamage = true;
 			%obj.setBlendColor("1 0 0");
-			schedule(10000, 0, deactivateDoubleDamage, %obj);
+			$deactivateDoubleDamageSchedule = schedule(10000, 0, deactivateDoubleDamage, %obj);
+			$ddObject = %obj;
 		case 3:
 			%obj.MPCostFactor /= 2;
 			%obj.setBlendColor("0 0 1");
-			schedule(10000, 0, deactivateHalfMP, %obj);
+			$deactivateHalfMPSchedule = schedule(10000, 0, deactivateHalfMP, %obj);
+			$hmpObject = %obj;
 		case 4:
 			%obj.setBlendColor("1 1 0");
-			schedule(10000, 0, deactivateDoubleArmor, %obj);
+			$deactivatePowerUpResetColorSchedule = %obj.schedule(10000, resetBlendColor);
+			$daObject2 = %obj;
 			if (%obj.SceneGroup == $character.SceneGroup)
 			{
 				$enemy.projectileDamage /= 2;
-				schedule(10000, 0, deactivateDoubleArmor, $enemy);
+				$deactivateDoubleArmorSchedule = schedule(10000, 0, deactivateDoubleArmor, $enemy);
+				$daObject = $enemy;
 			}
 			else
 			{
 				$character.projectileDamage /= 2;
-				schedule(10000, 0, deactivateDoubleArmor, $character);
+				$deactivateDoubleArmorSchedule = schedule(10000, 0, deactivateDoubleArmor, $character);
+				$daObject = $character;
 			}
 		case 5:
 			%obj.maxSpeed *= 2;
 			%obj.setBlendColor("1 1 1");
 			%obj.acceleration = %obj.maxSpeed / 5;
-			schedule(15000, 0, deactivateSpeedIncrease, %obj);
+			$deactivateIncreasedSpeedSchedule = schedule(15000, 0, deactivateSpeedIncrease, %obj);
+			$siObject = %obj;
 		case 6:
 			if (%obj.SceneGroup == $character.SceneGroup)
 				addScore(mMax(500 * $level, 250));

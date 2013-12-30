@@ -355,7 +355,7 @@ function Character::stopMoving(%this)
 function Character::noMoving(%this, %time)
 {
 	%this.leaping = true;
-	%this.schedule(%time, turnOffNoMoving);
+	%this.turnOffNoMovingSchedule = %this.schedule(%time, turnOffNoMoving);
 }
 function Character::turnOffNoMoving(%this)
 {
@@ -789,7 +789,7 @@ function Character::resetBlendColor(%this)
 	if (%this.flashing)
 	{
 		echo("Character flashed on Resetting Blend Color");
-		%this.schedule(16 * $flashTime, resetBlendColor);
+		%this.resetBlendColorSchedule = %this.schedule(16 * $flashTime, resetBlendColor);
 		return;
 	}
 	%this.setBlendColor("0.5 0.5 1");

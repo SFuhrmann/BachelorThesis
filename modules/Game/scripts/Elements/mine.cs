@@ -78,7 +78,7 @@ function OuterMine::onCollision(%this, %obj, %details)
 		schedule(1, 0, deleteObj, %this);
 		schedule(1, 0, deleteObj, %this.mine.inner);
 		
-		%obj.addHP(-$mineDamage);
+		%obj.addHP(-$enemy.mineDamage);
 		//get X and Y difference between goal and agent
 		%dX = getWord(%this.position, 0) - getWord(%obj.Position, 0);
 		%dY = getWord(%this.position, 1) - getWord(%obj.Position, 1);

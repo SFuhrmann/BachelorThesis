@@ -150,6 +150,7 @@ function createGame()
 	createPowerUp();
 	
 	//create Enemy
+	setEnemyValues();
 	createEnemy("-10 0");
 	
 	//Create Map

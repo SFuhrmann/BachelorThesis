@@ -94,6 +94,6 @@ function Package::onCollision(%this, %obj, %details)
 		if (VectorDist($character.Position, %obj.Position) < 25)
 			alxPlay("Game:pop");
 		schedule(1, 0, deleteObj, %this);
-		schedule(10000, 0, createPackage, %this.obstacle);
+		schedule(30000, 0, createPackage, %this.obstacle);
 	}
 }

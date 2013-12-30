@@ -31,30 +31,31 @@ function createEnemy(%pos)
 	
 	//States Properties:
 	//Movement
-	%enemy.maxSpeed = 15;
+	%enemy.maxSpeed = $enemyMaxSpeed;
 	%enemy.saveMaxSpeed = %enemy.maxSpeed;
-	%enemy.acceleration = 3;
+	%enemy.acceleration = $enemyMaxSpeed / 5;
 	
 	//Shooting
 	%enemy.shootingFrequency = 350;
-	%enemy.projectileSpeed = 25;
-	%enemy.projectileDamage = 2;
+	%enemy.projectileSpeed = $enemyProjectileSpeed;
+	%enemy.projectileDamage = $enemyProjectileDamage;
 	
 	//Values
-	%enemy.maxHP = 100;
-	%enemy.maxMP = 3;
+	%enemy.maxHP = $enemyMaxHP;
+	%enemy.maxMP = $enemyMaxMP;
 	%enemy.HP = %enemy.maxHP;
 	%enemy.MP = %enemy.maxMP;
 	%enemy.MPCostFactor = 1;
 	
 	//Invisibility
-	%enemy.invisibilityLength = 3000;
+	%enemy.invisibilityLength = $enemyInvisibilityLength;
 	
 	//Mine
-	%enemy.mineRadius = 5;
+	%enemy.mineRadius = $enemyMineRadius;
+	%enemy.mineDamage = $enemyMineDamage;
 	
 	//GravitPoint
-	%enemy.gravitPointDuration = 3000;
+	%enemy.gravitPointDuration = $gravitPointDuration;
 	
 	//Cooldowns
 	%enemy.cooldownTime = 10000;
@@ -162,6 +163,7 @@ function Enemy::die(%this)
 	{
 		increaseBGSpeed();
 	}
+	%this.increaseOneUpgradeLevel();
 }
 
 function Enemy::updateAngle(%this)
@@ -265,7 +267,7 @@ function Enemy::resetBlendColor(%this)
 {
 	if (%this.flashing)
 	{
-		%this.schedule(16 * $flashTime, resetBlendColor);
+		%this.resetBlendColorSchedule = %this.schedule(16 * $flashTime, resetBlendColor);
 		return;
 	}
 	%this.setBlendColor("1 0.5 0.5");
@@ -364,6 +366,7 @@ function Enemy::clampspeed(%this)
 	}
 }
 
+///enemy sets a mine at its position
 function Enemy::createMine(%this)
 {
 	if (%this.MP < 1 * %this.MPCostFactor || %this.mineCooldown)
@@ -375,6 +378,7 @@ function Enemy::createMine(%this)
 	%this.addMP(-1 * %this.MPCostFactor);
 }
 
+///lets enemy become invisible
 function Enemy::becomeInvisible(%this)
 {
 	if (%this.MP < 1 * %this.MPCostFactor || %this.invisibilityCooldown)
@@ -395,6 +399,7 @@ function Enemy::resetInvisibility(%this)
 	EnemyHPMeterFill.setSrcBlendFactor(SRC_ALPHA);
 }
 
+///shoots out a gravit point from enemys position
 function Enemy::createGravitPoint(%this)
 {
 	if (%this.MP < 1 * %this.MPCostFactor || %this.gravitPointCooldown)
@@ -405,8 +410,47 @@ function Enemy::createGravitPoint(%this)
 	%this.addMP(-1 * %this.MPCostFactor);
 }
 
+///lets enemy fire the gravit point
 function Enemy::fireGravitPoint(%this)
 {
 	if (isObject(%this.GravitPoint))
 		%this.GravitPoint.fire();
+}
+
+///changes a stat of the enemy
+function Enemy::increaseUpgradeLevel(%this, %i)
+{
+	switch(%i)
+	{
+		case 0:
+			$enemyMaxHP += 10;
+		case 1:
+			$enemyMaxMP += 1;
+		case 2:
+			$enemyProjectileSPeed += 2;
+		case 3:
+			$enemyMaxSpeed += 5;
+		case 4:
+			$enemyProjectileDamage += 0.5;
+		case 5:
+			$enemyMineDamage += 10;
+		case 6:
+			$gravitPointLength += 1000;
+		case 7:
+			$enemyInvisibilityLength += 1000;
+	}
+}
+
+///searches for a levelable upgrade and increases it
+function Enemy::increaseOneUpgradeLevel(%this)
+{
+	while (true)
+	{
+		%i = getRandom(0, 7);
+		if ($enemyUgradeLevel[%i] < 6)
+		{
+			%this.increaseUpgradeLevel(0);
+			return;
+		}
+	}
 }

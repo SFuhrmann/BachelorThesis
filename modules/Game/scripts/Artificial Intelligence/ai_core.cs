@@ -39,7 +39,7 @@ function GOAPBehavior::onBehaviorAdd(%this)
 	
 	%this.executeNextBehavior();
 	
-	%this.updateSchedule = %this.schedule(%this.updateRate, update);
+	$aicoreUpdateSchedule = %this.schedule(%this.updateRate, update);
 }
 
 function GOAPBehavior::update(%this)
@@ -56,7 +56,7 @@ function GOAPBehavior::update(%this)
 	
 	%this.currentBehavior.update();
 	
-	%this.updateSchedule = %this.schedule(%this.updateRate, update);
+	$aicoreUpdateSchedule = %this.schedule(%this.updateRate, update);
 }
 
 function GOAPBehavior::executeNextBehavior(%this)

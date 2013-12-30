@@ -35,7 +35,7 @@ function createBeam(%pos, %dir)
 	
 	Level.add(%beam);
 	
-	%beam.updateSchedule = %beam.schedule(31, update);
+	$beamUpdateSchedule = %beam.schedule(31, update);
 	
 	alxPlay("Game:beamshoot");
 }
@@ -50,7 +50,7 @@ function Beam::update(%this)
 	%this.deleteCollisionShape(0);
 	%this.createCircleCollisionShape( %size / 2 );
 	
-	%this.updateSchedule = %this.schedule(31, update);
+	$beamUpdateSchedule = %this.schedule(31, update);
 }
 
 function Beam::onCollision(%this, %obj, %details)

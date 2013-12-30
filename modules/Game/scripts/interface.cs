@@ -664,18 +664,385 @@ function closeInGameMenu()
 
 function stopAllInGameSchedules()
 {
-	if (isEvenPending($createEnemySchedule))
+	if (isEventPending($createEnemySchedule))
 	{
 		$createEnemyScheduleDuration = getEventTimeLeft($createEnemySchedule);
 		cancel($createEnemySchedule);
 		$createEnemyScheduleSave = true;
 	}
+	
+	/*if (isEventPending($aicoreUpdateSchedule))
+	{
+		$aicoreUpdateScheduleDuration = getEventTimeLeft($aicoreUpdateSchedule);
+		cancel($aicoreUpdateSchedule);
+		$aicoreUpdateScheduleSave = true;
+	}*/
+	
+	if (isEventPending($beamUpdateSchedule))
+	{
+		$beamUpdateScheduleDuration = getEventTimeLeft($beamUpdateSchedule);
+		cancel($beamUpdateSchedule);
+		$beamUpdateScheduleSave = true;
+	}
+	
+	if (isEventPending($character.UpdateSchedule))
+	{
+		$character.UpdateScheduleDuration = getEventTimeLeft($character.UpdateSchedule);
+		cancel($character.UpdateSchedule);
+		$character.UpdateScheduleSave = true;
+	}
+	
+	if (isEventPending($character.walkDschedule))
+	{
+		$character.walkDscheduleDuration = getEventTimeLeft($character.walkDschedule);
+		cancel($character.walkDschedule);
+		$character.walkDscheduleSave = true;
+	}
+	
+	if (isEventPending($character.walkUschedule))
+	{
+		$character.walkUscheduleDuration = getEventTimeLeft($character.walkUschedule);
+		cancel($character.walkUschedule);
+		$character.walkUscheduleSave = true;
+	}
+	
+	if (isEventPending($character.walkLschedule))
+	{
+		$character.walkLscheduleDuration = getEventTimeLeft($character.walkLschedule);
+		cancel($character.walkLschedule);
+		$character.walkLscheduleSave = true;
+	}
+	
+	if (isEventPending($character.walkRschedule))
+	{
+		$character.walkRscheduleDuration = getEventTimeLeft($character.walkRschedule);
+		cancel($character.walkRschedule);
+		$character.walkRscheduleSave = true;
+	}
+	
+	if (isEventPending($character.turnOffNoMovingSchedule))
+	{
+		$character.turnOffNoMovingScheduleDuration = getEventTimeLeft($character.turnOffNoMovingSchedule);
+		cancel($character.turnOffNoMovingSchedule);
+		$character.turnOffNoMovingScheduleSave = true;
+	}
+	
+	if (isEventPending($character.shootSchedule))
+	{
+		$character.shootScheduleDuration = getEventTimeLeft($character.shootSchedule);
+		cancel($character.shootSchedule);
+		$character.shootScheduleSave = true;
+	}
+	
+	if (isEventPending($character.coolDownSchedule))
+	{
+		$character.coolDownScheduleDuration = getEventTimeLeft($character.coolDownSchedule);
+		cancel($character.coolDownSchedule);
+		$character.coolDownScheduleSave = true;
+	}
+	
+	if (isEventPending($character.leapingSchedule))
+	{
+		$character.leapingScheduleDuration = getEventTimeLeft($character.leapingSchedule);
+		cancel($character.leapingSchedule);
+		$character.leapingScheduleSave = true;
+	}
+	
+	if (isEventPending(LeapIcon.cooldownSchedule))
+	{
+		LeapIcon.cooldownScheduleDuration = getEventTimeLeft(LeapIcon.cooldownSchedule);
+		cancel(LeapIcon.cooldownSchedule);
+		LeapIcon.cooldownScheduleSave = true;
+	}
+	
+	if (isEventPending($character.callStunSchedule))
+	{
+		$character.callStunScheduleDuration = getEventTimeLeft($character.callStunSchedule);
+		cancel($character.callStunSchedule);
+		$character.callStunScheduleSave = true;
+	}
+	
+	if (isEventPending(StunIcon.cooldownSchedule))
+	{
+		StunIcon.cooldownScheduleDuration = getEventTimeLeft(StunIcon.cooldownSchedule);
+		cancel(StunIcon.cooldownSchedule);
+		StunIcon.cooldownScheduleSave = true;
+	}
+	
+	if (isEventPending(BeamIcon.cooldownSchedule))
+	{
+		BeamIcon.cooldownScheduleDuration = getEventTimeLeft(BeamIcon.cooldownSchedule);
+		cancel(BeamIcon.cooldownSchedule);
+		BeamIcon.cooldownScheduleSave = true;
+	}
+	
+	if (isEventPending($character.flashSchedule))
+	{
+		$character.flashScheduleDuration = getEventTimeLeft($character.flashSchedule);
+		cancel($character.flashSchedule);
+		$character.flashScheduleSave = true;
+	}
+	
+	if (isEventPending($character.resetBlendColorSchedule))
+	{
+		$character.resetBlendColorScheduleDuration = getEventTimeLeft($character.resetBlendColorSchedule);
+		cancel($character.resetBlendColorSchedule);
+		$character.resetBlendColorScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.flashSchedule))
+	{
+		$enemy.flashScheduleDuration = getEventTimeLeft($enemy.flashSchedule);
+		cancel($enemy.flashSchedule);
+		$enemy.flashScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.stunnedSchedule))
+	{
+		$enemy.stunnedScheduleDuration = getEventTimeLeft($enemy.stunnedSchedule);
+		cancel($enemy.stunnedSchedule);
+		$enemy.stunnedScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.coolDownSchedule))
+	{
+		$enemy.coolDownScheduleDuration = getEventTimeLeft($enemy.coolDownSchedule);
+		cancel($enemy.coolDownSchedule);
+		$enemy.coolDownScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.shootSchedule))
+	{
+		$enemy.shootScheduleDuration = getEventTimeLeft($enemy.shootSchedule);
+		cancel($enemy.shootSchedule);
+		$enemy.shootScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.resetBlendColorSchedule))
+	{
+		$enemy.resetBlendColorScheduleDuration = getEventTimeLeft($enemy.resetBlendColorSchedule);
+		cancel($enemy.resetBlendColorSchedule);
+		$enemy.resetBlendColorScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.accelerationSchedule))
+	{
+		$enemy.accelerationScheduleDuration = getEventTimeLeft($enemy.accelerationSchedule);
+		cancel($enemy.accelerationSchedule);
+		$enemy.accelerationScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.resetInvisibilitySchedule))
+	{
+		$enemy.resetInvisibilityScheduleDuration = getEventTimeLeft($enemy.resetInvisibilitySchedule);
+		cancel($enemy.resetInvisibilitySchedule);
+		$enemy.resetInvisibilityScheduleSave = true;
+	}
+	
+	if (isEventPending($firedGravitPointUpdateSchedule))
+	{
+		$firedGravitPointUpdateScheduleDuration = getEventTimeLeft($firedGravitPointUpdateSchedule);
+		cancel($firedGravitPointUpdateSchedule);
+		$firedGravitPointUpdateScheduleSave = true;
+	}
+	
+	if (isEventPending($powerUpSchedule))
+	{
+		$powerUpScheduleDuration = getEventTimeLeft($powerUpSchedule);
+		cancel($powerUpSchedule);
+		$powerUpScheduleSave = true;
+	}
+	
+	if (isEventPending($deactivateDoubleDamageSchedule))
+	{
+		$deactivateDoubleDamageScheduleDuration = getEventTimeLeft($deactivateDoubleDamageSchedule);
+		cancel($deactivateDoubleDamageSchedule);
+		$deactivateDoubleDamageScheduleSave = true;
+	}
+	
+	if (isEventPending($deactivateHalfMPSchedule))
+	{
+		$deactivateHalfMPScheduleDuration = getEventTimeLeft($deactivateHalfMPSchedule);
+		cancel($deactivateHalfMPSchedule);
+		$deactivateHalfMPScheduleSave = true;
+	}
+	
+	if (isEventPending($deactivateDoubleArmorSchedule))
+	{
+		$deactivateDoubleArmorScheduleDuration = getEventTimeLeft($deactivateDoubleArmorSchedule);
+		cancel($deactivateDoubleArmorSchedule);
+		$deactivateDoubleArmorScheduleSave = true;
+	}
+	
+	if (isEventPending($deactivateIncreasedSpeedSchedule))
+	{
+		$deactivateIncreasedSpeedScheduleDuration = getEventTimeLeft($deactivateIncreasedSpeedSchedule);
+		cancel($deactivateIncreasedSpeedSchedule);
+		$deactivateIncreasedSpeedScheduleSave = true;
+	}
+	
+	if (isEventPending($deactivatePowerUpResetColorSchedule))
+	{
+		$deactivatePowerUpResetColorScheduleDuration = getEventTimeLeft($deactivatePowerUpResetColorSchedule);
+		cancel($deactivatePowerUpResetColorSchedule);
+		$deactivatePowerUpResetColorScheduleSave = true;
+	}
 }
 
-function stopAllInGameSchedules()
+function recallAllInGameSchedules()
 {
 	if ($createEnemyScheduleSave)
 	{
-		schedule($createEnemyScheduleDuration, 0, createEnemy, "0 0");
+		$createEnemySchedule = schedule($createEnemyScheduleDuration, 0, createEnemy, "0 0");
+	}
+	
+	/*if ($aicoreUpdateScheduleSave)
+	{
+		$aicoreUpdateSchedule = GOAPBehavior.schedule($aicoreUpdateScheduleDuration, update);
+	}*/
+	
+	if ($beamUpdateScheduleSave)
+	{
+		$beamUpdateSchedule = Beam.schedule($beamUpdateScheduleDuration, update);
+	}
+	
+	if ($character.UpdateScheduleSave)
+	{
+		$character.UpdateSchedule = $character.schedule($character.UpdateScheduleDuration, update);
+	}
+	
+	if ($character.walkDscheduleSave)
+	{
+		$character.walkDschedule = $character.schedule($character.walkDscheduleDuration, walkdown);
+	}
+	
+	if ($character.walkUscheduleSave)
+	{
+		$character.walkUschedule = $character.schedule($character.walkUscheduleDuration, walkup);
+	}
+	
+	if ($character.walkLscheduleSave)
+	{
+		$character.walkLschedule = $character.schedule($character.walkLscheduleDuration, walkleft);
+	}
+	
+	if ($character.walkRscheduleSave)
+	{
+		$character.walkRschedule = $character.schedule($character.walkRscheduleDuration, walkright);
+	}
+	
+	if ($character.turnOffNoMovingScheduleSave)
+	{
+		$character.turnOffNoMovingSchedule = $character.schedule($character.turnOffNoMovingScheduleDuration, turnOffNoMoving);
+	}
+	
+	if ($character.shootScheduleSave)
+	{
+		$character.shootSchedule = $character.schedule($character.shootScheduleDuration, shoot);
+	}
+	
+	if ($character.coolDownScheduleSave)
+	{
+		$character.coolDownSchedule = $character.schedule($character.coolDownScheduleDuration, turnOffCooldown);
+	}
+	
+	if ($character.leapingScheduleSave)
+	{
+		$character.leapingSchedule = $character.schedule($character.leapingScheduleDuration, stopLeap);
+	}
+	
+	if (LeapIcon.cooldownScheduleSave)
+	{
+		LeapIcon.cooldownSchedule = LeapIcon.schedule(LeapIcon.cooldownScheduleDuration, updateCooldown);
+	}
+	
+	if ($character.callStunScheduleSave)
+	{
+		$character.callStunSchedule = $character.schedule($character.callStunScheduleDuration, stunImpact);
+	}
+	
+	if (StunIcon.cooldownScheduleSave)
+	{
+		StunIcon.cooldownSchedule = StunIcon.schedule(StunIcon.cooldownScheduleDuration, updateCooldown);
+	}
+	
+	if (BeamIcon.cooldownScheduleSave)
+	{
+		BeamIcon.cooldownSchedule = BeamIcon.schedule(BeamIcon.cooldownScheduleDuration, updateCooldown);
+	}
+	
+	if ($character.flashScheduleSave)
+	{
+		$character.flashSchedule = $character.schedule($character.flashScheduleDuration, updateflash);
+	}
+	
+	if ($character.resetBlendColorScheduleSave)
+	{
+		$character.resetBlendColorSchedule = $character.schedule($character.resetBlendColorScheduleDuration, resetBlendColor);
+	}
+	
+	if ($enemy.flashScheduleSave)
+	{
+		$enemy.flashSchedule = $enemy.schedule($enemy.flashScheduleDuration, updateFlash);
+	}
+	
+	if ($enemy.stunnedScheduleSave)
+	{
+		$enemy.stunnedSchedule = $enemy.schedule($enemy.stunnedScheduleDuration, endStun);
+	}
+	
+	if ($enemy.coolDownScheduleSave)
+	{
+		$enemy.coolDownSchedule = $enemy.schedule($enemy.coolDownScheduleDuration, turnOffCooldown);
+	}
+	
+	if ($enemy.shootScheduleSave)
+	{
+		$enemy.shootSchedule = $enemy.schedule($enemy.shootScheduleDuration, shoot);
+	}
+	
+	if ($enemy.resetBlendColorScheduleSave)
+	{
+		$enemy.resetBlendColorSchedule = $enemy.schedule($enemy.resetBlendColorScheduleDuration, resetBlendColor);
+	}
+	
+	if ($enemy.resetInvisibilityScheduleSave)
+	{
+		$enemy.resetInvisibilitySchedule = $enemy.schedule($enemy.resetInvisibilityScheduleDuration, resetInvisibility);
+	}
+	
+	if ($firedGravitPointUpdateScheduleSave)
+	{
+		$firedGravitPointUpdateSchedule = FiredGravitPoint.schedule($firedGravitPointUpdateScheduleDuration, update);
+	}
+	
+	if ($powerUpScheduleSave)
+	{
+		$powerUpSchedule = schedule($powerUpScheduleDuration, 0, createPowerUp);
+	}
+	
+	if ($deactivateDoubleDamageScheduleSave)
+	{
+		$deactivateDoubleDamageScheduleSave = schedule($deactivateDoubleDamageScheduleDuration, 0, deactivateDoubleDamage, $ddObject);
+	}
+	
+	if ($deactivateHalfMPScheduleSave)
+	{
+		$deactivateHalfMPScheduleSave = schedule($deactivateHalfMPScheduleDuration, 0, deactivateHalfMP, $hmpObject);
+	}
+	
+	if ($deactivateDoubleArmorScheduleSave)
+	{
+		$deactivateDoubleArmorScheduleSave = schedule($deactivateDoubleArmorScheduleDuration, 0, deactivateDoubleArmor, $daObject);
+	}
+	
+	if ($deactivateIncreasedSpeedScheduleSave)
+	{
+		$deactivateIncreasedSpeedScheduleSave = schedule($deactivateIncreasedSpeedScheduleDuration, 0, deactivateIncreasedSpeed, $siObject);
+	}
+	
+	if ($deactivatePowerUpResetColorScheduleSave)
+	{
+		$deactivatePowerUpResetColorSchedule = $daObject2.schedule($deactivatePowerUpResetColorScheduleDuration. resetBlendColor);
 	}
 }

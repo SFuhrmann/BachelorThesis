@@ -107,5 +107,5 @@ function FiredGravitPoint::update(%this)
 		$character.setLinearVelocity( getWord($character.getLinearVelocity(), 0) + %dX * $gravitPointInfluence SPC getWord($character.getLinearVelocity(), 1) + %dY * $gravitPointInfluence );
 	}
 	
-	%this.schedule(16, update);
+	$firedGravitPointUpdateSchedule = %this.schedule(16, update);
 }
