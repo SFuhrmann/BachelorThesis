@@ -1,0 +1,7 @@
+<AudioAsset
+	AssetName="attractionsound"
+	AudioFile="attraction_sound.wav"
+	Volume=0.5
+	VolumeChannel=1
+	Looping="false"
+/>

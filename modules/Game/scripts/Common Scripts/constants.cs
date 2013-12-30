@@ -39,6 +39,10 @@ $averagePowerUpPause = 15000;
 //Mine
 $mineDamage = 50;
 
+//Attraction
+$attractionPointSize = 60;
+$gravitPointInfluence = 0.85;
+
 
 function createSaveGame()
 {

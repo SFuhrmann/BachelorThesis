@@ -53,6 +53,9 @@ function createEnemy(%pos)
 	//Mine
 	%enemy.mineRadius = 5;
 	
+	//GravitPoint
+	%enemy.gravitPointDuration = 3000;
+	
 	//Cooldowns
 	%enemy.cooldownTime = 10000;
 	
@@ -363,17 +366,18 @@ function Enemy::clampspeed(%this)
 
 function Enemy::createMine(%this)
 {
-	if (%this.MP < 1 * %this.MPCostFactor)
+	if (%this.MP < 1 * %this.MPCostFactor || %this.mineCooldown)
 		return;
 	
 	createMine(%this);
+	%this.mineCooldown = true;
 	
 	%this.addMP(-1 * %this.MPCostFactor);
 }
 
 function Enemy::becomeInvisible(%this)
 {
-	if (%this.MP < 1 * %this.MPCostFactor)
+	if (%this.MP < 1 * %this.MPCostFactor || %this.invisibilityCooldown)
 		return;
 		
 	%this.setSrcBlendFactor(ZERO);
@@ -389,4 +393,20 @@ function Enemy::resetInvisibility(%this)
 	%this.setSrcBlendFactor(SRC_ALPHA);
 	EnemyHPMeterOutline.setSrcBlendFactor(SRC_ALPHA);
 	EnemyHPMeterFill.setSrcBlendFactor(SRC_ALPHA);
+}
+
+function Enemy::createGravitPoint(%this)
+{
+	if (%this.MP < 1 * %this.MPCostFactor || %this.gravitPointCooldown)
+		return;
+		
+	shootGravitPoint(%this);
+	alxPlay("Game:beamshoot");
+	%this.addMP(-1 * %this.MPCostFactor);
+}
+
+function Enemy::fireGravitPoint(%this)
+{
+	if (isObject(%this.GravitPoint))
+		%this.GravitPoint.fire();
 }

@@ -169,7 +169,7 @@ function createUpgradeItems()
 		%item.SceneLayer = 1;
 		%item.setUseInputEvents(true);
 		
-		if (%item.number < 2 && %item.level > 5)
+		if (%item.level > 5)
 		{
 			%item.setBlendColor("0.5 0.5 0.5");
 			%item.inactiveUpgrade = true;
@@ -186,7 +186,7 @@ function createUpgradeItems()
 
 function UpgradeSprite::update(%this)
 {
-	if (%this.number > 1 || %this.level < 6)
+	if (%this.level < 6)
 	{
 		%this.costsFont.Text = "$" @ calculateCosts(%this.level);
 		%this.currentLevelFont.Text = "Lv.:" SPC getUpgradeLevel(%this.number);
@@ -330,7 +330,7 @@ function increaseUpgradeLevel(%i, %obj)
 {
 	if (%obj.inactiveUpgrade)
 		return;
-		
+	
 	%costs = calculateCosts(getUpgradeLevel(%i));
 	if ($currentScore >= %costs)
 	{	

@@ -54,10 +54,6 @@ function createProjectile(%position, %direction, %speed, %addVeloX, %addVeloY, %
 	if (%owner.doubleDamage)
 		%shot.setBlendColor("1 0 0");
 	
-	//add the current speed of the character
-	%newVeloX = %shot.getLinearVelocityX() + %addVeloX;
-	%newVeloY = %shot.getLinearVelocityY() + %addVeloY;
-	
 	//%shot.setLinearVelocity(%newVeloX SPC %newVeloY);
 	Level.add(%shot);
 	

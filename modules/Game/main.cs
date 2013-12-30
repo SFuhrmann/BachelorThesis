@@ -17,6 +17,7 @@ function Game::create()
 	exec("./scripts/elements/enemy.cs");
 	exec("./scripts/elements/packages.cs");
 	exec("./scripts/elements/mine.cs");
+	exec("./scripts/elements/gravitpoint.cs");
 	exec("./scripts/common scripts/constants.cs");
 	exec("./scripts/common scripts/functions.cs");
 	exec("./scripts/common scripts/effects.cs");
@@ -161,7 +162,9 @@ function createGame()
 	
 	//debug
 	//$enemy.schedule(2000, createMine);
-	$enemy.schedule(2000, becomeInvisible);
+	//$enemy.schedule(2000, becomeInvisible);
+	$enemy.schedule(1000, createGravitPoint);
+	$enemy.schedule(3000, fireGravitPoint);
 	
 	$level = 0;
 }
@@ -264,6 +267,7 @@ function createMenuBackGround()
 	for (%i = 1; %i < 3; %i++)
 	{
 		%bg = new Scroller( GameBG );
+		%bg.SceneGroup = 31;
 		%bg.SceneLayer = 31;
 		%bg.Size = 720 SPC 600;
 		%bg.Position = 10;

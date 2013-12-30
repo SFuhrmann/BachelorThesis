@@ -17,7 +17,6 @@ function createMine(%this)
 	%mine = new ScriptObject( Mine );
 	%innerMine = new ShapeVector( InnerMine );
 	
-	//determine whether it contains HP or MP
 	%innerMine.setLineColor( 1, 0.5, 0.5);
 
 	//create Graphics

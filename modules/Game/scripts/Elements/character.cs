@@ -775,9 +775,9 @@ function Character::getCurrentUpgradeLevel(%this, %i)
 			return %this.leapCostsUpgrades;
 		case 5:
 			return %this.beamGrowthUpgrades;
-		case 6:
-			return %this.damageUpgrades;
 		case 7:
+			return %this.damageUpgrades;
+		case 6:
 			return %this.speedUpgrades;
 		case 8:
 			return %this.creditsUpgrades;

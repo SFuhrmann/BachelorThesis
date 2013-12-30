@@ -104,3 +104,36 @@ function StunRing::blink(%this)
 	
 	%this.blinkSchedule = %this.schedule(30, blink);
 }
+
+function createAttractionEffect(%point, %duration)
+{
+	%attr = new Sprite( AttractionEffect );
+	%attr.setImage("Game:attraction");
+	%attr.Position = %point.Position;
+	%attr.duration = %duration;
+	%attr.Size = $attractionPointSize SPC $attractionPointSize;
+	%attr.SizeSteps = $attractionPointSize / %duration;
+	%attr.alphaSteps = 1 / %duration;
+	%attr.SceneGroup = 23;
+	%attr.SceneLayer = 15;
+	%attr.setBodyType( static );
+	Level.add(%attr);
+	%attr.update();
+}
+
+function AttractionEffect::update(%this)
+{
+	if (%this.duration < 1)
+	{
+		schedule(1, 0, deleteObj, %this);
+		return;
+	}	
+	%this.duration--;
+	
+	%size = getWord(%this.size, 0);
+	
+	%this.size = %size - %this.SizeSteps SPC %size - %this.SizeSteps;
+	%this.setBlendAlpha( %this.getBlendAlpha() - %this.alphaSteps);
+	
+	%this.schedule(16, update);
+}
