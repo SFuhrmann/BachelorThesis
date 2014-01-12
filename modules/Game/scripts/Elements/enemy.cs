@@ -60,11 +60,13 @@ function createEnemy(%pos)
 	//Cooldowns
 	%enemy.cooldownTime = 10000;
 	
+	
+	$enemy = %enemy;
 	%enemy.AIBehavior = GOAPBehavior.createInstance();
 	%enemy.addBehavior(%enemy.AIBehavior);
 	
 	%enemy.updateAngle();
-	$enemy = %enemy;
+	
 	
 	%enemy.createEnemyLifeBar();
 	%enemy.shoot();
@@ -374,6 +376,7 @@ function Enemy::createMine(%this)
 	
 	createMine(%this);
 	%this.mineCooldown = true;
+	%this.mineCooldownSchedule = %this.schedule(10000, mineCooldown);
 	
 	%this.addMP(-1 * %this.MPCostFactor);
 }
@@ -383,11 +386,14 @@ function Enemy::becomeInvisible(%this)
 {
 	if (%this.MP < 1 * %this.MPCostFactor || %this.invisibilityCooldown)
 		return;
-		
+	
+	%this.invisibilityCooldown = true;
 	%this.setSrcBlendFactor(ZERO);
 	EnemyHPMeterOutline.setSrcBlendFactor(ZERO);
 	EnemyHPMeterFill.setSrcBlendFactor(ZERO);
 	%this.resetInvisibilitySchedule = %this.schedule(%this.InvisibilityLength, resetInvisibility);
+	
+	%this.invisibilityCooldownSchedule = %this.schedule(10000, invisibilityCooldown);
 	
 	%this.addMP(-1 * %this.MPCostFactor);
 }
@@ -406,8 +412,10 @@ function Enemy::createGravitPoint(%this)
 		return;
 		
 	shootGravitPoint(%this);
+	this.gravitPointCooldown = true;
 	alxPlay("Game:beamshoot");
 	%this.addMP(-1 * %this.MPCostFactor);
+	%this.gravitPointCooldownSchedule = %this.schedule(10000, gravitPointCooldown);
 }
 
 ///lets enemy fire the gravit point
@@ -449,8 +457,129 @@ function Enemy::increaseOneUpgradeLevel(%this)
 		%i = getRandom(0, 7);
 		if ($enemyUgradeLevel[%i] < 6)
 		{
-			%this.increaseUpgradeLevel(0);
+			%this.increaseUpgradeLevel(%i);
 			return;
 		}
 	}
+}
+
+function Enemy::mineCooldown(%this)
+{
+	%this.mineCooldown = false;
+}
+
+function Enemy::invisibilityCooldown(%this)
+{
+	%this.invisibilityCooldown = false;
+}
+
+function Enemy::gravitPointCooldown(%this)
+{
+	%this.gravitPointCooldown = false;
+}
+
+/*%firstAction = new ScriptObject(GetPowerupAction);
+	%firstAction.initialize(-1);
+	%this.actionQueue.push(%firstAction);*/
+
+function Enemy::getAvailableActions(%this, %wp)
+{
+	%result = "";
+	if (%wp.ownMP > 1)
+	{
+		if (!%wp.invisibilityCooldown)
+		{
+			//invisibility
+			%action = new ScriptObject(BecomeInvisibleAction);
+			%action.initialize();
+			%result = addWord(%result, %action);
+		}
+		if (!%wp.mineCooldown)
+		{
+			//mine
+			%action = new ScriptObject(SetMineAction);
+			%action.initialize();
+			%result = addWord(%result, %action);
+		}
+		if (!%wp.gravitPointCooldown)
+		{
+			//gravitpoint
+			%action = new ScriptObject(ShootGravitPointAction);
+			%action.initialize();
+			%result = addWord(%result, %action);
+		}
+	}
+	if (%wp.powerUpExists)
+	{
+		//powerup
+		%action = new ScriptObject(GetPowerupAction);
+		%action.initialize();
+		%result = addWord(%result, %action);
+	}
+	//its sufficient if the enemy spontaneously decides if he can run away, so this test does not have to be
+	//based on the current worldprojection but the current "real" world
+	if (%this.inAcceptableBorder())
+	{
+		//away
+		%action = new ScriptObject(FleeFromEnemyAction);
+		%action.initialize(5);
+		%result = addWord(%result, %action);
+		//around_ccw
+		%action = new ScriptObject(MoveAroundEnemyCCWAction);
+		%action.initialize(5);
+		%result = addWord(%result, %action);
+		//around_cw
+		%action = new ScriptObject(MoveAroundEnemyCWAction);
+		%action.initialize(5);
+		%result = addWord(%result, %action);
+	}
+	if (%wp.distanceEnemy > 5 || %wp.distanceEnemy == -1 )
+	{
+		//toward
+		%action = new ScriptObject(FollowEnemyAction);
+		%action.initialize(5);
+		%result = addWord(%result, %action);
+	}
+	if (%wp.gravitPointProjectileExists)
+	{
+		//use gravitPoint
+		%action = new ScriptObject(UseGravitPointAction);
+		%action.initialize();
+		%result = addWord(%result, %action);
+	}
+	//package
+	%action = new ScriptObject(FindNearestPackageAction);
+	%action.initialize();
+	%result = addWord(%result, %action);
+	//stand
+	%action = new ScriptObject(StandStillAction);
+	%action.initialize(5);
+	%result = addWord(%result, %action);
+	
+	return %result;
+}
+
+///checks if the enemy is far away enough from the levelborders
+function Enemy::inAcceptableBorder(%this)
+{
+	return getWord(%this.Position, 0) > -$mapSize/2 - 5 && getWord(%this.Position, 0) < $mapSize/2 - 5 && getWord(%this.Position, 1) > -$mapSize/2 - 5 && getWord(%this.Position, 1) < $mapSize/2 - 5;
+}
+
+//returns the number of Skills that are on Cooldown
+function Enemy::getSkillsOnCooldown(%this)
+{
+	%i = 0;
+	if (%this.invisibilityCooldown)
+		%i++;
+	if (%this.mineCooldown)
+		%i++;
+	if (%this.gravitPointCooldown)
+		%i++;
+	return %i;
+}
+
+//returns if the Character is inside the Gravit Point
+function Enemy::getCharacterInGravitPoint(%this)
+{
+	return VectorDist($character.Position, %this.GravitPoint.Position) < getWord(%this.GravitPoint.Size, 0);
 }

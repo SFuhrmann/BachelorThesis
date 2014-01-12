@@ -46,3 +46,8 @@ function UseGravitPointBehavior::update(%this)
 		%this.done = true;
 	}
 }
+
+function UseGravitPointAction::getChanges(%this)
+{
+	return "0 0 0 0 0 0 0 0 0 0" SPC $enemy.getCharacterInGravitPoint() SPC "0";
+}

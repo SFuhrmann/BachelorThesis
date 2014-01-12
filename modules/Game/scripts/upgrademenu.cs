@@ -268,7 +268,7 @@ function getUpgradeDescription(%i)
 		case 5:
 			return "Increases Beam Growth Rate" TAB "Start: 0.3 dmg/s" TAB "Per Level: +0.05 dmg/s" TAB "Current Max.:" SPC getRounded(0.3 + 0.05 * getUpgradeLevel(%i), -2) SPC "dmg/s";
 		case 6:
-			return "Increases Movement Speed" TAB "Start: 15 m/s" TAB "Per Level: +2 m/s" TAB "Current Max.:" SPC mRound(15 + 2 * getUpgradeLevel(%i)) SPC "m/s";
+			return "Increases Movement Speed" TAB "Start: 20 m/s" TAB "Per Level: +4 m/s" TAB "Current Max.:" SPC mRound(20 + 4 * getUpgradeLevel(%i)) SPC "m/s";
 		case 7:
 			return "Increases Projectile Dmg" TAB "Start: 2 dmg" TAB "Per Level: +0.5 dmg" TAB "Current Max.:" SPC getRounded(2 + 0.5 * getUpgradeLevel(%i), -1) SPC "dmg";
 		case 8:

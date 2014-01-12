@@ -49,3 +49,8 @@ function FollowEnemyBehavior::update(%this)
 		%this.owner.moveTowards($character.Position);
 	}
 }
+
+function FollowEnemyAction::getChanges(%this)
+{
+	return "0 0 0 0 0 0 0 0.1 -10 0 0 0";
+}

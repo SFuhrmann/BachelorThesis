@@ -120,7 +120,8 @@ function ActionStack::deleteAll(%this)
 ///pushes a whole list of actions
 function ActionStack::pushList(%this, %actions)
 {
-	for (%i = 0; %i < %actions.count; %i++)
+	%this.push(getWord(%actions, %i));
+	for (%i = 1; %i < %actions.count; %i++)
 	{
 		%this.push(getWord(%actions, %i));
 	}
@@ -133,7 +134,7 @@ function ActionStack::isSimiliar(%this, %actions)
 {
 	%necessaryGrade = 5;
 	
-	//if 
+	
 	if (%actions.count < %necessaryGrade && %actions.count != %this.length)
 		return false;
 	

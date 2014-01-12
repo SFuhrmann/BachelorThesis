@@ -100,3 +100,8 @@ function ShootCharacterBehavior::onBehaviorRemove(%this)
 	cancel(%this.shootSchedule);
 	schedule(31, 0, deleteObj, %this);
 }
+
+function ShootCharacterBehavior::getChanges(%this)
+{
+	return $enemy.projectileDamage / 2 SPC "0 0 0 0 0 0 0 0 0 0 0";
+}

@@ -33,8 +33,11 @@ function GOAPBehavior::onBehaviorAdd(%this)
 	%this.actionQueue = new ScriptObject( ActionStack );
 	%this.actionQueue.initialize();
 	
-	%firstAction = new ScriptObject(GetPowerupAction);
-	%firstAction.initialize(-1);
+	$saveWorldProjections = createWorldProjectionQueue();
+	$saveWorldProjections.addProjection(createCurrentWorldProjection());
+	
+	%firstAction = new ScriptObject(StandStillAction);
+	%firstAction.initialize(5);
 	%this.actionQueue.push(%firstAction);
 	
 	%this.executeNextBehavior();
@@ -44,29 +47,33 @@ function GOAPBehavior::onBehaviorAdd(%this)
 
 function GOAPBehavior::update(%this)
 {
-	/*
-	%actionList = goap_plan_actions(%this.owner);
-	if (!%this.actionQueue.isSimiliar(%actionList))
+	$saveWorldProjections.addProjection(createCurrentWorldProjection());
+	if ($saveWorldProjections.count > 10)
 	{
-		%this.actionQueue.deleteAll();
-		%this.actionQueue.pushList(%actionList);
-		
-		%this.executeNextBehavior();
-	}*/
+		$saveWorldProjections.removeLastProjection();
+	}
 	
+	
+	%actionList = goap_plan_actions(%this.owner);
+	
+	%this.actionQueue.deleteAll();
+	%this.actionQueue.pushList(%actionList);
+	
+	%this.executeNextBehavior();
 	%this.currentBehavior.update();
+	
+	echo(%this.currentAction.id);
 	
 	$aicoreUpdateSchedule = %this.schedule(%this.updateRate, update);
 }
 
 function GOAPBehavior::executeNextBehavior(%this)
 {
-	%action = %this.actionQueue.pop();
+	%action = %this.actionQueue.dequeue();
 	
 	%this.owner.removeBehavior(%this.currentBehavior);
 	
 	%this.currentAction = %action;
-	
 	%this.currentBehavior = %action.id.createInstance();
 	%this.owner.addBehavior(%this.currentBehavior);
 }

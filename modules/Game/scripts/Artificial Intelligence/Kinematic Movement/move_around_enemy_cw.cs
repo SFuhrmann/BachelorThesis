@@ -49,3 +49,8 @@ function MoveAroundEnemyCWBehavior::update(%this)
 		%this.owner.moveAroundCW($character.Position);
 	}
 }
+
+function MoveAroundEnemyCWAction::getChanges(%this)
+{
+	return "0 0 0 0 0 0 0 0 0 0 0 0";
+}

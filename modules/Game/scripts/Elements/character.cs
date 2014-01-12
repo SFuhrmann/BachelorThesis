@@ -55,7 +55,7 @@ function createCharacter(%pos)
 	
 	//States Properties:
 	//Movement
-	$character.maxSpeed = 15;
+	$character.maxSpeed = 20;
 	$character.saveMaxSpeed = $character.maxSpeed;
 	$character.acceleration = 3;
 	
@@ -727,7 +727,7 @@ function Character::addItem(%this, %i)
 			if (%this.stunLengthUpgrades >= $saveGame.stunLength)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 		case "speed":
-			%this.maxSpeed += 2;
+			%this.maxSpeed += 4;
 			%this.speedUpgrades++;
 			%this.acceleration = %this.maxSpeed / 5;
 			if (%this.speedUpgrades >= $saveGame.speed)
@@ -788,7 +788,6 @@ function Character::resetBlendColor(%this)
 {
 	if (%this.flashing)
 	{
-		echo("Character flashed on Resetting Blend Color");
 		%this.resetBlendColorSchedule = %this.schedule(16 * $flashTime, resetBlendColor);
 		return;
 	}

@@ -22,7 +22,7 @@ if (!isObject(FleeFromEnemyBehavior))
   %template.behaviorType = "AI FleeFromEnemy";
   %template.description  = "Lets Agent Flee From the Enemy.";
 
-  %template.addBehaviorField(duration, "duration of the fleeing in GOAP-Updates (default 250ms)", int, -1);
+  %template.addBehaviorField(duration, "duration of the fleeing in GOAP-Updates (default 250ms)", int, 5);
 }
 
 function FleeFromEnemyAction::initialize(%this, %duration)
@@ -48,4 +48,9 @@ function FleeFromEnemyBehavior::update(%this)
 		%this.duration--;
 		%this.owner.moveAwayFrom($character.Position);
 	}
+}
+
+function FleeFromEnemyAction::getChanges(%this)
+{
+	return "0 0 -2 0 0 0 0 -0.1 10 0 0 0";
 }

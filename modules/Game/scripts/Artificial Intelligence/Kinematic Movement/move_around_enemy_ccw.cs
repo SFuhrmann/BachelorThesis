@@ -49,3 +49,8 @@ function MoveAroundEnemyCCWBehavior::update(%this)
 		%this.owner.moveAroundCCW($character.Position);
 	}
 }
+
+function MoveAroundEnemyCCWAction::getChanges(%this)
+{
+	return "0 0 0 0 0 0 0 0 0 0 0 0";
+}

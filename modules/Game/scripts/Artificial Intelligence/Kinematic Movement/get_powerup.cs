@@ -37,11 +37,22 @@ function GetPowerupBehavior::update(%this)
 {
 	if (%this.done || !isObject($powerup))
 	{
-		//%this.owner.AIBehavior.executeNextBehavior();
+		%this.owner.AIBehavior.executeNextBehavior();
 		return;
 	}
 	else 
 	{
 		%this.owner.moveTowards($powerup.Position);
 	}
+}
+
+function GetPowerupAction::onCollision(%this, %obj, %details)
+{
+	if (%obj.SceneGroup == 25)
+		%this.done = true;
+}
+
+function GetPowerupAction::getChanges(%this)
+{
+	return "0 0 0 0 0 0 0 0 0 0 0 0";
 }

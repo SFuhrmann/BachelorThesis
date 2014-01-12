@@ -671,12 +671,26 @@ function stopAllInGameSchedules()
 		$createEnemyScheduleSave = true;
 	}
 	
-	/*if (isEventPending($aicoreUpdateSchedule))
+	if (isEventPending($enemy.gravitPointCooldownSchedule))
 	{
-		$aicoreUpdateScheduleDuration = getEventTimeLeft($aicoreUpdateSchedule);
-		cancel($aicoreUpdateSchedule);
-		$aicoreUpdateScheduleSave = true;
-	}*/
+		$enemy.gravitPointCooldownScheduleDuration = getEventTimeLeft($enemy.gravitPointCooldownSchedule);
+		cancel($enemy.gravitPointCooldownSchedule);
+		$enemy.gravitPointCooldownScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.mineCooldownSchedule))
+	{
+		$enemy.mineCooldownScheduleDuration = getEventTimeLeft($enemy.mineCooldownSchedule);
+		cancel($enemy.mineCooldownSchedule);
+		$enemy.mineCooldownScheduleSave = true;
+	}
+	
+	if (isEventPending($enemy.invisibilityCooldownSchedule))
+	{
+		$enemy.invisibilityCooldownScheduleDuration = getEventTimeLeft($enemy.invisibilityCooldownSchedule);
+		cancel($enemy.invisibilityCooldownSchedule);
+		$enemy.invisibilityCooldownScheduleSave = true;
+	}
 	
 	if (isEventPending($beamUpdateSchedule))
 	{
@@ -896,10 +910,20 @@ function recallAllInGameSchedules()
 		$createEnemySchedule = schedule($createEnemyScheduleDuration, 0, createEnemy, "0 0");
 	}
 	
-	/*if ($aicoreUpdateScheduleSave)
+	if ($enemy.mineCooldownScheduleSave)
 	{
-		$aicoreUpdateSchedule = GOAPBehavior.schedule($aicoreUpdateScheduleDuration, update);
-	}*/
+		$enemy.mineCooldownSchedule = $enemy.schedule($createEnemyScheduleDuration, mineCooldown);
+	}
+	
+	if ($enemy.gravitPointCooldownScheduleSave)
+	{
+		$enemy.gravitPointCooldownSchedule = $enemy.schedule($createEnemyScheduleDuration, gravitPointCooldown);
+	}
+	
+	if ($enemy.invisibilityCooldownScheduleSave)
+	{
+		$enemy.invisibilityCooldownSchedule = $enemy.schedule($createEnemyScheduleDuration, invisibilityCooldown);
+	}
 	
 	if ($beamUpdateScheduleSave)
 	{

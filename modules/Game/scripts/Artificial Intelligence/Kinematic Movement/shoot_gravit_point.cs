@@ -46,3 +46,8 @@ function ShootGravitPointBehavior::update(%this)
 		%this.done = true;
 	}
 }
+
+function ShootGravitPointAction::getChanges(%this)
+{
+	return "0 0 0 1 0 0 -1 0 0 0 0 0";
+}

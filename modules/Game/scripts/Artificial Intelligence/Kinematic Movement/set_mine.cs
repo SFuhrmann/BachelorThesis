@@ -46,3 +46,8 @@ function SetMineBehavior::update(%this)
 		%this.done = true;
 	}
 }
+
+function SetMineAction::getChanges(%this)
+{
+	return "0 0 0 1 0 0 -1 0 0 0 0" SPC VectorDist($enemy.Position, $character.Position);
+}

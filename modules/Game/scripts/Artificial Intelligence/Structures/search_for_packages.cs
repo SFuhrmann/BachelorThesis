@@ -32,3 +32,26 @@ function findNearestPackage(%pos)
 		%i++;
 	}
 }
+
+function getDistanceNearestPackage(%pos)
+{
+	%i = 1;
+	%radius = 10;
+	%count = 0;
+	
+	while(%i < 10)
+	{
+		%packages = Level.pickCircle(%pos, %i * %radius);
+		
+		for (%j = 0; %j < %packages.count; %j++)
+		{
+			%package = getWord(%packages, %j);
+			if (%package.SceneGroup == 5)
+			{
+				return %i * %radius;
+			}
+		}
+		%i++;
+	}
+	return %i * %radius;
+}

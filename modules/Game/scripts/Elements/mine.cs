@@ -67,6 +67,8 @@ function createMine(%this)
 	Level.add(%outerMine);
 	
 	%outerMine.Mine = %mine;
+	
+	$mine = %outerMine;
 }
 
 function OuterMine::onCollision(%this, %obj, %details)

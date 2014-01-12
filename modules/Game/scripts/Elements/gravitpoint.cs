@@ -49,6 +49,7 @@ function shootGravitPoint(%agent)
 	
 	//add to Scene
 	Level.add(%grav);
+	$gravitPointProjectile = %grav;
 	
 	%agent.GravitPoint = %grav;
 }

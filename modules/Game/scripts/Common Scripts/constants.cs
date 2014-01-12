@@ -43,10 +43,14 @@ $mineDamage = 50;
 $attractionPointSize = 60;
 $gravitPointInfluence = 0.85;
 
+//AI Structures
+$weakIndices = "0 5 7 8 9 10 11";
+$AIDLSDEPTH = 2;
+
 //EnemyValues
 function setEnemyValues()
 {
-	$enemyMaxSpeed = 15;
+	$enemyMaxSpeed = 20;
 	$enemyProjectileSpeed = 25;
 	$enemyProjectileDamage = 2;
 	$enemyMaxHP = 100;

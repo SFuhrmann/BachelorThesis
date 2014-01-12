@@ -54,7 +54,12 @@ function BecomeInvisibleBehavior::update(%this)
 	}
 	else 
 	{
-		%this.owner.becomeInvisble();
+		%this.owner.becomeInvisible();
 		%this.done = true;
 	}
+}
+
+function BecomeInvisibleAction::getChanges(%this)
+{
+	return "0 0 0 1 -1 0 -1 0 0 0 0 0";
 }

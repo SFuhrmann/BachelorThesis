@@ -32,10 +32,15 @@ function Game::create()
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/find_nearest_package.cs");
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/get_powerup.cs");
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/become_invisible.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/set_mine.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/shoot_gravit_point.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/use_gravit_point.cs");
+	exec("./scripts/Artificial Intelligence/Kinematic Movement/move_around_enemy_ccw.cs");
 	exec("./scripts/Artificial Intelligence/ai_core.cs");
+	exec("./scripts/Artificial Intelligence/goap.cs");
 	exec("./scripts/Artificial Intelligence/Structures/actionqueue.cs");
-	exec("./scripts/Artificial Intelligence/Structures/findpath.cs");
-	exec("./scripts/Artificial Intelligence/Structures/getlineofsight.cs");
+	exec("./scripts/Artificial Intelligence/Structures/world_projection.cs");
+	exec("./scripts/Artificial Intelligence/Structures/world_projection_queue.cs");
 	exec("./scripts/Artificial Intelligence/Structures/heap.cs");
 	exec("./scripts/Artificial Intelligence/Structures/search_for_packages.cs");
 	
@@ -192,7 +197,7 @@ function createMenuItems()
 	%title.Image = "Game:Font";
 	%title.FontSize = "6 9";
 	%title.Position = "0 15";
-	%title.Text = "Genius Baus";
+	%title.Text = "Metis Novis";
 	%title.SceneGroup = 31;
 	%title.SceneLayer = 2;
 	MainMenu.add(%title);

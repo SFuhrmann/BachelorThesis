@@ -126,7 +126,7 @@ function activateUpgrade(%i, %obj)
 				$daObject = $character;
 			}
 		case 5:
-			%obj.maxSpeed *= 2;
+			%obj.maxSpeed *= 1.5;
 			%obj.setBlendColor("1 1 1");
 			%obj.acceleration = %obj.maxSpeed / 5;
 			$deactivateIncreasedSpeedSchedule = schedule(15000, 0, deactivateSpeedIncrease, %obj);
@@ -157,7 +157,7 @@ function deactivateDoubleArmor(%obj)
 
 function deactivateSpeedIncrease(%obj)
 {
-	%obj.maxSpeed /= 2;
+	%obj.maxSpeed /= 1.5;
 	%obj.acceleration = %obj.maxSpeed / 5;
 	%obj.resetBlendColor();
 }

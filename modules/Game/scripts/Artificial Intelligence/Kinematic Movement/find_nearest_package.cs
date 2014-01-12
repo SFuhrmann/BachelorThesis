@@ -58,5 +58,11 @@ function FindNearestPackageBehavior::update(%this)
 //subtract 1 from amount for every package found
 function FindNearestPackageBehavior::onCollision(%this, %obj, %details)
 {
-	
+	if (%obj.SceneGroup == 5)
+		%this.amount--;
+}
+
+function FindNearestPackageAction::getChanges(%this)
+{
+	return "0 0.5 -1 0 0 0 0.02 0 2 0 0 0";
 }
