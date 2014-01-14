@@ -59,7 +59,9 @@ function BecomeInvisibleBehavior::update(%this)
 	}
 }
 
-function BecomeInvisibleAction::getChanges(%this)
+function BecomeInvisibleAction::applyChanges(%this, %wp)
 {
-	return "0 0 0 1 -1 0 -1 0 0 0 0 0";
+	%wp.invisibility = 1;
+	%wp.invisibilityCooldown = 1;
+	%wp.ownMP--;
 }

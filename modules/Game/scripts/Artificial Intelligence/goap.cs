@@ -79,6 +79,7 @@ function GOAP_Node::expand(%this)
 		//echo(%action.id SPC %node.value);
 		%node.parent = %this;
 		%nodes = addWord(%nodes, %node);
+		//echo(%action.id SPC %node.value);
 	}
 	return %nodes;
 }
@@ -89,7 +90,7 @@ function GOAP_Node::getActionList(%this)
 	%result = "";
 	while (!%node.startNode)
 	{
-		%result = addWord(%result, %node.action);
+		%result = addWordInFront(%result, %node.action);
 		%node = %node.parent;
 	}
 	return %result;

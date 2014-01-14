@@ -220,12 +220,15 @@ function Enemy::stunned(%this, %i)
 	%this.AIBehavior.executeNextBehavior();
 	
 	%this.stunned = true;
+	%this.saveMaxSpeed = %this.maxSpeed;
+	%this.maxSpeed = 0;
 	%this.stunnedSchedule = %this.schedule($character.stunLength, endStun);
 }
 
 function Enemy::endStun(%this)
 {
 	%this.stunned = false;
+	%this.maxSpeed = %this.saveMaxSpeed;
 }
 
 function Enemy::shoot(%this)
@@ -396,6 +399,8 @@ function Enemy::becomeInvisible(%this)
 	%this.invisibilityCooldownSchedule = %this.schedule(10000, invisibilityCooldown);
 	
 	%this.addMP(-1 * %this.MPCostFactor);
+	
+	%this.invisible = true;
 }
 
 function Enemy::resetInvisibility(%this)
@@ -403,6 +408,7 @@ function Enemy::resetInvisibility(%this)
 	%this.setSrcBlendFactor(SRC_ALPHA);
 	EnemyHPMeterOutline.setSrcBlendFactor(SRC_ALPHA);
 	EnemyHPMeterFill.setSrcBlendFactor(SRC_ALPHA);
+	%this.invisible = false;
 }
 
 ///shoots out a gravit point from enemys position
@@ -476,11 +482,8 @@ function Enemy::invisibilityCooldown(%this)
 function Enemy::gravitPointCooldown(%this)
 {
 	%this.gravitPointCooldown = false;
+	$gravitPointProjectile.delete();
 }
-
-/*%firstAction = new ScriptObject(GetPowerupAction);
-	%firstAction.initialize(-1);
-	%this.actionQueue.push(%firstAction);*/
 
 function Enemy::getAvailableActions(%this, %wp)
 {
@@ -509,16 +512,16 @@ function Enemy::getAvailableActions(%this, %wp)
 			%result = addWord(%result, %action);
 		}
 	}
-	if (%wp.powerUpExists)
+	if (isObject($powerup))
 	{
 		//powerup
 		%action = new ScriptObject(GetPowerupAction);
 		%action.initialize();
 		%result = addWord(%result, %action);
 	}
-	//its sufficient if the enemy spontaneously decides if he can run away, so this test does not have to be
-	//based on the current worldprojection but the current "real" world
-	if (%this.inAcceptableBorder())
+	
+	
+	if (%this.inAcceptableBorder(%wp))
 	{
 		//away
 		%action = new ScriptObject(FleeFromEnemyAction);
@@ -533,7 +536,7 @@ function Enemy::getAvailableActions(%this, %wp)
 		%action.initialize(5);
 		%result = addWord(%result, %action);
 	}
-	if (%wp.distanceEnemy > 5 || %wp.distanceEnemy == -1 )
+	if (VectorDist(%wp.ownPosition, %wp.enemyPosition) > 2)
 	{
 		//toward
 		%action = new ScriptObject(FollowEnemyAction);
@@ -560,9 +563,9 @@ function Enemy::getAvailableActions(%this, %wp)
 }
 
 ///checks if the enemy is far away enough from the levelborders
-function Enemy::inAcceptableBorder(%this)
+function Enemy::inAcceptableBorder(%this, %wp)
 {
-	return getWord(%this.Position, 0) > -$mapSize/2 - 5 && getWord(%this.Position, 0) < $mapSize/2 - 5 && getWord(%this.Position, 1) > -$mapSize/2 - 5 && getWord(%this.Position, 1) < $mapSize/2 - 5;
+	return getWord(%wp.ownPosition, 0) > -$mapSize/2 - 5 && getWord(%wp.ownPosition, 0) < $mapSize/2 - 5 && getWord(%wp.ownPosition, 1) > -$mapSize/2 - 5 && getWord(%wp.ownPosition, 1) < $mapSize/2 - 5;
 }
 
 //returns the number of Skills that are on Cooldown

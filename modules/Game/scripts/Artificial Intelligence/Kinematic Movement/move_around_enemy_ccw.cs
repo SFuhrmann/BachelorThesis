@@ -50,7 +50,10 @@ function MoveAroundEnemyCCWBehavior::update(%this)
 	}
 }
 
-function MoveAroundEnemyCCWAction::getChanges(%this)
+function MoveAroundEnemyCCWAction::applyChanges(%this, %wp)
 {
-	return "0 0 0 0 0 0 0 0 0 0 0 0";
+	%diff = VectorSub(%wp.enemyPosition, %wp.ownPosition);
+	//calculate orthogonal vector for ccw movement
+	%newVec = VectorScale(VectorNormalize(getWord(%diff, 1) SPC -getWord(%diff, 0)), 4);
+	%wp.ownPosition = VectorAdd(%wp.ownPosition, %newVec);
 }

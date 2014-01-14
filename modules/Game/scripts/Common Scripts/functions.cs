@@ -35,6 +35,15 @@ function addWord(%string, %word)
 		return %string SPC %word;
 }
 
+///add a word at the beginning of a string
+function addWordInFront(%string, %word)
+{
+	if (%string $= "")
+		return %word;
+	else
+		return %word SPC %string;
+}
+
 ///delete %obj. Can be used for self destruction via scheduling
 function deleteObj(%obj)
 {

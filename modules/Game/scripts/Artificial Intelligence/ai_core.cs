@@ -62,8 +62,6 @@ function GOAPBehavior::update(%this)
 	%this.executeNextBehavior();
 	%this.currentBehavior.update();
 	
-	echo(%this.currentAction.id);
-	
 	$aicoreUpdateSchedule = %this.schedule(%this.updateRate, update);
 }
 

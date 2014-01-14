@@ -167,10 +167,7 @@ function createGame()
 	$gameOver = false;
 	
 	//debug
-	//$enemy.schedule(2000, createMine);
-	//$enemy.schedule(2000, becomeInvisible);
 	$enemy.schedule(1000, createGravitPoint);
-	$enemy.schedule(3000, fireGravitPoint);
 	
 	$level = 0;
 }

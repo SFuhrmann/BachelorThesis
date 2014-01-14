@@ -50,7 +50,7 @@ function FollowEnemyBehavior::update(%this)
 	}
 }
 
-function FollowEnemyAction::getChanges(%this)
+function FollowEnemyAction::applyChanges(%this, %wp)
 {
-	return "0 0 0 0 0 0 0 0.1 -10 0 0 0";
+	%wp.ownPosition = VectorAdd(%wp.ownPosition, VectorScale(VectorNormalize(VectorSub(%wp.enemyPosition, %wp.ownPosition)), 4));
 }

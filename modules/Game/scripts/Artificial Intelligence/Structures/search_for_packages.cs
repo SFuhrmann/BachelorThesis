@@ -17,10 +17,10 @@ function findNearestPackage(%pos)
 {
 	%i = 1;
 	%radius = 10;
-	%count = 0;
+	
 	while(true)
 	{
-		%packages = Level.pickCircle(%pos, %i * %radius);
+		%packages = Level.pickCircle(getWord(%pos, 0), getWord(%pos, 1), %i * %radius);
 		for (%j = 0; %j < %packages.count; %j++)
 		{
 			%package = getWord(%packages, %j);
@@ -37,11 +37,10 @@ function getDistanceNearestPackage(%pos)
 {
 	%i = 1;
 	%radius = 10;
-	%count = 0;
 	
 	while(%i < 10)
 	{
-		%packages = Level.pickCircle(%pos, %i * %radius);
+		%packages = Level.pickCircle(getWord(%pos, 0), getWord(%pos, 1), %i * %radius);
 		
 		for (%j = 0; %j < %packages.count; %j++)
 		{

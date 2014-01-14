@@ -47,7 +47,10 @@ function SetMineBehavior::update(%this)
 	}
 }
 
-function SetMineAction::getChanges(%this)
+function SetMineAction::applyChanges(%this, %wp)
 {
-	return "0 0 0 1 0 0 -1 0 0 0 0" SPC VectorDist($enemy.Position, $character.Position);
+	%wp.mineExists = 1;
+	%wp.minePosition = %wp.ownPosition;
+	%wp.mineCooldown = 1;
+	%wp.ownMP--;
 }

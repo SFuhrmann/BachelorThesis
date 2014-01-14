@@ -15,51 +15,58 @@
 ///create a new World Projection of the current State of the World
 function createCurrentWorldProjection()
 {
-	%wp = new ScriptObject(WorldProjection);
+	%wp = new ScriptObject( WorldProjection );
 	
-	//declare world properties that are important for action selection
+	//declare all world properties
+	%wp.ownPosition = $enemy.Position;
+	%wp.enemyPosition = $character.Position;
+	%wp.ownHP = $enemy.HP;
+	%wp.enemyHP = $character.HP;
+	%wp.ownMP = $enemy.MP;
+	%wp.gravitPointProjectileExists = isObject($gravitPointProjectile);
+	%wp.gravitPointFiredExists = isObject($enemy.gravitPointFired);
+	if (%wp.gravitPointProjectileExists)
+		%wp.gravitPointProjectilePosition = $gravitPointProjectile.Position;
+	if (%wp.gravitPointFiredExists)
+		%wp.gravitPointPosition = $enemy.gravitPointFired.Position;
+	%wp.mineExists = isObject($mine);
+	if (%wp.mineExists)
+		%wp.minePosition = $mine.Position;
+	%wp.invisibility = $enemy.invisible;
 	%wp.invisibilityCooldown = $enemy.invisibilityCooldown;
 	%wp.mineCooldown = $enemy.mineCooldown;
 	%wp.gravitPointCooldown = $enemy.gravitPointCooldown;
-	%wp.powerUpExists = isObject($powerup);
-	%wp.gravitPointProjectileExists = isObject($gravitPointProjectile);
 	
-	//declare all world properties
-	%wp.enemyHP = $character.HP;
-	%wp.ownHP = $enemy.HP;
+	//declare all properties for goal calculation
+	%wp.createProps();
 	
-	%wp.distancePackage = getDistanceNearestPackage($enemy.Position);
-	
-	%wp.skillsOnCooldown = $enemy.getSkillsOnCooldown();
-	%wp.visible = $enemy.getVisible();
-	%wp.enemyMP = $character.MP;
-	%wp.ownMP = $enemy.MP;
-	%wp.enemyInSight = isInSight($character.Position, $enemy);
-	
-	
-	
-	if (%wp.enemyInSight)
-	{
-		%wp.distanceEnemy = VectorDist($character.Position, $enemy.Position);
-		%wp.distanceEnemyPackage = getDistanceNearestPackage($character.Position);
-		%wp.enemyInGravitPoint = $enemy.getCharacterInGravitPoint();
-		%wp.distanceEnemyMine = VectorDist($character.Position, $mine.Position);
-	}
-	else
-	{
-		%wp.distanceEnemy = -1;
-		%wp.distanceEnemyPackage = -1;
-		%wp.enemyInGravitPoint = -1;
-		%wp.distanceEnemyMine = -1;
-	}
-	
-	
-	
-	//save all properties inside an array
-	%wp.props = %wp.enemyHP SPC %wp.ownHP SPC %wp.distancePackage SPC %wp.skillsOnCooldown SPC %wp.visible SPC %wp.enemyMP SPC %wp.ownMP SPC %wp.enemyInSight SPC %wp.distanceEnemy SPC %wp.distanceEnemyPackage SPC %wp.enemyInGravitPoint SPC %wp.distanceEnemyMine;
+	//norm all properties for goal calculation
 	%wp.normProperties();
 	
 	return %wp;
+}
+
+///creates all relevant properties for the worldpropjection and saves them inside a list
+function WorldProjection::createProps(%this)
+{
+	%nextPackageDistance = getDistanceNearestPackage(%this.ownPosition);
+	%skillsOnCooldown = %this.invisibilityCooldown + %this.mineCooldown + %this.gravitPointCooldown;
+	%distanceEnemy = VectorDist(%this.enemyPosition, %this.ownPosition);
+	if (%this.gravitPointFiredExists)
+		%enemyInGravitPoint = VectorDist(%this.enemyPosition, %this.gravitPointPosition) < $attractionPointSize;
+	else
+		%enemyInGravitPoint = 0;
+	if (%this.mineExists)
+		%distanceEnemyMine = VectorDist(%this.minePosition, %this.enemyPosition);
+	else
+		%distanceEnemyMine = 200;
+	if (%this.gravitPointFiredExists && %this.mineExists)
+		%distanceMineGravitPoint = VectorDist(%this.gravitPointPosition, %this.minePosition);
+	else
+		%distanceMineGravitPoint = 200;
+	
+	
+	%this.props = %this.enemyHP SPC %this.ownHP SPC %nextPackageDistance SPC %skillsOnCooldown SPC %this.invisible SPC %this.ownMP SPC %distanceEnemy SPC %this.gravitPointFiredExists SPC %this.mineExists SPC %enemyInGravitPoint SPC %distanceEnemyMine SPC %distanceMineGravitPoint;
 }
 
 
@@ -70,12 +77,23 @@ function WorldProjection::convertToGoalSurvive(%this)
 	//add all properties of the worldprojection while multiplying them with their weights
 	%sum = 0;
 	%weights = getAverageWeightsSurvive();
+	%invert = getInvertWeightsSurvive();
+	
+	%sumSurvive = getSumWeightsSurvive();
+	
 	for (%i = 0; %i < %this.norm_props.count; %i++)
 	{
-		%sum += getWord(%this.norm_props, %i) * getWord(%weights, %i);
+		%next = 0;
+		%weight = getWord(%weights, %i);
+		%invertNext = getWord(%invert, %i);
+		if (%invertNext)
+			%next = 1 - getWord(%this.norm_props, %i);
+		else
+			%next = getWord(%this.norm_props, %i);
+		%sum += %next;
 	}
 	//divide them by their amount to get the average satisfaction
-	%sum /= %this.props.count;
+	%sum /= %sumSurvive;
 	return %sum;
 }
 
@@ -86,23 +104,61 @@ function WorldProjection::convertToGoalKill(%this)
 	//add all properties of the worldprojection while multiplying them with their weights
 	%sum = 0;
 	%weights = getAverageWeightsKill();
-	for (%i = 0; %i < %this.props.count; %i++)
+	%invert = getInvertWeightsKill();
+	
+	%sumKill = getSumWeightsKill();
+	
+	for (%i = 0; %i < %this.norm_props.count; %i++)
 	{
-		%sum += getWord(%this.norm_props, %i) * getWord(%weights, %i);
+		%next = 0;
+		%weight = getWord(%weights, %i);
+		%invertNext = getWord(%invert, %i);
+		if (%invertNext)
+			%next = 1 - getWord(%this.norm_props, %i);
+		else
+			%next = getWord(%this.norm_props, %i);
+		%sum += %next;
 	}
-	%sum /= %this.props.count;
+	%sum /= %sumKill;
 	return %sum;
 }
 
 function getAverageWeightsSurvive()
 {
-	return "0 0.3 -0.1 -0.1 -1 -0.7 0 -0.2 1 0 1 0";
-	//return "0 0 0 0 0 0 0 0 0 0 0 0";
+	return "0 1 0.1 0.1 1 0.1 1 0.5 0.5 1 1 0.5";
 }
-
 function getAverageWeightsKill()
 {
-	return "-1 0 0 -0.2 -1 0 0.5 1 -1 1 1 -1";
+	return "1 0 0 1 1 1 1 0.5 0.5 1 1 0.5";
+}
+function getInvertWeightsSurvive()
+{
+	return "0 0 1 1 0 0 0 0 0 0 1 1";
+}
+function getInvertWeightsKill()
+{
+	return "1 0 0 1 0 0 1 0 0 0 1 1";
+}
+
+function getSumWeightsSurvive()
+{
+	%a = 0;
+	%weights = getAverageWeightsSurvive();
+	for (%i = 0; %i < %weights.count; %i++)
+	{
+		%a += getWord(%weights, %i);
+	}
+	return %a;
+}
+function getSumWeightsKill()
+{
+	%a = 0;
+	%weights = getAverageWeightsKill();
+	for (%i = 0; %i < %weights.count; %i++)
+	{
+		%a += getWord(%weights, %i);
+	}
+	return %a;
 }
 
 ///normalizes the properties and saves them inside an own array
@@ -130,13 +186,19 @@ function WorldProjection::getNormalizedProp(%this, %prop, %i)
 			%a = 200;
 		case 3:
 			%a = 3;
+		case 4:
+			%a = 1;
 		case 5:
-			%a = $character.maxMP;
-		case 6:
 			%a = $enemy.maxMP;
+		case 6:
+			%a = 200;
+		case 7:
+			%a = 1;
 		case 8:
-			%a = 46;
+			%a = 1;
 		case 9:
+			%a = 1;
+		case 10:
 			%a = 200;
 		case 11:
 			%a = 200;
@@ -147,9 +209,19 @@ function WorldProjection::getNormalizedProp(%this, %prop, %i)
 ///creates the World Projection that results, when %action is performed inside the old World Projection
 function WorldProjection::createNewWorldProjection(%this, %action)
 {
-	//get basic changes of current action
-	%changes = %action.getChanges();
+	//%wp = new ScriptObject(WorldProjection);
 	
+	%wp = %this.clone(true);
+	%wp.class = WorldProjection;
+	
+	%action.applyChanges(%wp);
+	
+	%wp.createProps();
+	
+	//create a word for over time Changes
+	%changes = "0 0 0 0 0 0 0 0 0 0 0 0";
+	
+	//get the changes over time of all weak properties
 	//for every weak property index
 	for (%i = 0; %i < $weakIndices; %i++)
 	{
@@ -157,54 +229,16 @@ function WorldProjection::createNewWorldProjection(%this, %action)
 		%j = getWord($weakIndices, %i);
 		
 		//calculate the changes regarding the changes over time
-		%newVal = getWord(%changes, %j) + $saveWorldProjections.averages[%j];
+		%newVal = $saveWorldProjections.averages[%j];
 		
 		//set new change
 		%changes = setWord(%changes, %j, %newVal);
 	}
 	
-	%wp = new ScriptObject(WorldProjection);
-	
-	%wp.props = %this.props;
-	
-	//add all changes through action (%changes)
+	//add all changes over time
 	for (%i = 0; %i < %wp.props.count; %i++)
 	{
 		%wp.props = setWord(%wp.props, %i, getWord(%wp.props, %i) + getWord(%changes, %i));
-	}
-	
-	//set all "real" properties that are need for action selection
-	%wp.ownMP = %this.ownMP;
-	%wp.distanceEnemy = %this.distanceEnemy;
-	%wp.invisibilityCooldown = %this.invisibilityCooldown;
-	%wp.mineCooldown = %this.mineCooldown;
-	%wp.gravitPointCooldown = %this.gravitPointCooldown;
-	%wp.gravitPointProjectileExists = %this.gravitPointProjectileExists;
-	%wp.powerUpExists = %this.powerUpExists;
-	
-	//apply changes to all "real" properties that are needed for action selection
-	%wp.ownMP = getWord(%wp.props, 6);
-	%wp.distanceEnemy = getWord(%wp.props, 8);
-	if (%action.id $= BecomeInvisibleBehavior)
-	{
-		%wp.invisibilityCooldown = 1;
-	}
-	if (%action.id $= SetMineBehavior)
-	{
-		%wp.mineCooldown = 1;
-	}
-	if (%action.id $= ShootGravitPointBehavior)
-	{
-		%wp.gravitPointCooldown = 1;
-		%wp.gravitPointProjectileExists = 1;
-	}
-	if (%action.id $= GetPowerupBehavior)
-	{
-		%wp.powerUpExists = false;
-	}
-	if (%action.id $= UseGravitPointBehavior)
-	{
-		%wp.gravitPointProjectileExists = 0;
 	}
 	
 	%wp.normProperties();

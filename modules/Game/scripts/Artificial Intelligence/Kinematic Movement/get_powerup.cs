@@ -52,7 +52,7 @@ function GetPowerupAction::onCollision(%this, %obj, %details)
 		%this.done = true;
 }
 
-function GetPowerupAction::getChanges(%this)
+function GetPowerupAction::applyChanges(%this, %wp)
 {
-	return "0 0 0 0 0 0 0 0 0 0 0 0";
+	%wp.ownPosition = VectorAdd(%wp.ownPosition, VectorScale(VectorNormalize(VectorSub(%wp.ownPosition, $powerUp.Position)), 4));
 }

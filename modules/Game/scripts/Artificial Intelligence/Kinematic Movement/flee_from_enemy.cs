@@ -50,7 +50,7 @@ function FleeFromEnemyBehavior::update(%this)
 	}
 }
 
-function FleeFromEnemyAction::getChanges(%this)
+function FleeFromEnemyAction::applyChanges(%this, %wp)
 {
-	return "0 0 -2 0 0 0 0 -0.1 10 0 0 0";
+	%wp.ownPosition = VectorAdd(%wp.ownPosition, VectorScale(VectorNormalize(VectorSub(%wp.ownPosition, %wp.enemyPosition)), 4));
 }

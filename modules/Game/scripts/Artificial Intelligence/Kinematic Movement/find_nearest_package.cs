@@ -49,7 +49,7 @@ function FindNearestPackageBehavior::update(%this)
 	}
 	else 
 	{
-		%target = findNearestPackage(%this.owner.Position);//findBestPackageArea(%this.owner.Position);
+		%target = findNearestPackage(%this.owner.Position);
 		
 		%this.owner.moveTowards(%target);
 	}
@@ -62,7 +62,13 @@ function FindNearestPackageBehavior::onCollision(%this, %obj, %details)
 		%this.amount--;
 }
 
-function FindNearestPackageAction::getChanges(%this)
+function FindNearestPackageAction::applyChanges(%this, %wp)
 {
-	return "0 0.5 -1 0 0 0 0.02 0 2 0 0 0";
+	%dest = findNearestPackage(%wp.ownPosition);
+	%distance = VectorDist(%wp.ownPosition, %dest);
+	%maxTravelDistance = mMin(%distance, 4);
+	//return the position 
+	%wp.ownPosition =  VectorAdd(%wp.ownPosition, VectorScale(VectorNormalize(VectorSub(%dest, %wp.ownPosition)), %maxTravelDistance));
+	%wp.ownHP += 2.5 * mMin((4 / %distance), 1);
+	%wp.ownMP += 0.08 * mMin((4 / %distance), 1);
 }

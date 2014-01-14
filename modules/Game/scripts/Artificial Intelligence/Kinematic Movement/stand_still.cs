@@ -51,7 +51,7 @@ function StandStillBehavior::update(%this)
 	}
 }
 
-function StandStillAction::getChanges(%this)
+function StandStillAction::applyChanges(%this, %wp)
 {
-	return "0 -2 0 0 0 0 0 0 0 0 0 0";
+	
 }

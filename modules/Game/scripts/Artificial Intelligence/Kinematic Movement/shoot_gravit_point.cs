@@ -47,7 +47,10 @@ function ShootGravitPointBehavior::update(%this)
 	}
 }
 
-function ShootGravitPointAction::getChanges(%this)
+function ShootGravitPointAction::applyChanges(%this, %wp)
 {
-	return "0 0 0 1 0 0 -1 0 0 0 0 0";
+	%wp.ownMP--;
+	%wp.gravitPointProjectileExists = 1;
+	%wp.gravitPointPosition = %wp.ownPosition;
+	%wp.gravitPointCooldown = 1;
 }

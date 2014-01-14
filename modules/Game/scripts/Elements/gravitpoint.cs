@@ -72,6 +72,8 @@ function GravitPoint::fire(%this)
 	Level.add(%grav);
 	Level.add(showGlare(%grav.Position, %grav.Size, 250));
 	
+	$enemy.gravitPointFired = %grav;
+	
 	%grav.update();
 	
 	schedule(1, 0, deleteObj, %this);

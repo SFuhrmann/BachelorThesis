@@ -44,7 +44,7 @@ $attractionPointSize = 60;
 $gravitPointInfluence = 0.85;
 
 //AI Structures
-$weakIndices = "0 5 7 8 9 10 11";
+$weakIndices = "0 1 6 10";
 $AIDLSDEPTH = 2;
 
 //EnemyValues

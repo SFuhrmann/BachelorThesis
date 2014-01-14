@@ -47,7 +47,8 @@ function UseGravitPointBehavior::update(%this)
 	}
 }
 
-function UseGravitPointAction::getChanges(%this)
+function UseGravitPointAction::applyChanges(%this, %wp)
 {
-	return "0 0 0 0 0 0 0 0 0 0" SPC $enemy.getCharacterInGravitPoint() SPC "0";
+	%wp.gravitPointProjectileExists = 0;
+	%wp.gravitPointFiredExists = 1;
 }
