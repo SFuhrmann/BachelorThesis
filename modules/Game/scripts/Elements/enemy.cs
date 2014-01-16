@@ -86,6 +86,12 @@ function Enemy::addHP(%this, %amount)
 		%this.HP = 0;
 		%this.die();
 	}
+	//schedule next generation survive function of genetic module
+	if (%amount < 0 && isEventPending($enemySameHPSurviveSchedule))
+	{
+		cancel($enemySameHPSurviveSchedule);
+		$enemySameHPSurviveSchedule = $geneticModule.schedule(20000, createNextGenerationSurvive, 0.7);
+	}
 }
 
 function Enemy::createEnemyLifeBar(%this)
@@ -166,6 +172,8 @@ function Enemy::die(%this)
 		increaseBGSpeed();
 	}
 	%this.increaseOneUpgradeLevel();
+	$geneticModule.createNextGenerationSurvive(0);
+	$geneticModule.createNextGenerationKill(0.3);
 }
 
 function Enemy::updateAngle(%this)

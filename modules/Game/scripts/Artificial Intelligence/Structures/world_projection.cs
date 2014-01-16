@@ -72,11 +72,15 @@ function WorldProjection::createProps(%this)
 
 ///returns the satisfaction of the "Survive"-Goal
 ///satisfaction is always a value between -1 and 1
-function WorldProjection::convertToGoalSurvive(%this)
+function WorldProjection::convertToGoalSurvive(%this, %averageWeights)
 {
 	//add all properties of the worldprojection while multiplying them with their weights
 	%sum = 0;
-	%weights = getAverageWeightsSurvive();
+	if (%averageWeights $= "")
+		%weights = getAverageWeightsSurvive();
+	else
+		%weights = %averageWeights;
+	
 	%invert = getInvertWeightsSurvive();
 	
 	%sumSurvive = getSumWeightsSurvive();
@@ -99,11 +103,15 @@ function WorldProjection::convertToGoalSurvive(%this)
 
 ///returns the satisfaction of the "Kill"-Goal
 ///satisfaction is always a value between -1 and 1
-function WorldProjection::convertToGoalKill(%this)
+function WorldProjection::convertToGoalKill(%this, %averageWeights)
 {
 	//add all properties of the worldprojection while multiplying them with their weights
 	%sum = 0;
-	%weights = getAverageWeightsKill();
+	if (%averageWeights $= "")
+		%weights = getAverageWeightsKill();
+	else
+		%weights = %averageWeights;
+		
 	%invert = getInvertWeightsKill();
 	
 	%sumKill = getSumWeightsKill();
@@ -125,11 +133,11 @@ function WorldProjection::convertToGoalKill(%this)
 
 function getAverageWeightsSurvive()
 {
-	return "0 1 0.1 0.1 1 0.1 1 0.5 0.5 1 1 0.5";
+	return $geneticModule.surviveAverage;
 }
 function getAverageWeightsKill()
 {
-	return "1 0 0 1 1 1 1 0.5 0.5 1 1 0.5";
+	return $geneticModule.killAverage;
 }
 function getInvertWeightsSurvive()
 {

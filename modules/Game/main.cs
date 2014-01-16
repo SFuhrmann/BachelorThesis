@@ -38,6 +38,7 @@ function Game::create()
 	exec("./scripts/Artificial Intelligence/Kinematic Movement/move_around_enemy_ccw.cs");
 	exec("./scripts/Artificial Intelligence/ai_core.cs");
 	exec("./scripts/Artificial Intelligence/goap.cs");
+	exec("./scripts/Artificial Intelligence/genetic_algorithm.cs");
 	exec("./scripts/Artificial Intelligence/Structures/actionqueue.cs");
 	exec("./scripts/Artificial Intelligence/Structures/world_projection.cs");
 	exec("./scripts/Artificial Intelligence/Structures/world_projection_queue.cs");
@@ -169,7 +170,15 @@ function createGame()
 	//debug
 	$enemy.schedule(1000, createGravitPoint);
 	
+	createGeneticModule();
+	
 	$level = 0;
+	
+	//initialize all schedule functions for the genetic algorithm
+	$enemySameHPSurviveSchedule = $geneticModule.schedule(20000, createNextGenerationSurvive, 0.7);
+	$characterSameHPSurviveSchedule = $geneticModule.schedule(20000, createNextGenerationKill, 0.1);
+	$character.checkLoseHPAmount();
+	$character.saveLoseHPAmount = $character.HP;
 }
 
 ///save the Current Score and all Upgrade Levels

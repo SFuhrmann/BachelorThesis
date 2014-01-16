@@ -618,6 +618,18 @@ function Character::beam(%this)
 //---------------------------------------//
 //#######################################//
 
+///check HP in a certain Interval
+function Character::checkLoseHPAmount(%this)
+{
+	if (%this.saveLoseHPAmount - %this.HP > 60)
+	{
+		$geneticModule.createNextGenerationKill(0.9);
+	}
+	
+	%this.saveLoseHPAmount = %this.HP;
+	$characterLoseALotOfHPKillSchedule = %this.schedule(10000, checkLoseHPAmount);
+}
+
 ///heal HP by %amount
 function Character::addHP(%this, %amount)
 {
@@ -634,6 +646,12 @@ function Character::addHP(%this, %amount)
 	}
 	
 	HPMeterFill.update();
+	//schedule next generation survive function of genetic module
+	if (%amount < 0 && isEventPending($characterSameHPSurviveSchedule))
+	{
+		cancel($characterSameHPSurviveSchedule);
+		$characterSameHPSurviveSchedule = $geneticModule.schedule(20000, createNextGenerationKill, 0.1);
+	}
 }
 
 ///heal MP by %amount
