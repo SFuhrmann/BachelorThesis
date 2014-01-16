@@ -53,7 +53,7 @@ function WorldProjection::createProps(%this)
 	%skillsOnCooldown = %this.invisibilityCooldown + %this.mineCooldown + %this.gravitPointCooldown;
 	%distanceEnemy = VectorDist(%this.enemyPosition, %this.ownPosition);
 	if (%this.gravitPointFiredExists)
-		%enemyInGravitPoint = VectorDist(%this.enemyPosition, %this.gravitPointPosition) < $attractionPointSize;
+		%enemyInGravitPoint = VectorDistSquared(%this.enemyPosition, %this.gravitPointPosition) < mPow($attractionPointSize, 2);
 	else
 		%enemyInGravitPoint = 0;
 	if (%this.mineExists)

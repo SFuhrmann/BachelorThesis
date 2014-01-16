@@ -1,8 +1,8 @@
 <ScriptObject
     beamGrowth="0"
     credits="1"
-    currentScore="29915"
-    damage="1"
+    currentScore="10925"
+    damage="2"
     existing="1"
     HP="2"
     leapCosts="0"

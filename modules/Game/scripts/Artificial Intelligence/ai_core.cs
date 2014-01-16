@@ -53,7 +53,7 @@ function GOAPBehavior::update(%this)
 		$saveWorldProjections.removeLastProjection();
 	}
 	
-	
+	$nextPackagePosition = findNearestPackage(%this.owner.Position);
 	%actionList = goap_plan_actions(%this.owner);
 	
 	%this.actionQueue.deleteAll();

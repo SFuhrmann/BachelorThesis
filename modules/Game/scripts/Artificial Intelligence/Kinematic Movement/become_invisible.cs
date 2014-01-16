@@ -1,17 +1,5 @@
 // ============================================================
 // Project            :  BachelorThesis
-// File               :  .\modules\Game\scripts\Artificial Intelligence\Kinematic Movement\become_invisible.cs
-// Copyright          :  
-// Author             :  Stephen
-// Created on         :  Sonntag, 29. Dezember 2013 21:18
-//
-// Editor             :  TorqueDev v. 1.2.3430.42233
-//
-// Description        :  
-//                    :  
-//                    :  
-// ============================================================// ============================================================
-// Project            :  BachelorThesis
 // File               :  .\modules\Game\scripts\Artificial Intelligence\Kinematic Movement\stand_still.cs
 // Copyright          :  
 // Author             :  -

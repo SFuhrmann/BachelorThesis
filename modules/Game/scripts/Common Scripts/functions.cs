@@ -127,3 +127,18 @@ function roundVector(%vec)
 {
 	return mRound(getWord(%vec, 0)) SPC mRound(getWord(%vec, 1));
 }
+
+///returns the sign of a number (-1 or 1)
+function mSign(%number)
+{
+	if (%number < 0)
+		return -1;
+	else
+		return 1;
+}
+
+///returns the squared distance of two Vectors
+function VectorDistSquared(%vec1, %vec2)
+{
+	return mPow(getWord(%vec1, 0) - getWord(%vec2, 0), 2) +  mPow(getWord(%vec1, 1) - getWord(%vec2, 1), 2);
+}

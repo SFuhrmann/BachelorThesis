@@ -95,7 +95,7 @@ function FiredGravitPoint::update(%this)
 		
 	%this.duration--;
 	
-	if (VectorDist($character.Position, %this.Position) < $attractionPointSize / 2)
+	if (VectorDistSquared($character.Position, %this.Position) < mPow($attractionPointSize / 2, 2))
 	{
 		//get differences on X and Y axes between GravitPoint and Character
 		%dX = getWord($character.Position, 0) - getWord(%this.Position, 0);

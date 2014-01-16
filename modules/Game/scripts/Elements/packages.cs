@@ -91,7 +91,7 @@ function Package::onCollision(%this, %obj, %details)
 			%obj.addHP(%this.healAmount);
 		else
 			%obj.addMP(%this.healAmount);
-		if (VectorDist($character.Position, %obj.Position) < 25)
+		if (VectorDistSquared($character.Position, %obj.Position) < 625)
 			alxPlay("Game:pop");
 		schedule(1, 0, deleteObj, %this);
 		schedule(30000, 0, createPackage, %this.obstacle);

@@ -306,9 +306,7 @@ function Enemy::moveTowards(%this, %pos)
 	//get angle
 	%targetAngle = mRadToDeg(mAtan(%dY, %dX)) + 90;
 	
-	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
-	%this.clampspeed();
-	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, 4, %targetAngle);
+	%this.accelerateTowards(5, %targetAngle);
 }
 
 ///move the enemy towards %pos
@@ -321,9 +319,7 @@ function Enemy::moveAwayFrom(%this, %pos)
 	//get angle
 	%targetAngle = mRadToDeg(mAtan(%dY, %dX)) - 90;
 	
-	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
-	%this.clampspeed();
-	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, 4, %targetAngle);
+	%this.accelerateTowards(5, %targetAngle);
 }
 
 ///move the enemy towards %pos
@@ -336,9 +332,8 @@ function Enemy::moveAroundCW(%this, %pos)
 	//get angle
 	%targetAngle = mRadToDeg(mAtan(%dY, %dX)) - 180;
 	
-	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
 	%this.clampspeed();
-	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, 4, %targetAngle);
+	%this.accelerateTowards(5, %targetAngle);
 }
 
 ///move the enemy towards %pos
@@ -351,9 +346,7 @@ function Enemy::moveAroundCCW(%this, %pos)
 	//get angle
 	%targetAngle = mRadToDeg(mAtan(%dY, %dX));
 	
-	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
-	%this.clampspeed();
-	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, 4, %targetAngle);
+	%this.accelerateTowards(5, %targetAngle);
 }
 
 ///accelerate the enemy towards %targetAngle using a speed clamp
@@ -363,7 +356,16 @@ function Enemy::accelerateTowards(%this, %i, %targetAngle)
 	{
 		return;
 	}
-	%this.setLinearVelocityPolar(%targetAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
+	%currentAngle = getWord(%this.getLinearVelocityPolar(), 0);
+	%sign = mSign(%targetAngle - %currentAngle);
+	
+	//calculate new Angle
+	%newAngle = %currentAngle + %sign * mMin(5, mAbs(%targetAngle - %currentAngle));
+	
+	echo(%targetAngle SPC %currentAngle SPC (%targetAngle - %currentAngle));
+	echo(%newAngle);
+	
+	%this.setLinearVelocityPolar(%newAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
 	%this.clampspeed();
 	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, %i - 1, %targetAngle);
 }
@@ -544,7 +546,7 @@ function Enemy::getAvailableActions(%this, %wp)
 		%action.initialize(5);
 		%result = addWord(%result, %action);
 	}
-	if (VectorDist(%wp.ownPosition, %wp.enemyPosition) > 2)
+	if (VectorDistSquared(%wp.ownPosition, %wp.enemyPosition) > 4)
 	{
 		//toward
 		%action = new ScriptObject(FollowEnemyAction);
@@ -592,5 +594,5 @@ function Enemy::getSkillsOnCooldown(%this)
 //returns if the Character is inside the Gravit Point
 function Enemy::getCharacterInGravitPoint(%this)
 {
-	return VectorDist($character.Position, %this.GravitPoint.Position) < getWord(%this.GravitPoint.Size, 0);
+	return VectorDistSquared($character.Position, %this.GravitPoint.Position) < mPow(getWord(%this.GravitPoint.Size, 0), 2);
 }
