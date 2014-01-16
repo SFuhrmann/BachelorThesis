@@ -84,8 +84,8 @@ function createCharacter(%pos)
 	$character.leapCosts = 1;
 	
 	//Beam
-	$character.beamGrowth = 0.25;
-	$character.beamSpeed = 15;
+	$character.beamGrowth = 0.5;
+	$character.beamSpeed = 30;
 	
 	//Upgrades
 	//create list with available upgrades
@@ -761,7 +761,7 @@ function Character::addItem(%this, %i)
 			if (%this.damageUpgrades >= $saveGame.damage)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 		case "beamGrowth":
-			%this.beamGrowth += 0.05;
+			%this.beamGrowth += 0.1;
 			%this.beamGrowthUpgrades++;
 			if (%this.beamGrowthUpgrades >= $saveGame.beamGrowth)
 				%this.availableItems = removeWord(%this.availableItems, %i);

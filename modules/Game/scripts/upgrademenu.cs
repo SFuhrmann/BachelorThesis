@@ -266,7 +266,7 @@ function getUpgradeDescription(%i)
 		case 4:
 			return "Decreases Leap AP Costs" TAB "Start: 1 AP" TAB "Per Level: -10% of current" TAB "Current Min.:" SPC getRounded(mPow(0.9, getUpgradeLevel(%i)), -2) SPC "AP";
 		case 5:
-			return "Increases Beam Growth Rate" TAB "Start: 0.3 dmg/s" TAB "Per Level: +0.05 dmg/s" TAB "Current Max.:" SPC getRounded(0.3 + 0.05 * getUpgradeLevel(%i), -2) SPC "dmg/s";
+			return "Increases Beam Growth Rate" TAB "Start: 0.5 dmg/s" TAB "Per Level: +0.1 dmg/s" TAB "Current Max.:" SPC getRounded(0.5 + 0.1 * getUpgradeLevel(%i), -2) SPC "dmg/s";
 		case 6:
 			return "Increases Movement Speed" TAB "Start: 20 m/s" TAB "Per Level: +4 m/s" TAB "Current Max.:" SPC mRound(20 + 4 * getUpgradeLevel(%i)) SPC "m/s";
 		case 7:

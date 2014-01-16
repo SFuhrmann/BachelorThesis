@@ -33,7 +33,7 @@ function createMine(%this)
 	
 	//physics
 	%innerMine.setFixedAngle(true);
-	%innerMine.setBodyType( static );
+	%innerMine.setBodyType( dynamic );
 	//add to Scene
 	Level.add(%innerMine);
 	%mine.inner = %innerMine;
@@ -47,7 +47,7 @@ function createMine(%this)
 	//create Graphics
  	%outerMine.setIsCircle( true );
 	%outerMine.setCircleRadius( 0.5 );
-	%outerMine.Size = %this.mineRadius;
+	%outerMine.Size = 15;
 	
 	%outerMine.Position = %this.Position;
 	
@@ -57,40 +57,55 @@ function createMine(%this)
 	
 	//physics
 	%outerMine.radius = 0.5;
-	%outerMine.createCircleCollisionShape( %outerMine.radius );
+	%outerMine.createCircleCollisionShape( %outerMine.radius * 15 );
 	%outerMine.setCollisionGroups( 2 );
 	%outerMine.setCollisionCallback(true);
 	%outerMine.setCollisionShapeIsSensor(0, true);
 	%outerMine.setFixedAngle(true);
-	%outerMine.setBodyType( static );
+	%outerMine.setBodyType( dynamic );
 	//add to Scene
 	Level.add(%outerMine);
 	
 	%outerMine.Mine = %mine;
 	
 	$mine = %outerMine;
+	
+	$mine.update();
+}
+
+function OuterMine::Update(%this)
+{
+	%this.mine.inner.Position = %this.Position;
+	
+	//get differences on X and Y axes between Character and MousePointer
+	%dX = getWord($character.Position, 0) - getWord(%this.Position, 0);
+	%dY = getWord($character.Position, 1) - getWord(%this.Position, 1);
+	//calculate the direction from that
+	%angle = mRadToDeg(mAtan(%dY, %dX)) + 90;
+	
+	%this.setLinearVelocityPolar(%angle, 2);
+	%this.mine.inner.setLinearVelocityPolar(%angle, 2);
+	
+	$mineUpdateSchedule = %this.schedule(100, update);
 }
 
 function OuterMine::onCollision(%this, %obj, %details)
 {
-	if (%obj.SceneGroup == 2)
-	{
-		Level.add(showGlare(%this.Position, 5, 250));
-		
-		schedule(1, 0, deleteObj, %this);
-		schedule(1, 0, deleteObj, %this.mine.inner);
-		
-		%obj.addHP(-$enemy.mineDamage);
-		//get X and Y difference between goal and agent
-		%dX = getWord(%this.position, 0) - getWord(%obj.Position, 0);
-		%dY = getWord(%this.position, 1) - getWord(%obj.Position, 1);
-		
-		//get angle
-		%targetAngle = mRadToDeg(mAtan(%dY, %dX)) - 90;
-		
-		%obj.setLinearVelocityPolar(%targetAngle, 30);
-		%obj.noMoving(250);
-		
-		alxPlay("Game:Beam");
-	}
+	Level.add(showGlare(%this.Position, 5, 250));
+	
+	schedule(1, 0, deleteObj, %this);
+	schedule(1, 0, deleteObj, %this.mine.inner);
+	
+	%obj.addHP(-$enemy.mineDamage);
+	//get X and Y difference between goal and agent
+	%dX = getWord(%this.position, 0) - getWord(%obj.Position, 0);
+	%dY = getWord(%this.position, 1) - getWord(%obj.Position, 1);
+	
+	//get angle
+	%targetAngle = mRadToDeg(mAtan(%dY, %dX)) - 90;
+	
+	%obj.setLinearVelocityPolar(%targetAngle, 30);
+	%obj.noMoving(250);
+	
+	alxPlay("Game:Beam");
 }

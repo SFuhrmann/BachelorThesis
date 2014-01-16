@@ -168,7 +168,6 @@ function createGame()
 	$gameOver = false;
 	
 	//debug
-	$enemy.schedule(1000, createGravitPoint);
 	
 	createGeneticModule();
 	
@@ -177,8 +176,8 @@ function createGame()
 	//initialize all schedule functions for the genetic algorithm
 	$enemySameHPSurviveSchedule = $geneticModule.schedule(20000, createNextGenerationSurvive, 0.7);
 	$characterSameHPSurviveSchedule = $geneticModule.schedule(20000, createNextGenerationKill, 0.1);
-	$character.checkLoseHPAmount();
 	$character.saveLoseHPAmount = $character.HP;
+	$character.checkLoseHPAmount();
 }
 
 ///save the Current Score and all Upgrade Levels
