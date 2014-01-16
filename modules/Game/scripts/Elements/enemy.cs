@@ -362,9 +362,6 @@ function Enemy::accelerateTowards(%this, %i, %targetAngle)
 	//calculate new Angle
 	%newAngle = %currentAngle + %sign * mMin(5, mAbs(%targetAngle - %currentAngle));
 	
-	echo(%targetAngle SPC %currentAngle SPC (%targetAngle - %currentAngle));
-	echo(%newAngle);
-	
 	%this.setLinearVelocityPolar(%newAngle, getWord(%this.getLinearVelocityPolar(), 1) + %this.acceleration / 2);
 	%this.clampspeed();
 	%this.accelerationSchedule = %this.schedule(50, accelerateTowards, %i - 1, %targetAngle);

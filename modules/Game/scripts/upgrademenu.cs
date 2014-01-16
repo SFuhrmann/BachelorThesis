@@ -248,7 +248,7 @@ function createUpgradeLevel(%item)
 function calculateCosts(%i)
 {
 	%i++;
-	return mFloor(mPow(%i, 2) * 5000);
+	return mFloor(mPow(%i, 2) * 6500 - %i * 14500 + 10000);
 }
 
 function getUpgradeDescription(%i)

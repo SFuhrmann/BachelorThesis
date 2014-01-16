@@ -45,9 +45,9 @@ $gravitPointInfluence = 0.85;
 
 //AI Structures
 $weakIndices = "0 1 6 10";
-$AIDLSDEPTH = 2;
+$AIDLSDEPTH = 1;
 $amountDNAStrings = 50;
-$geneticAlgorithmMutationRate = 20;
+$geneticAlgorithmMutationRate = 50;
 
 //EnemyValues
 function setEnemyValues()

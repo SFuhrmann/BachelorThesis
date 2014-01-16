@@ -63,7 +63,7 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 	{
 		//this is the value of each string (+ the values of all strings before,
 		//this way the intervals for the dna picking process already exist
-		%e[%i] = mAbs(%wp.convertToGoalSurvive(%this.surviveStrings[%i]) - %goalValue) + %e[%i - 1];
+		%e[%i] = 1 - mAbs(%wp.convertToGoalSurvive(%this.surviveStrings[%i]) - %goalValue) + %e[%i - 1];
 	}
 	
 	for (%i = 0; %i < $amountDNAStrings; %i++)
@@ -178,7 +178,7 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 	{
 		//this is the value of each string (+ the values of all strings before,
 		//this way the intervals for the dna picking process already exist
-		%e[%i] = mAbs(%wp.convertToGoalKill(%this.KillStrings[%i]) - %goalValue) + %e[%i - 1];
+		%e[%i] = 1 - mAbs(%wp.convertToGoalKill(%this.KillStrings[%i]) - %goalValue) + %e[%i - 1];
 	}
 	for (%i = 0; %i < $amountDNAStrings; %i++)
 	{
