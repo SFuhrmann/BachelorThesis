@@ -69,14 +69,13 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 	for (%i = 0; %i < $amountDNAStrings; %i++)
 	{
 		//create a random number with two decimal numbers in range of all intervals
-		%rnd1 = getRandom(0, mFloor(%e[49] * 100)) / 100;
+		%rnd1 = mMax(0.01, getRandom(1, mFloor(%e[49] * 100)) / 100);
 		
 		//iteratively determine which string is chosen
 		%index = 24;
 		%change = 12;
 		%result = 24;
-		%j = 0;
-		while (%j < 50)
+		while (true)
 		{
 			//test if interval is found
 			if (%e[%index - 1] < %rnd1 && %e[%index] >= %rnd1)
@@ -99,21 +98,17 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 					%change = mMax(1, mFloor(%change / 2));
 				}
 			}
-			%j++;
 		}
-		if (%j == 49)
-			return;
 		%string1 = %this.surviveStrings[%result];
 		
 		//do the same for a second string that will be the mating partner of string1
-		%rnd2 = getRandom(0, mFloor(%e[49] * 100)) / 100;
+		%rnd2 = mMax(0.01, getRandom(1, mFloor(%e[49] * 100)) / 100);
 		
 		//iteratively determine which string is chosen
 		%index = 24;
 		%change = 12;
 		%result = 24;
-		%j = 0;
-		while (%j < 50)
+		while (true)
 		{
 			//test if interval is found
 			if (%e[%index - 1] < %rnd2 && %e[%index] >= %rdn2)
@@ -136,10 +131,7 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 					%change = mMax(1, mFloor(%change / 2));
 				}
 			}
-			%j++;
 		}
-		if (%j == 49)
-			return;
 		%string2 = %this.surviveStrings[%result];
 		
 		//determine the position where the two strings should be paired
@@ -190,14 +182,13 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 	for (%i = 0; %i < $amountDNAStrings; %i++)
 	{
 		//create a random number with two decimal numbers in range of all intervals
-		%rnd1 = getRandom(0, %e[49] * 100) / 100;
+		%rnd1 = mMax(0.01, getRandom(1, %e[49] * 100) / 100);
 		
 		//iteratively determine which string is chosen
 		%index = 24;
 		%change = 12;
 		%result = 24;
-		%j = 0;
-		while (%j < 50)
+		while (true)
 		{
 			//test if interval is found
 			if (%e[%index - 1] < %rnd1 && %e[%index] > %rnd1)
@@ -221,19 +212,16 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 				}
 			}
 		}
-		if (%j == 49)
-			return;
 		%string1 = %this.KillStrings[%result];
 		
 		//do the same for a second string that will be the mating partner of string1
-		%rnd2 = getRandom(0, %e[49] * 100) / 100;
+		%rnd2 = mMax(0.01, getRandom(1, %e[49] * 100) / 100);
 		
 		//iteratively determine which string is chosen
 		%index = 24;
 		%change = 12;
 		%result = 24;
-		%j = 0;
-		while (%j < 50)
+		while (true)
 		{
 			//test if interval is found
 			if (%e[%index - 1] < %rnd2 && %e[%index] > %rdn2)
@@ -257,8 +245,7 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 				}
 			}
 		}
-		if (%j == 49)
-			return;
+		
 		%string2 = %this.KillStrings[%result];
 		
 		//determine the position where the two strings should be paired

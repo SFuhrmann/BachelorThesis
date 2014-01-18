@@ -111,6 +111,7 @@ function createMenu()
 	createMenuItems();
 	
 	createMenuBackGround();
+	
 }
 
 ///destroy all items in the Main Menu (Title, Start, Upgrade)
@@ -183,6 +184,11 @@ function createGame()
 	$characterSameHPSurviveSchedule = $geneticModule.schedule(20000, createNextGenerationKill, 0.1);
 	$character.saveLoseHPAmount = $character.HP;
 	$character.checkLoseHPAmount();
+	
+	for (%i = 0; %i < 10; %i++)
+	{
+		$geneticModule.createNextGenerationSurvive();
+	}
 }
 
 ///save the Current Score and all Upgrade Levels
