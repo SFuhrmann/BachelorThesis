@@ -575,6 +575,8 @@ function openInGameMenu()
 	%back.setUseInputEvents(true);
 	Level.add(%back);
 	
+	gameMenuSetActiveItem(%back);
+	
 	%quit = new ImageFont( GameMenuQuitFont );
 	%quit.Image = "Game:Font";
 	%quit.FontSize = "2 3";
@@ -598,6 +600,21 @@ function openInGameMenu()
 	Level.add(%end);
 }
 
+function gameMenuSetActiveItem(%item)
+{
+	if (isObject($gameMenuActiveItem))
+	{
+		$gameMenuActiveItem.deactivateItem();
+	}
+	$gameMenuActiveItem = %item;
+	$gameMenuActiveItem.setRightColor();
+}
+
+function menuConfirmJoystick()
+{
+	gameMenuClick($gameMenuActiveItem);
+}
+
 //Input Functions for Menu Elements:
 function GameMenuBackFont::onTouchDown(%this)
 {
@@ -606,10 +623,14 @@ function GameMenuBackFont::onTouchDown(%this)
 }
 function GameMenuBackFont::onTouchEnter(%this)
 {
+	gameMenuSetActiveItem(%this);
+}
+function GameMenuBackFont::setRightColor(%this)
+{
 	alxPlay("Game:MenuMove");
 	%this.setBlendColor("0.5 0.5 1");
 }
-function GameMenuBackFont::onTouchLeave(%this)
+function GameMenuBackFont::deactivateItem(%this)
 {
 	%this.setBlendColor("1 1 1");
 }
@@ -624,10 +645,14 @@ function GameMenuQuitFont::onTouchDown(%this)
 }
 function GameMenuQuitFont::onTouchEnter(%this)
 {
+	gameMenuSetActiveItem(%this);
+}
+function GameMenuQuitFont::setRightColor(%this)
+{
 	alxPlay("Game:MenuMove");
 	%this.setBlendColor("1 1 0.5");
 }
-function GameMenuQuitFont::onTouchLeave(%this)
+function GameMenuQuitFont::deactivateItem(%this)
 {
 	%this.setBlendColor("1 1 1");
 }
@@ -641,10 +666,14 @@ function GameMenuEndFont::onTouchDown(%this)
 }
 function GameMenuEndFont::onTouchEnter(%this)
 {
+	gameMenuSetActiveItem(%this);
+}
+function GameMenuEndFont::setRightColor(%this)
+{
 	alxPlay("Game:MenuMove");
 	%this.setBlendColor("1 0.5 0.5");
 }
-function GameMenuEndFont::onTouchLeave(%this)
+function GameMenuEndFont::deactivateItem(%this)
 {
 	%this.setBlendColor("1 1 1");
 }

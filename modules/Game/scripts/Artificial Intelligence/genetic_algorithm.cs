@@ -75,8 +75,8 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 		%index = 24;
 		%change = 12;
 		%result = 24;
-		
-		while (true)
+		%j = 0;
+		while (%j < 50)
 		{
 			//test if interval is found
 			if (%e[%index - 1] < %rnd1 && %e[%index] >= %rnd1)
@@ -99,7 +99,10 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 					%change = mMax(1, mFloor(%change / 2));
 				}
 			}
+			%j++;
 		}
+		if (%j == 49)
+			return;
 		%string1 = %this.surviveStrings[%result];
 		
 		//do the same for a second string that will be the mating partner of string1
@@ -109,6 +112,7 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 		%index = 24;
 		%change = 12;
 		%result = 24;
+		%j = 0;
 		while (true)
 		{
 			//test if interval is found
@@ -132,7 +136,10 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 					%change = mMax(1, mFloor(%change / 2));
 				}
 			}
+			%j++;
 		}
+		if (%j == 49)
+			return;
 		%string2 = %this.surviveStrings[%result];
 		
 		//determine the position where the two strings should be paired
@@ -189,7 +196,8 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 		%index = 24;
 		%change = 12;
 		%result = 24;
-		while (true)
+		%j = 0;
+		while (%j < 50)
 		{
 			//test if interval is found
 			if (%e[%index - 1] < %rnd1 && %e[%index] > %rnd1)
@@ -213,6 +221,8 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 				}
 			}
 		}
+		if (%j == 49)
+			return;
 		%string1 = %this.KillStrings[%result];
 		
 		//do the same for a second string that will be the mating partner of string1
@@ -222,7 +232,8 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 		%index = 24;
 		%change = 12;
 		%result = 24;
-		while (true)
+		%j = 0;
+		while (%j < 50)
 		{
 			//test if interval is found
 			if (%e[%index - 1] < %rnd2 && %e[%index] > %rdn2)
@@ -246,6 +257,8 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 				}
 			}
 		}
+		if (%j == 49)
+			return;
 		%string2 = %this.KillStrings[%result];
 		
 		//determine the position where the two strings should be paired

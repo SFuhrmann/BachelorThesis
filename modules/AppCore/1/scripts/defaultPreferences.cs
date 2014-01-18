@@ -21,8 +21,8 @@
 //-----------------------------------------------------------------------------
 
 /// Game
-$Game::CompanyName              = "GarageGames LLC";
-$Game::ProductName              = "Torque 2D";
+$Game::CompanyName              = "--";
+$Game::ProductName              = "Metis Novis";
 
 /// iOS
 $pref::iOS::ScreenOrientation   = $iOS::constant::Landscape;
@@ -57,12 +57,13 @@ $pref::T2D::imageAssetGlobalFilterMode = Bilinear;
 $pref::T2D::TAMLSchema="";
 
 /// Video
-$pref::Video::appliedPref = 0;
+$pref::Video::appliedPref = 1;
 $pref::Video::disableVerticalSync = 1;
 $pref::Video::displayDevice = "OpenGL";
 $pref::Video::preferOpenGL = 1;
 $pref::Video::fullScreen = 0;
-$pref::Video::defaultResolution = "1920 1080";
+$pref::Video::defaultResolution = "1280 720";
+$pref::Video::resolution = "1920 1080";
 $pref::Video::windowedRes = "1280 720 32";
 $pref::OpenGL::gammaCorrection = 0.5;
 

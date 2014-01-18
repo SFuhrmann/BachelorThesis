@@ -133,10 +133,15 @@ function createTitle()
 
 function UpgradeBackFont::onTouchEnter(%this)
 {
+	mainMenuSetActiveItem(%this);
+}
+
+function UpgradeBackFont::setRightColor(%this)
+{
 	%this.setBlendColor("1 0.5 0.5");
 	alxPlay("Game:MenuMove");
 }
-function UpgradeBackFont::onTouchLeave(%this)
+function UpgradeBackFont::deactivateItem(%this)
 {
 	%this.setBlendColor("1 1 1");
 }
@@ -168,6 +173,7 @@ function createUpgradeItems()
 		%item.SceneGroup = %i;
 		%item.SceneLayer = 1;
 		%item.setUseInputEvents(true);
+		%item.activeID = %i;
 		
 		if (%item.level > 4)
 		{
@@ -176,6 +182,9 @@ function createUpgradeItems()
 		}
 		
 		MainMenu.add(%item);
+		
+		if (%i == 0)
+			mainMenuSetActiveItem(%item);
 		
 		createUpgradeCosts(%item);
 		createUpgradeLevel(%item);
@@ -373,6 +382,11 @@ function increaseUpgradeLevel(%i, %obj)
 ///Enter Method for Upgrade Sprites
 function UpgradeSprite::onTouchEnter(%this)
 {
+	mainMenuSetActiveItem(%this);
+}
+
+function UpgradeSprite::setRightColor(%this)
+{
 	if (%this.inactiveUpgrade)
 		%this.setBlendColor("0.25 0.25 0.5");
 	else
@@ -382,10 +396,25 @@ function UpgradeSprite::onTouchEnter(%this)
 }
 
 ///Mouse Leave Method for Upgrade Sprites
-function UpgradeSprite::onTouchLeave(%this)
+function UpgradeSprite::deactivateItem(%this)
 {
 	if (%this.inactiveUpgrade)
 		%this.setBlendColor("0.5 0.5 0.5");
 	else
 		%this.setBlendColor("1 1 1");
+}
+
+function mainMenuSetActiveItem(%item)
+{
+	if (isObject($mainMenuActiveItem))
+	{
+		$mainMenuActiveItem.deactivateItem();
+	}
+	$mainMenuActiveItem = %item;
+	$mainMenuActiveItem.setRightColor();
+}
+
+function menuConfirmJoystick()
+{
+	mainMenuClick($mainMenuActiveItem);
 }

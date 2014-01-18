@@ -2,6 +2,11 @@
 
 function Game::create()
 {
+	//enable GamePad Input
+	$enableDirectInput=true;
+	activateDirectInput();
+	enableJoystick();
+	
 	//set a random seed
 	setRandomSeed(getRealTime()); 
 	// Load all script files
@@ -216,6 +221,8 @@ function createMenuItems()
 	%start.SceneLayer = 2;
 	%start.setUseInputEvents(true);
 	MainMenu.add(%start);
+	mainMenuSetActiveItem(%start);
+	
 	
 	%upgrade = new ImageFont( UpgradeFont );
 	%upgrade.Image = "Game:Font";
@@ -230,20 +237,32 @@ function createMenuItems()
 
 function StartFont::onTouchEnter(%this)
 {
+	mainMenuSetActiveItem(%this);
+}
+
+function StartFont::setRightColor(%this)
+{
 	%this.setBlendColor("0.5 0.5 1");
 	alxPlay("Game:MenuMove");
 }
-function StartFont::onTouchLeave(%this)
+
+function StartFont::deactivateItem(%this)
 {
 	%this.setBlendColor("1 1 1");
 }
 
 function UpgradeFont::onTouchEnter(%this)
 {
+	mainMenuSetActiveItem(%this);
+}
+
+function UpgradeFont::setRightColor(%this)
+{
 	%this.setBlendColor("0.5 1 0.5");
 	alxPlay("Game:MenuMove");
 }
-function UpgradeFont::onTouchLeave(%this)
+
+function UpgradeFont::deactivateItem(%this)
 {
 	%this.setBlendColor("1 1 1");
 }

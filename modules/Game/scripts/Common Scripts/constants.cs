@@ -76,11 +76,8 @@ function createSaveGame()
 	$saveGame.MP = 2;
 	$saveGame.shotSpeed = 2;
 	$saveGame.stunLength = 0;
-	//$saveGame.stunRadius = 0;
 	$saveGame.leapCosts = 0;
-	//$saveGame.leapCooldown = 0;
 	$saveGame.beamGrowth = 0;
-	//$saveGame.beamSpeed = 0;
 	$saveGame.currentScore = 0;
 	$saveGame.speed = 0;
 	$saveGame.damage = 0;

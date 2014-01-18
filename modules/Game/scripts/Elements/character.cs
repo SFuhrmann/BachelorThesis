@@ -60,7 +60,7 @@ function createCharacter(%pos)
 	$character.acceleration = 3;
 	
 	//Shooting
-	$character.shootingFrequency = 350;
+	$character.shootingFrequency = 150;
 	$character.projectileSpeed = 25;
 	$character.projectileDamage = 2;
 	
@@ -159,36 +159,266 @@ function Character::Update(%this)
 //---------------------------------------//
 //#######################################//
 
-function Character::pressW(%this)
+function characterJoystickZ(%value)
 {
+	if (%value > 0.23)
+	{
+		if (!$characterSliderLeftDown)
+		{
+			$character.upQ();
+			$characterSliderLeftDown = true;
+		}
+	}
+	else if (%value < -0.23)
+	{
+		if (!$characterSliderRightDown)
+		{
+			$character.upE(1);
+			$characterSliderRightDown = true;
+		}
+	}
+	else
+	{
+		if ($characterSliderLeftDown)
+		{
+			$characterSliderLeftDown = false;
+		}
+		if ($characterSliderRightDown)
+		{
+			$characterSliderRightDown = false;
+		}
+	}
+}
+
+function characterJoystickLeftX(%value)
+{
+	$character.joystickLeftXAxis = %value;
+	if(%value > 0.23)
+	{
+		
+		if (!$character.joystickMovingRight)
+		{
+			$character.pressD();
+			$character.joystickMovingRight = true;
+		}
+	}
+	else if (%value < -0.23)
+	{
+		if (!$character.joystickMovingLeft)
+		{
+			$character.pressA();
+			$character.joystickMovingLeft = true;
+		}
+	}
+	else
+	{
+		if ($character.joystickMovingLeft)
+		{
+			$character.upA();
+			$character.joystickMovingLeft = false;
+		}
+		if ($character.joystickMovingRight)
+		{
+			$character.upD();
+			$character.joystickMovingRight = false;
+		}
+	}
+}
+
+function characterJoystickLeftY(%value)
+{
+	$character.joystickLeftYAxis = %value;
+	if(%value < -0.23)
+	{
+		
+		if (!$character.joystickMovingUp)
+		{
+			$character.pressW(1);
+			if ($gameMenu)
+			{
+				if ($gameMenuActiveItem.SceneGroup == 27)
+				{
+					gameMenuSetActiveItem(GameMenuBackFont);
+				}
+				else if ($gameMenuActiveItem.SceneGroup == 28)
+				{
+					gameMenuSetActiveItem(GameMenuQuitFont);
+				}
+			}
+			$character.joystickMovingUp = true;
+		}
+	}
+	else if (%value > 0.23)
+	{
+		if (!$character.joystickMovingDown)
+		{
+			if (!$gameMenu)
+			{
+				$character.pressS();
+			}
+			else
+			{
+				if ($gameMenuActiveItem.SceneGroup == 26)
+				{
+					gameMenuSetActiveItem(GameMenuQuitFont);
+				}
+				else if ($gameMenuActiveItem.SceneGroup == 27)
+				{
+					gameMenuSetActiveItem(GameMenuEndFont);
+				}
+			}
+			$character.joystickMovingDown = true;
+		}
+	}
+	else
+	{
+		if ($character.joystickMovingDown)
+		{
+			$character.upS();
+			$character.joystickMovingDown = false;
+		}
+		if ($character.joystickMovingUp)
+		{
+			$character.upW(1);
+			$character.joystickMovingUp = false;
+		}
+	}
+}
+
+function characterJoystickRightX(%value)
+{
+	$character.joystickRightXAxis = %value;
+	if (!$characterJoystickShooting && (%value > 0.23 || %value < -0.23))
+	{
+		$character.joystickShoot();
+		$characterJoystickShooting = true;
+	}
+	else if ($characterJoystickShooting && ($character.joystickRightYAxis > -0.23 && $character.joystickRightYAxis < 0.23))
+	{
+		cancel($character.shootSchedule);
+		$characterJoystickShooting = false;
+	}
+}
+
+function characterJoystickRightY(%value)
+{
+	$character.joystickRightYAxis = %value;
+	if (!$characterJoystickShooting && (%value > 0.23 || %value < -0.23))
+	{
+		$character.joystickShoot();
+		$characterJoystickShooting = true;
+	}
+	else if ($characterJoystickShooting && ($character.joystickRightXAxis > -0.23 && $character.joystickRightXAxis < 0.23))
+	{
+		cancel($character.shootSchedule);
+		$characterJoystickShooting = false;
+	}
+}
+function characterJoystickRB()
+{
+	if(!$characterJoystickRBDown)
+		$character.leap("0 0", 1);
+}
+function characterJoystickRBUp()
+{
+	$characterJoystickRBDown = false;
+}
+
+function Character::joystickShoot(%this)
+{
+	if (%this.leaping)
+		return;
+		
+	//make sure the attack is not on cooldown
+	if (%this.attackOnCoolDown)
+	{
+		//re-schedule this function, if player keeps pressing the mousebutton
+		%this.shootSchedule = %this.schedule(%this.shootingFrequency, joystickShoot);
+		return;
+	}
+	//convert local position of top-middle point of the Character to World Coordinates
+	%position = %this.getWorldPoint(0, getWord(%this.Size, 1) / 2);
+	
+	%direction = - mRadToDeg(mAtan(%this.joystickRightYAxis, %this.joystickRightXAxis)) + 90;
+	
+	//copy projectile speed to the speed of this projectile
+	%speed = %this.projectileSpeed;
+	
+	//get Linear Velocity along the axes and multiply it with a constant
+	%veloX = %this.getLinearVelocityX() * $speedInfluenceOnProjectiles;
+	%veloY = %this.getLinearVelocityY() * $speedInfluenceOnProjectiles;
+	
+	//create the Projectile
+	createProjectile(%position, %direction, %speed, %veloX, %veloY, %this);
+	
+	//re-schedule this
+	%this.shootSchedule = %this.schedule(%this.shootingFrequency, joystickShoot);
+	
+	//turn on cooldown
+	%this.attackOnCooldown = true;
+	%this.coolDownSchedule = %this.schedule(%this.shootingFrequency - 1, turnOffCooldown);
+}
+
+function Character::pressW(%this, %gamepad)
+{
+	if ($gameOver)
+	{
+		schedule(1, 0, createMenu);
+		return;
+	}
 	if (!$gameOver && !$nextStage && !$gameMenu) 
 		$character.walkup();
-	if ($nextStage)
+	if ($nextStage && !%gamepad)
 		%this.addItem(WIcon.id);
 }
 function Character::pressA(%this)
 {
+	if ($gameOver)
+	{
+		schedule(1, 0, createMenu);
+		return;
+	}
 	if (!$gameOver && !$nextStage && !$gameMenu) 
 	$character.walkleft();
 }
 function Character::pressS(%this)
 {
+	if ($gameOver)
+	{
+		schedule(1, 0, createMenu);
+		return;
+	}
 	if (!$gameOver && !$nextStage && !$gameMenu) 
 		$character.walkdown();
 }
 function Character::pressD(%this)
 {
+	if ($gameOver)
+	{
+		schedule(1, 0, createMenu);
+		return;
+	}
 	if (!$gameOver && !$nextStage && !$gameMenu) 
 		$character.walkright();
 }
 function Character::pressQ(%this)
 {
+	if ($gameOver)
+	{
+		schedule(1, 0, createMenu);
+		return;
+	}
 	if ($nextStage)
 		$character.addItem(QIcon.id); 
 }
 
 function Character::pressE(%this)
 {
+	if ($gameOver)
+	{
+		schedule(1, 0, createMenu);
+		return;
+	}
 	if ($nextStage) 
 		$character.addItem(EIcon.id); 
 }
@@ -216,17 +446,17 @@ function Character::upQ(%this)
 	if($blockQWE)
 		$blockQWE = false;
 }
-function Character::upW(%this)
+function Character::upW(%this, %gamepad)
 {
 	if (!$gameOver && !$nextStage && !$blockQWE && !$gameMenu) 
 		$character.stopwalkup();
 	if($blockQWE)
 		$blockQWE = false;
 }
-function Character::upE(%this)
+function Character::upE(%this, %controller)
 {
 	if (!$gameOver && !$nextStage && !$blockQWE && !$gameMenu) 
-		$character.beam();
+		$character.beam(%controller);
 	if($blockQWE)
 		$blockQWE = false;
 }
@@ -372,21 +602,40 @@ function Character::turnOffNoMoving(%this)
 //---------------------------------------//
 //#######################################//
 
+function characterResetAlign(%this)
+{
+	%this.doNotAlignToMouse = false;
+}
+
 ///align the Character to the Mouse
 function Character::alignToMouse(%this)
 {
-	//get differences on X and Y axes between Character and MousePointer
-	%dX = getWord(Window.getMousePosition(), 0) - getWord(%this.Position, 0);
-	%dY = getWord(Window.getMousePosition(), 1) - getWord(%this.Position, 1);
-	
-	if (mPow(%dX + %dY, 2) < 1)
-		return;
-	
-	//get angle
-	%targetAngle = mRadToDeg(mAtan(%dY, %dX)) - 90;
-	
-	//align character to angle
-	%this.Angle = %targetAngle;
+	if (!$characterJoystickShooting && !%this.doNotAlignToMouse)
+	{
+		//get differences on X and Y axes between Character and MousePointer
+		%dX = getWord(Window.getMousePosition(), 0) - getWord(%this.Position, 0);
+		%dY = getWord(Window.getMousePosition(), 1) - getWord(%this.Position, 1);
+		
+		if (mPow(%dX + %dY, 2) < 1)
+			return;
+		
+		//get angle
+		%targetAngle = mRadToDeg(mAtan(%dY, %dX)) - 90;
+		
+		//align character to angle
+		%this.Angle = %targetAngle;
+	}
+	else
+	{
+		if (VectorLen(%this.joystickRightYAxis SPC %this.joystickRightXAxis) < 0.23)
+			return;
+		
+		//get angle
+		%targetAngle = mRadToDeg(mAtan(%this.joystickRightYAxis, %this.joystickRightXAxis)) - 90;
+		
+		%this.Angle = - (%targetAngle + 180);
+		%this.doNotAlignToMouse = true;
+	}
 }
 
 ///shoot a projectile
@@ -446,7 +695,7 @@ function Character::turnOffCooldown(%this)
 //#######################################//
 
 ///leap to mouse position
-function Character::leap(%this, %pos)
+function Character::leap(%this, %pos, %controller)
 {
 	if (%this.leaping ||(%this.MP < %this.leapCosts) || %this.leapingCooldown)
 		return;
@@ -478,11 +727,19 @@ function Character::leap(%this, %pos)
 	//set max Speed and Linear Damping to 0
 	%this.maxSpeed = 0;
 	%this.setLinearDamping(0);
-	//get differences on X and Y axes between Character and MousePointer
-	%dX = getWord(%pos, 0) - getWord(%this.Position, 0);
-	%dY = getWord(%pos, 1) - getWord(%this.Position, 1);
-	//calculate the direction from that
-	%direction = mRadToDeg(mAtan(%dY, %dX)) + 90;
+	
+	if (!%controller)
+	{
+		//get differences on X and Y axes between Character and MousePointer
+		%dX = getWord(%pos, 0) - getWord(%this.Position, 0);
+		%dY = getWord(%pos, 1) - getWord(%this.Position, 1);
+		//calculate the direction from that
+		%direction = mRadToDeg(mAtan(%dY, %dX)) + 90;
+	}
+	else
+	{
+		%direction = - mRadToDeg(mAtan(%this.joystickLeftYAxis, %this.joystickLeftXAxis)) + 90;
+	}
 	
 	//set velocity to 20 in this direction
 	%leapVelocity = 100;
@@ -582,7 +839,7 @@ function Character::stunImpact(%this)
 //#######################################//
 
 
-function Character::beam(%this)
+function Character::beam(%this, %controller)
 {
 	if (%this.beamCooldown || %this.MP < 1)
 		return;
@@ -593,11 +850,18 @@ function Character::beam(%this)
 	//convert local position of top-middle point of the Character to World Coordinates
 	%position = %this.getWorldPoint(0, getWord(%this.Size, 1) / 2);
 	
-	//get differences on X and Y axes between Character and MousePointer
-	%dX = getWord(Window.getMousePosition(), 0) - getWord(%this.Position, 0);
-	%dY = getWord(Window.getMousePosition(), 1) - getWord(%this.Position, 1);
-	//calculate the direction from that
-	%direction = mRadToDeg(mAtan(%dY, %dX)) + 90;
+	if (!%controller)
+	{
+		//get differences on X and Y axes between Character and MousePointer
+		%dX = getWord(Window.getMousePosition(), 0) - getWord(%this.Position, 0);
+		%dY = getWord(Window.getMousePosition(), 1) - getWord(%this.Position, 1);
+		//calculate the direction from that
+		%direction = mRadToDeg(mAtan(%dY, %dX)) + 90;
+	}
+	else
+	{
+		%direction = - mRadToDeg(mAtan(%this.joystickRightYAxis, %this.joystickRightXAxis)) + 90;
+	}
 	
 	//create a beam in the direction
 	createBeam(%position, %direction);

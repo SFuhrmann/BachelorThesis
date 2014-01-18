@@ -70,11 +70,19 @@ function createMine(%this)
 	
 	$mine = %outerMine;
 	
+	$mine.lifeTime = 300;
+	
 	$mine.update();
 }
 
 function OuterMine::Update(%this)
 {
+	if (%this.lifeTime == 0)
+	{
+		schedule(1, 0, deleteObj, %this);
+		schedule(1, 0, deleteObj, %this.mine.inner);
+		return;
+	}
 	%this.mine.inner.Position = %this.Position;
 	
 	//get differences on X and Y axes between Character and MousePointer
@@ -85,7 +93,7 @@ function OuterMine::Update(%this)
 	
 	%this.setLinearVelocityPolar(%angle, 2);
 	%this.mine.inner.setLinearVelocityPolar(%angle, 2);
-	
+	%this.lifeTime--;
 	$mineUpdateSchedule = %this.schedule(100, update);
 }
 

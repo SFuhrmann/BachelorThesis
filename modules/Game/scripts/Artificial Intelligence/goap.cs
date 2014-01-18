@@ -76,10 +76,8 @@ function GOAP_Node::expand(%this)
 		%node.worldprojection = %this.worldprojection.createNewWorldProjection(%action);
 		%node.value = getNodeValue(%node);
 		%node.action = %action;
-		//echo(%action.id SPC %node.value);
 		%node.parent = %this;
 		%nodes = addWord(%nodes, %node);
-		//echo(%action.id SPC %node.value);
 	}
 	return %nodes;
 }

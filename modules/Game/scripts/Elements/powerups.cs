@@ -25,7 +25,7 @@ function createPowerUp()
 	
 	%up.Position = getPowerUpPosition(%pos);
 	
-	%up.SceneLayer = 25;
+	%up.SceneLayer = 8;
 	%up.SceneGroup = 25;
 	
 	%up.setBodyType(dynamic);

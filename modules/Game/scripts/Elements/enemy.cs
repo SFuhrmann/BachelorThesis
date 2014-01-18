@@ -36,7 +36,7 @@ function createEnemy(%pos)
 	%enemy.acceleration = $enemyMaxSpeed / 5;
 	
 	//Shooting
-	%enemy.shootingFrequency = 350;
+	%enemy.shootingFrequency = 150;
 	%enemy.projectileSpeed = $enemyProjectileSpeed;
 	%enemy.projectileDamage = $enemyProjectileDamage;
 	
@@ -444,13 +444,13 @@ function Enemy::increaseUpgradeLevel(%this, %i)
 	switch(%i)
 	{
 		case 0:
-			$enemyMaxHP += 10;
+			$enemyMaxHP += 20;
 		case 1:
 			$enemyMaxMP += 1;
 		case 2:
-			$enemyProjectileSPeed += 2;
+			$enemyProjectileSPeed += 5;
 		case 3:
-			$enemyMaxSpeed += 5;
+			$enemyMaxSpeed += 4;
 		case 4:
 			$enemyProjectileDamage += 0.5;
 		case 5:
