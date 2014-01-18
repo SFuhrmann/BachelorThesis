@@ -113,7 +113,7 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 		%change = 12;
 		%result = 24;
 		%j = 0;
-		while (true)
+		while (%j < 50)
 		{
 			//test if interval is found
 			if (%e[%index - 1] < %rnd2 && %e[%index] >= %rdn2)

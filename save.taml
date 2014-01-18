@@ -1,5 +1,4 @@
 <ScriptObject
-    Name="saveGame"
     beamGrowth="0"
     credits="0"
     currentScore="0"
