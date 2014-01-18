@@ -73,8 +73,8 @@ function createCharacter(%pos)
 	$character.creditsMultiplier = 1.0;
 	
 	//Cooldowns
-	$character.cooldownTime = 10000;
-	$character.leapCooldownTime = 10000;
+	$character.cooldownTime = 1000;
+	$character.leapCooldownTime = 1000;
 	
 	//Stun
 	$character.stunLength = 5000;
