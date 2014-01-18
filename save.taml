@@ -1,1 +1,13 @@
-
+<ScriptObject
+    Name="saveGame"
+    beamGrowth="0"
+    credits="0"
+    currentScore="0"
+    damage="0"
+    existing="1"
+    HP="2"
+    leapCosts="0"
+    MP="2"
+    shotSpeed="2"
+    speed="0"
+    stunLength="0" />
