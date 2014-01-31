@@ -97,7 +97,7 @@ function activateUpgrade(%i, %obj)
 		case 0:
 			%obj.addHP(50);
 		case 1:
-			%obj.addMP(50);
+			%obj.addMP(1.5);
 		case 2:
 			%obj.projectileDamage *= 2;
 			%obj.doubleDamage = true;
