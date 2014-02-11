@@ -19,7 +19,7 @@ function goap_plan_actions(%agent)
 	%node.startNode = true;
 	%node.value = getNodeValue(%node);
 	
-	%bestnode = %node.depth_limited_search_heuristic(0, %node.value);
+	%bestnode = %node.depth_limited_search_heuristic(0);
 	
 	%actionlist = %bestnode.getActionList();
 	return %actionlist;
@@ -27,37 +27,36 @@ function goap_plan_actions(%agent)
 
 function getNodeValue(%node)
 {
-	%value = (%node.worldprojection.convertToGoalSurvive() + %node.worldprojection.convertToGoalKill()) / 2;
+	%survive = %node.worldprojection.convertToGoalSurvive();
+	%kill = %node.worldprojection.convertToGoalKill();
+	%value = (mPow(%survive, 2) + mSqrt(%kill) / 2) / 2;
 	return %value;
 }
 
-function GOAP_Node::depth_limited_search_heuristic(%this, %depth, %bestvalue)
+function GOAP_Node::depth_limited_search_heuristic(%this, %depth)
 {
 	if (%depth > $AIDLSDEPTH)
 	{
-		if (%this.value > %bestvalue)
-		{
-			return %this;	
-		}
-		else
-		{
-			return "$$";
-		}
+		return %this;
 	}
 	else
 	{
 		%nodes = %this.expand();
-		%bestnode = getWord(%nodes, 0);
-		%bestvalue2 = %bestvalue;
+		%bestnode = %this;
+		%bestvalue = %this.value;
 		
 		for (%i = 0; %i < %nodes.count; %i++)
 		{
 			%node = getWord(%nodes, %i);
 			
-			if (%node.value > %bestvalue2)
+			if (%node.value > %bestvalue)
 			{
-				%bestnode = %node.depth_limited_search_heuristic(%depth + 1, %bestvalue2);
-				%bestvalue2 = %bestnode.value;
+				%nextBestnode = %node.depth_limited_search_heuristic(%depth + 1);
+				if (%nextBestnode.value > %bestvalue)
+				{
+					%bestnode = %nextBestnode;
+					%bestvalue = %bestnode.value;
+				}
 			}
 		}
 		return %bestnode;

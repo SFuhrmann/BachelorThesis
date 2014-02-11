@@ -55,7 +55,12 @@ function GOAPBehavior::update(%this)
 	
 	$nextPackagePosition = findNearestPackage(%this.owner.Position);
 	%actionList = goap_plan_actions(%this.owner);
-	
+	if (%actionList $= "")
+	{
+		%action = new ScriptObject( StandStillAction );
+		%action.initialize(5);
+		%actionList = %action;
+	}
 	%this.actionQueue.deleteAll();
 	%this.actionQueue.pushList(%actionList);
 	

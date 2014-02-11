@@ -1,8 +1,7 @@
 <ScriptObject
-    Name="saveGame"
     beamGrowth="0"
     credits="0"
-    currentScore="0"
+    currentScore="36320"
     damage="0"
     existing="1"
     HP="2"

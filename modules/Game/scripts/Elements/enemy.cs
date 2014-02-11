@@ -181,7 +181,7 @@ function Enemy::updateAngle(%this)
 	if (!%this.stunned)
 	
 	{
-		//get differences on X and Y axes between Character and MousePointer
+		//get differences on X and Y axes between Character and Enemy
 		%dX = getWord($character.Position, 0) - getWord(%this.Position, 0);
 		%dY = getWord($character.Position, 1) - getWord(%this.Position, 1);
 		

@@ -49,7 +49,8 @@ function createCurrentWorldProjection()
 ///creates all relevant properties for the worldpropjection and saves them inside a list
 function WorldProjection::createProps(%this)
 {
-	%nextPackageDistance = getDistanceNearestPackage(%this.ownPosition);
+	//%nextPackageDistance = getDistanceNearestPackage(%this.ownPosition);
+	%nextPackageDistance = VectorDist($nextPackagePosition, %this.ownPosition);
 	%skillsOnCooldown = %this.invisibilityCooldown + %this.mineCooldown + %this.gravitPointCooldown;
 	%distanceEnemy = VectorDist(%this.enemyPosition, %this.ownPosition);
 	if (%this.gravitPointFiredExists)
@@ -71,7 +72,7 @@ function WorldProjection::createProps(%this)
 
 
 ///returns the satisfaction of the "Survive"-Goal
-///satisfaction is always a value between -1 and 1
+///satisfaction is always a value between 0 and 1
 function WorldProjection::convertToGoalSurvive(%this, %averageWeights)
 {
 	//add all properties of the worldprojection while multiplying them with their weights
@@ -87,13 +88,13 @@ function WorldProjection::convertToGoalSurvive(%this, %averageWeights)
 	
 	for (%i = 0; %i < %this.norm_props.count; %i++)
 	{
-		%next = 0;
+		%next = getWord(%this.norm_props, %i);
 		%weight = getWord(%weights, %i);
 		%invertNext = getWord(%invert, %i);
 		if (%invertNext)
-			%next = 1 - getWord(%this.norm_props, %i);
+			%next = (1 - %next) * %weight;
 		else
-			%next = getWord(%this.norm_props, %i);
+			%next = %next * %weight;
 		%sum += %next;
 	}
 	//divide them by their amount to get the average satisfaction
@@ -226,12 +227,9 @@ function WorldProjection::createNewWorldProjection(%this, %action)
 	
 	%wp.createProps();
 	
-	//create a word for over time Changes
-	%changes = "0 0 0 0 0 0 0 0 0 0 0 0";
-	
 	//get the changes over time of all weak properties
 	//for every weak property index
-	for (%i = 0; %i < $weakIndices; %i++)
+	for (%i = 0; %i < $weakIndices.count; %i++)
 	{
 		//get Index of next weak property
 		%j = getWord($weakIndices, %i);
@@ -239,14 +237,7 @@ function WorldProjection::createNewWorldProjection(%this, %action)
 		//calculate the changes regarding the changes over time
 		%newVal = $saveWorldProjections.averages[%j];
 		
-		//set new change
-		%changes = setWord(%changes, %j, %newVal);
-	}
-	
-	//add all changes over time
-	for (%i = 0; %i < %wp.props.count; %i++)
-	{
-		%wp.props = setWord(%wp.props, %i, getWord(%wp.props, %i) + getWord(%changes, %i));
+		%wp.props = setWord(%wp.props, %j, getWord(%wp.props, %i) + %newVal);
 	}
 	
 	%wp.normProperties();
