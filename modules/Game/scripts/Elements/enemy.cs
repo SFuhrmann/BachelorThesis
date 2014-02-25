@@ -70,6 +70,8 @@ function createEnemy(%pos)
 	
 	%enemy.createEnemyLifeBar();
 	%enemy.shoot();
+	
+	createGOAPModule();
 }
 
 function Enemy::addHP(%this, %amount)
@@ -166,6 +168,7 @@ function Enemy::die(%this)
 	$createEnemySchedule = schedule(15000, 0, createEnemy, "0 0");
 	$character.stopMoving();
 	$character.setLinearVelocity("0 0");
+	$GOAPModule.delete();
 	createNextStage();
 	if ($level < 15)
 	{

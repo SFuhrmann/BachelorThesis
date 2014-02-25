@@ -12,84 +12,92 @@
 //                    :  It returns a list (string) of actions, that can be cued inside the ai_core's action queue.
 // ============================================================
 
-function goap_plan_actions(%agent)
+function createGOAPModule()
 {
-	%node = new ScriptObject( GOAP_Node );
-	%node.worldprojection = createCurrentWorldProjection();
-	%node.startNode = true;
-	%node.value = getNodeValue(%node);
+	$goapModule = new ScriptObject(GOAPModule);
+	$goapModule.nextAction = "";
 	
-	%bestnode = %node.depth_limited_search_heuristic(0);
-	
-	%actionlist = %bestnode.getActionList();
-	return %actionlist;
+	$goapModule.planAction();
 }
 
-function getNodeValue(%node)
+////////iterative!!!
+function GOAPModule::planAction(%this)
 {
-	%survive = %node.worldprojection.convertToGoalSurvive();
-	%kill = %node.worldprojection.convertToGoalKill();
-	%value = (mPow(%survive, 2) + mSqrt(%kill) / 2) / 2;
-	return %value;
+	//initialize storage structures
+	%this.worldmodels = "";
+	%this.actions = "";
+	
+	//initialize data
+	%this.worldmodels = setWord(%this.worldmodels, 0, createCurrentWorldProjection());
+	%this.currentDepth = 0;
+	
+	//initialize best Action
+	%this.bestAction = "";
+	%this.bestActionList = "";
+	%this.bestValue = 0;
+	
+	%this.schedule(5, nextIteration);
 }
 
-function GOAP_Node::depth_limited_search_heuristic(%this, %depth)
+function GOAPModule::nextIteration(%this)
 {
-	if (%depth > $AIDLSDEPTH)
+	//calculate value of first worldprojection
+	%currentWP = getWord(%this.worldmodels, %this.currentDepth);
+	%this.currentValue = getWPValue(%currentWP);
+	
+	//check if maximum depth is reached
+	if (%this.currentDepth >= $AIDLSDEPTH)
 	{
-		return %this;
+		//check if current value is the best value so far
+		if (%this.currentValue > %bestValue)
+		{
+			//if so store new value and accordingly the next action
+			%this.bestValue = %currentValue;
+			%this.bestAction = getWord(%this.actions, 0);
+			%this.bestActionList = %this.actions;
+		}
+		%this.currentDepth -= 1;
 	}
 	else
 	{
-		%nodes = %this.expand();
-		%bestnode = %this;
-		%bestvalue = %this.value;
+		//get next Action
+		%nextAction = %currentWP.nextAction();
 		
-		for (%i = 0; %i < %nodes.count; %i++)
+		if (isObject(%nextAction))
 		{
-			%node = getWord(%nodes, %i);
+			//create new World Projection
+			%this.worldmodels = setWord(%this.worldmodels, %this.currentDepth + 1, %currentWP.createNewWorldProjection(%nextAction));
 			
-			if (%node.value > %bestvalue)
-			{
-				%nextBestnode = %node.depth_limited_search_heuristic(%depth + 1);
-				if (%nextBestnode.value > %bestvalue)
-				{
-					%bestnode = %nextBestnode;
-					%bestvalue = %bestnode.value;
-				}
-			}
+			%this.actions = setWord(%this.actions, %this.currentDepth, %nextAction);
+			
+			//process it in the next iteration
+			%this.currentDepth += 1;
 		}
-		return %bestnode;
+		else
+		{	
+			%this.currentDepth -= 1;
+		}
 	}
+	
+	//test if a new iteration should be performed or not
+	if (%this.currentDepth >= 0)
+		%this.schedule(5, nextIteration);
+	else
+		%this.schedule(5, endIterations);
 }
 
-function GOAP_Node::expand(%this)
+function GOAPModule::endIterations(%this)
 {
-	%actions = $enemy.getAvailableActions(%this.worldprojection);
-	%nodes = "";
-	for (%i = 0; %i < %actions.count; %i++)
-	{
-		%action = getWord(%actions, %i);
-		
-		%node = new ScriptObject(GOAP_Node);
-		%node.worldprojection = %this.worldprojection.createNewWorldProjection(%action);
-		%node.value = getNodeValue(%node);
-		%node.action = %action;
-		%node.parent = %this;
-		%nodes = addWord(%nodes, %node);
-	}
-	return %nodes;
+	%this.nextAction = %this.bestAction;
+	%this.actionList = %this.bestActionList;
+	
+	%this.schedule(5, planAction);
 }
 
-function GOAP_Node::getActionList(%this)
+function getWPValue(%wp)
 {
-	%node = %this;
-	%result = "";
-	while (!%node.startNode)
-	{
-		%result = addWordInFront(%result, %node.action);
-		%node = %node.parent;
-	}
-	return %result;
+	%survive = %wp.convertToGoalSurvive();
+	%kill = %wp.convertToGoalKill();
+	%value = (mPow(%survive, 2) + mSqrt(%kill) / 2) / 2;
+	return %value;
 }
-

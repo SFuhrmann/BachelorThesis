@@ -45,7 +45,7 @@ $gravitPointInfluence = 0.85;
 
 //AI Structures
 $weakIndices = "0 1 6 10";
-$AIDLSDEPTH = 1;
+$AIDLSDEPTH = 3;
 $amountDNAStrings = 50;
 $geneticAlgorithmMutationRate = 50;
 

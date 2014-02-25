@@ -1,0 +1,21 @@
+Images:
+
+
+Game Engine:
+Torque2D MIT
+http://www.garagegames.com/products/torque-2d
+
+Development Environment:
+torquedev
+http://www.torquedev.com/
+
+Sounds:
+freesfx.co.uk
+	pop - purple
+
+http://www.bfxr.net/
+
+Background Music:
+incompetech.com
+Video Dungeon Boss (With and Without Percussion)
+

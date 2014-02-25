@@ -54,7 +54,7 @@ function GOAPBehavior::update(%this)
 	}
 	
 	$nextPackagePosition = findNearestPackage(%this.owner.Position);
-	%actionList = goap_plan_actions(%this.owner);
+	%actionList = $GOAPModule.bestActionlist;
 	if (%actionList $= "")
 	{
 		%action = new ScriptObject( StandStillAction );

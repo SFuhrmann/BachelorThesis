@@ -43,6 +43,9 @@ function createCurrentWorldProjection()
 	//norm all properties for goal calculation
 	%wp.normProperties();
 	
+	%wp.actions = $enemy.getAvailableActions(%wp);
+	%wp.actionindex = 0;
+	
 	return %wp;
 }
 
@@ -242,5 +245,16 @@ function WorldProjection::createNewWorldProjection(%this, %action)
 	
 	%wp.normProperties();
 	
+	%wp.actions = $enemy.getAvailableActions(%wp);
+	%wp.actionindex = 0;
+	
 	return %wp;
+}
+
+function WorldProjection::nextAction(%this)
+{
+	%action = getWord(%this.actions, %this.actionindex);
+	%this.actionindex++;
+	
+	return %action;
 }

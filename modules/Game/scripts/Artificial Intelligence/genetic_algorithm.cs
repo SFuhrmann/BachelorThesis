@@ -47,8 +47,6 @@ function GeneticModule::createNewDNAStrings(%this)
 			%this.killAverage = setWord(%this.killAverage, %j, (%newK - getWord(%this.killAverage, %j) / (%i + 1)));
 		}
 	}
-	echo("SURVIVE:" SPC %this.surviveAverage);
-	echo("KILL:" SPC %this.killAverage);
 }
 
 ///creates the new generation of Strings for Survive
@@ -162,7 +160,6 @@ function GeneticModule::createNextGenerationSurvive(%this, %goalValue)
 			%this.surviveAverage = setWord(%this.surviveAverage, %j, %current + (%new - %current) / %i);
 		}
 	}
-	echo("SURVIVE:" SPC %this.surviveAverage);
 }
 
 ///creates the new generation of Strings for Kill
@@ -279,5 +276,4 @@ function GeneticModule::createNextGenerationKill(%this, %goalValue)
 			%this.KillAverage = setWord(%this.KillAverage, %j, %current + (%new - %current) / %i);
 		}
 	}
-	echo("KILL:" SPC %this.KillAverage);
 }

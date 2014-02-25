@@ -999,7 +999,7 @@ function Character::addItem(%this, %i)
 			if (%this.MPUpgrades >= $saveGame.MP)
 				%this.availableItems = removeWord(%this.availableItems, %i);
 		case "shotSpeed":
-			%this.shotSpeed += 5;
+			%this.shotSpeed += 15;
 			%this.shotSpeedUpgrades++;
 			if (%this.shotSpeedUpgrades >= $saveGame.shotSpeed)
 				%this.availableItems = removeWord(%this.availableItems, %i);

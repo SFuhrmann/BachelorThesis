@@ -4,8 +4,9 @@ function Game::create()
 {
 	//enable GamePad Input
 	$enableDirectInput=true;
+	//save wether Controller is active or not
 	activateDirectInput();
-	enableJoystick();
+	$directInputActive  = enableJoystick();
 	
 	//set a random seed
 	setRandomSeed(getRealTime()); 

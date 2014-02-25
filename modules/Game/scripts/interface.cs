@@ -120,7 +120,10 @@ function createLeapIcon()
 	%mouse = new Sprite( MouseIcon );
 	%mouse.Size = "2 2";
 	%mouse.Position = "-20 21";
-	%mouse.Image = "Game:MouseIcon";
+	if ($directInputActive)
+		%mouse.Image = "Game:RBButton";
+	else
+		%mouse.Image = "Game:MouseIcon";
 	%mouse.SceneGroup = 2;
 	%mouse.SceneLayer = 2;
 	%mouse.setFixedAngle(true);
@@ -143,7 +146,10 @@ function createStunIcon()
 	%mouse = new Sprite( QAbilityIcon );
 	%mouse.Size = "2 2";
 	%mouse.Position = "-35 21";
-	%mouse.Image = "Game:QIcon";
+	if ($directInputActive)
+		%mouse.Image = "Game:LTButton";
+	else
+		%mouse.Image = "Game:QIcon";
 	%mouse.SceneGroup = 2;
 	%mouse.SceneLayer = 2;
 	%mouse.setFixedAngle(true);
@@ -166,7 +172,10 @@ function createBeamIcon()
 	%mouse = new Sprite( EAbilityIcon );
 	%mouse.Size = "2 2";
 	%mouse.Position = "-27.5 21";
-	%mouse.Image = "Game:EIcon";
+	if ($directInputActive)
+		%mouse.Image = "Game:RTButton";
+	else
+		%mouse.Image = "Game:EIcon";
 	%mouse.SceneGroup = 2;
 	%mouse.SceneLayer = 2;
 	%mouse.setFixedAngle(true);
@@ -467,7 +476,10 @@ function createNextStageIcons()
 		%q.Size = "3 3";
 		%q.SceneGroup = 11;
 		%q.SceneLayer = 0;
-		%q.Image = "Game:QIcon";
+		if ($directInputActive)
+			%q.Image = "Game:XButton";
+		else
+			%q.Image = "Game:QIcon";
 		Interface.add(%q);
 	}
 	if (%list.count > 0)
@@ -492,7 +504,10 @@ function createNextStageIcons()
 		%w.Size = "3 3";
 		%w.SceneGroup = 11;
 		%w.SceneLayer = 0;
-		%w.Image = "Game:WIcon";
+		if ($directInputActive)
+			%w.Image = "Game:YButton";
+		else
+			%w.Image = "Game:WIcon";
 		Interface.add(%w);
 	}
 	if (%list.count > 0)
@@ -516,7 +531,10 @@ function createNextStageIcons()
 		%e.Size = "3 3";
 		%e.SceneGroup = 11;
 		%e.SceneLayer = 0;
-		%e.Image = "Game:EIcon";
+		if ($directInputActive)
+			%e.Image = "Game:BButton";
+		else
+			%e.Image = "Game:EIcon";
 		Interface.add(%e);
 	}
 }
