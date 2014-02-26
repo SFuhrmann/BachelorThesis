@@ -109,10 +109,24 @@ function createMenu()
 	createSceneWindow();
 	createSceneMenu();
 	
+	createCredits();
+	
 	createMenuItems();
 	
 	createMenuBackGround();
 	
+}
+
+function createCredits()
+{
+	%credits = new ImageFont( GameCreditsFont );
+	%credits.Image = "Game:Font";
+	%credits.Position = "30 -22";
+	%credits.FontSize = "0.75 1.125";
+	%credits.Text = "a game by Stephen Fuhrmann";
+	%credits.SceneGroup = 31;
+	%credits.SceneLayer = 2;
+	MainMenu.add(%credits);
 }
 
 ///destroy all items in the Main Menu (Title, Start, Upgrade)
@@ -121,6 +135,7 @@ function destroyMainMenuItems()
 	TitleFont.delete();
 	StartFont.delete();
 	UpgradeFont.delete();
+	GameCreditsFont.delete();
 }
 
 ///create the Game Screen
