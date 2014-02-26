@@ -177,6 +177,47 @@ function Enemy::die(%this)
 	%this.increaseOneUpgradeLevel();
 	$geneticModule.createNextGenerationSurvive(0);
 	$geneticModule.createNextGenerationKill(0.3);
+	createRespawnCountdown();
+}
+
+function createRespawnCountdown()
+{
+	%static = new ImageFont( EnemyRespawnFont );
+	%static.Image = "Game:Font";
+	%static.Position = "0 15";
+	%static.FontSize = "1 1.5";
+	%static.Text = "Enemy respawns in";
+	%static.SceneGroup = 31;
+	%static.SceneLayer = 0;
+	Interface.add(%static);
+	
+	%countdown = new ImageFont( EnemyCountdownFont );
+	%countdown.Image = "Game:Font";
+	%countdown.FontSize = "2 3";
+	%countdown.Position = "0 12";
+	%countdown.Text = 15;
+	%countdown.SceneGroup = 31;
+	%countdown.SceneLayer = 0;
+	Interface.add(%countdown);
+	%countdown.schedule(1000, update);
+}
+
+function EnemyCountdownFont::update(%this)
+{
+	%this.Text = %this.Text - 1;
+	if (%this.Text $= "1")
+	{
+		schedule(1000, 0, deleteObj, EnemyRespawnFont);
+		%this.schedule(1000, nextRound);
+	}
+	else
+		%this.schedule(1000, update);
+}
+
+function EnemyCountdownFont::nextRound(%this)
+{
+	%this.Text = "Stage" SPC ($level + 1);	
+	schedule(2500, 0, deleteObj, %this);
 }
 
 function Enemy::updateAngle(%this)
@@ -451,7 +492,7 @@ function Enemy::increaseUpgradeLevel(%this, %i)
 		case 1:
 			$enemyMaxMP += 1;
 		case 2:
-			$enemyProjectileSPeed += 5;
+			$enemyProjectileSPeed += 15;
 		case 3:
 			$enemyMaxSpeed += 4;
 		case 4:

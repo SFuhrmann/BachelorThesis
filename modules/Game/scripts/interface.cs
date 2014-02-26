@@ -395,21 +395,6 @@ function createNextStage()
 	createNextStageIcons();
 	
 	createNextStageCurrentLevelIcons();
-	createNextStageCurrentLevel();
-}
-
-///shows a text showing the next Level
-function createNextStageCurrentLevel()
-{
-	%level = new ImageFont( NextStageLevelFont );
-	%level.Image = "Game:Font";
-	%level.Position = "0 -14";
-	%level.FontSize = "2 3";
-	%level.TextAlignment = "Center";
-	%level.Text = "Level" SPC $level + 1;
-	%level.SceneGroup = 27;
-	%level.SceneLayer = 0;
-	Interface.add(%level);
 }
 
 ///shows all Upgrade Icons with their current and max Level
